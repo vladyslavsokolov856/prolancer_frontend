@@ -1,15 +1,5 @@
 import { Box, Avatar, Hidden, Button, useTheme } from '@mui/material'
-import {
-  AccountCircle,
-  Announcement,
-  Forum,
-  Info,
-  Language,
-  Logout,
-  Menu as MenuIcon,
-  Note,
-  Settings,
-} from '@mui/icons-material'
+import { Menu as MenuIcon } from '@mui/icons-material'
 import LogoIcon from '../Utils/LogoIcon'
 
 interface IAppbarProps {

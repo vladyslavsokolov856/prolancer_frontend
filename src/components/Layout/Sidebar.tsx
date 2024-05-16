@@ -1,17 +1,14 @@
 import {
   Box,
-  Button,
   Drawer,
   Hidden,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Toolbar,
-  Typography,
   useTheme,
 } from '@mui/material'
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { navigationConfig } from '@/config/navigation'
 import { Link, useLocation } from 'react-router-dom'
 import LogoIcon from '@/components/Utils/LogoIcon'
