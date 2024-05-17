@@ -1,4 +1,6 @@
 import Index from '@/pages/index'
+import SignIn from '@/pages/signin.tsx'
+import SignUp from '@/pages/signup.tsx'
 
 export interface RouteConfig {
   path: string
@@ -11,6 +13,14 @@ const routesConfig: RouteConfig[] = [
   {
     path: '/',
     element: <Index />,
+  },
+  {
+    path: '/signin',
+    element: <SignIn />,
+  },
+  {
+    path: '/signup',
+    element: <SignUp />,
   },
   {
     path: '*',
