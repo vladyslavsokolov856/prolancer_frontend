@@ -15,14 +15,6 @@ const routesConfig: RouteConfig[] = [
     element: <Index />,
   },
   {
-    path: '/signin',
-    element: <SignIn />,
-  },
-  {
-    path: '/signup',
-    element: <SignUp />,
-  },
-  {
     path: '*',
     element: <h1>Page not found.</h1>,
   },
