@@ -1,10 +1,10 @@
-import Sidebar from './Sidebar'
-import Appbar from './Appbar'
-import Footer from './Footer'
-import routesConfig from '../../config/routes'
+import Sidebar from '@/components/Layout/Sidebar'
+import Appbar from '@/components/Layout/Appbar'
+import Footer from '@/components/Layout/Footer'
+import routesConfig from '@/config/routes'
 import { matchRoutes, renderMatches, useLocation } from 'react-router'
 import { Suspense, useEffect, useMemo, useState } from 'react'
-import layoutConfig from '../../config/layout'
+import layoutConfig from '@/config/layout'
 import { Box, useTheme } from '@mui/material'
 
 const Layout: React.FC = () => {

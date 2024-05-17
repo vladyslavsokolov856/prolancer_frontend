@@ -1,8 +1,7 @@
-import { Box, BoxProps } from '@mui/material';
-import { ReactComponent as Logo } from '@/assets/logo.svg';
+import { Box, BoxProps, Typography } from '@mui/material'
 
 interface LogoIconProps extends BoxProps {
-  color?: string;
+  color?: string
 }
 
 const LogoIcon: React.FC<LogoIconProps> = ({ color = 'white', ...props }) => {
@@ -14,9 +13,12 @@ const LogoIcon: React.FC<LogoIconProps> = ({ color = 'white', ...props }) => {
       borderRadius="50%"
       {...props}
     >
-      <Logo style={{ fill: color }} />
+      {/* <Logo style={{ fill: color }} /> */}
+      <Typography fontSize={40} color={color}>
+        factofly
+      </Typography>
     </Box>
-  );
-};
+  )
+}
 
-export default LogoIcon;
+export default LogoIcon
