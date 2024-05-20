@@ -11,6 +11,7 @@ const Footer: React.FC = () => {
         flexDirection: 'column',
         padding: '20px 24px',
         fontSize: '14.4px',
+        textAlign: 'center',
       }}
       display="flex"
     >
