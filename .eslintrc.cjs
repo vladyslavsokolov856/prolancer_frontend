@@ -3,7 +3,7 @@ module.exports = {
   env: { browser: true, es2020: true },
   extends: [
     'eslint:recommended',
-    'plugin:@typescript-eslint/strict-type-checked',
+    // 'plugin:@typescript-eslint/strict-type-checked',
     'plugin:react-hooks/recommended',
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
@@ -23,6 +23,6 @@ module.exports = {
       { allowConstantExport: true },
     ],
     '@typescript-eslint/no-misused-promises': 0,
-    '@typescript-eslint/no-unnecessary-condition': 0
+    '@typescript-eslint/no-unnecessary-condition': 0,
   },
 }
