@@ -1,19 +1,10 @@
 import Box from '@mui/material/Box'
-import IconButton from '@mui/material/IconButton'
-import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert'
 import Chip from '@mui/material/Chip'
 import AddIcon from '@mui/icons-material/Add'
 import ProTable, { ColumnType, RecordType } from '@/components/ProTable'
-import SorterFilterHeader from '@/components/SorterFilterHeader'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select from '@mui/material/Select'
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
-import { useMediaQuery, useTheme } from '@mui/material'
 
 const columns: ColumnType[] = [
   {
@@ -56,9 +47,6 @@ const mockData: RecordType[] = [
 ]
 
 const CustomerIndex = () => {
-  const theme = useTheme()
-  const isMedium = useMediaQuery(theme.breakpoints.up('md'))
-
   return (
     <Box sx={{ paddingTop: '20px' }}>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -85,70 +73,16 @@ const CustomerIndex = () => {
         option to create new ones and edit existing ones
       </Alert>
 
-      <SorterFilterHeader
-        children={
-          <Box sx={{ color: 'rgb(255, 255, 255)' }}>
-            <Grid container spacing={2} alignItems="end">
-              {isMedium && <Grid item xs={12} md={4}></Grid>}
-              <Grid item xs={12} md={4}>
-                <Box display="flex" flexDirection="column">
-                  <span>Sort By</span>
-                  <Box display="flex" sx={{ width: '100%' }}>
-                    <FormControl
-                      fullWidth
-                      sx={{ backgroundColor: 'white', flexGrow: 1 }}
-                    >
-                      <Select size="small">
-                        <MenuItem value="name">Name</MenuItem>
-                        <MenuItem value="address">Address</MenuItem>
-                        <MenuItem value="telephone">Telephone</MenuItem>
-                        <MenuItem value="cretaed_at">Created At</MenuItem>
-                        <MenuItem value="email">Email</MenuItem>
-                        <MenuItem value="user">User</MenuItem>
-                      </Select>
-                    </FormControl>
-                    <IconButton
-                      sx={{
-                        borderLeft: '1px solid rgb(221, 221, 221) !important',
-                        backgroundColor: '#eef2f7',
-                        borderRadius: '0px !important',
-                        minWidth: '40px',
-                      }}
-                    >
-                      <ArrowDownwardIcon />
-                    </IconButton>
-                  </Box>
-                </Box>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Box
-                  display="flex"
-                  sx={{
-                    width: '100%',
-                    alignItems: 'center',
-                    gap: '5px',
-                    justifyContent: 'flex-end',
-                  }}
-                >
-                  <span>Number of Entities</span>
-                  <FormControl
-                    fullWidth
-                    sx={{ backgroundColor: 'white', width: '100px' }}
-                  >
-                    <Select size="small">
-                      <MenuItem value="25">25</MenuItem>
-                      <MenuItem value="50">50</MenuItem>
-                      <MenuItem value="100">100</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
-              </Grid>
-            </Grid>
-          </Box>
-        }
+      <ProTable
+        columns={columns}
+        data={mockData}
+        sortBy={[
+          { key: 'name', name: 'Name' },
+          { key: 'address', name: 'Address' },
+          { key: 'email', name: 'Email' },
+          { key: 'created_at', name: 'Created At' },
+        ]}
       />
-
-      <ProTable columns={columns} data={mockData} />
     </Box>
   )
 }
