@@ -5,7 +5,7 @@ import routesConfig from '@/config/routes'
 import { matchRoutes, renderMatches, useLocation } from 'react-router'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import layoutConfig from '@/config/layout'
-import { Box, useTheme } from '@mui/material'
+import { Box, useTheme, Container } from '@mui/material'
 
 const Layout: React.FC = () => {
   const location = useLocation()
@@ -40,7 +40,7 @@ const Layout: React.FC = () => {
           component="main"
           display="flex"
           sx={{
-            bgcolor: 'grey.100',
+            bgcolor: '#fafbfe',
             height: '100vh',
             overflow: 'auto',
             marginLeft: layout.sidebar ? '260px' : '0px',
@@ -54,7 +54,17 @@ const Layout: React.FC = () => {
           }}
         >
           {layout.toolbar && <Appbar setOpen={setOpen} />}
-          {renderMatches(matches)}
+          <Box
+            sx={{
+              width: '100%',
+              paddingLeft: '12px',
+              paddingRight: '12px',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+            }}
+          >
+            <Container>{renderMatches(matches)}</Container>
+          </Box>
           {layout.footer && <Footer />}
         </Box>
       </div>

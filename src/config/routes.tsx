@@ -1,4 +1,5 @@
 import Index from '@/pages/index'
+import Cusomters from '@/pages/customers'
 import SignIn from '@/pages/signin.tsx'
 import SignUp from '@/pages/signup.tsx'
 
@@ -13,6 +14,10 @@ const routesConfig: RouteConfig[] = [
   {
     path: '/',
     element: <Index />,
+  },
+  {
+    path: '/customers',
+    element: <Cusomters />,
   },
   {
     path: '*',
