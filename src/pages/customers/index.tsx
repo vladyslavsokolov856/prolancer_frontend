@@ -3,11 +3,11 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert'
 import Chip from '@mui/material/Chip'
+import Link from '@mui/material/Link'
 import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import ProTable, { ColumnType, RecordType } from '@/components/ProTable'
 import { useNavigate } from 'react-router-dom'
-import { useMemo } from 'react'
 
 const mockData: RecordType[] = [
   {
@@ -28,84 +28,72 @@ const mockData: RecordType[] = [
   },
 ]
 
+const columns: ColumnType[] = [
+  {
+    key: 'name',
+    name: 'Name',
+    render: (value, record) => {
+      return (
+        <Box>
+          <Box display="flex" gap="5px">
+            <Chip
+              label={value.slice(0, 2)}
+              size="small"
+              sx={{ borderRadius: '2px' }}
+            />
+            <Box display="flex" flexDirection="column">
+              <b>{value}</b>
+              <span>{record.email}</span>
+            </Box>
+          </Box>
+        </Box>
+      )
+    },
+  },
+  { key: 'address', name: 'Address', render: () => <h1>Hello</h1> },
+  { key: 'telephone', name: 'Telephone' },
+  {
+    key: 'customer_type',
+    name: 'Customer Type',
+    render: (value) => (
+      <Chip
+        label={value}
+        color={value === 'person' ? 'primary' : 'success'}
+        size="small"
+        sx={{ borderRadius: '2px' }}
+      />
+    ),
+  },
+  {
+    key: 'id',
+    align: 'right',
+    render: (value) => (
+      <Link href={`/customers/${value}/edit`}>
+        <Button variant="contained" startIcon={<EditIcon />} size="small">
+          Edit
+        </Button>
+      </Link>
+    ),
+  },
+]
+
 const CustomerIndex = () => {
   const navigate = useNavigate()
-
-  const handleAddClick = () => {
-    navigate('/customers/new')
-  }
-
-  const handleEditClick = (id: number) => {
-    navigate(`/customers/${id}/edit`)
-  }
-
-  const columns: ColumnType[] = useMemo(
-    () => [
-      {
-        key: 'name',
-        name: 'Name',
-        render: (value, record) => {
-          return (
-            <Box>
-              <Box display="flex" gap="5px">
-                <Chip
-                  label={value.slice(0, 2)}
-                  size="small"
-                  sx={{ borderRadius: '2px' }}
-                />
-                <Box display="flex" flexDirection="column">
-                  <b>{value}</b>
-                  <span>{record.email}</span>
-                </Box>
-              </Box>
-            </Box>
-          )
-        },
-      },
-      { key: 'address', name: 'Address', render: () => <h1>Hello</h1> },
-      { key: 'telephone', name: 'Telephone' },
-      {
-        key: 'customer_type',
-        name: 'Customer Type',
-        render: (value) => (
-          <Chip
-            label={value}
-            color={value === 'person' ? 'primary' : 'success'}
-            size="small"
-            sx={{ borderRadius: '2px' }}
-          />
-        ),
-      },
-      {
-        key: 'id',
-        align: 'right',
-        render: (value) => (
-          <Button
-            variant="contained"
-            startIcon={<EditIcon />}
-            onClick={() => handleEditClick(value)}
-            size="small"
-          >
-            Edit
-          </Button>
-        ),
-      },
-    ],
-    [handleEditClick]
-  )
 
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h4">Customers </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          sx={{ height: '35px' }}
-          onClick={handleAddClick}
-        >
-          Create Customer
-        </Button>
+
+        <Link href="/customers/new">
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            sx={{ height: '35px' }}
+          >
+            Create Customer
+          </Button>
+        </Link>
       </Box>
 
       <Alert
