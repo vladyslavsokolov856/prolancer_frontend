@@ -67,7 +67,7 @@ export interface RecordType {
 
 export interface ColumnType {
   key: string
-  name: String
+  name?: String
   align?: 'inherit' | 'left' | 'center' | 'right' | 'justify'
   render?: (value: any, record: RecordType, index: number) => React.ReactNode
 }
@@ -95,12 +95,14 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
     setShowFilterList((prev) => !prev)
   }
 
-  const onHeaderClick = (key: string) => {
-    if (sortField && sortField === key) {
-      setSortDirection((prev) => !prev)
-    } else {
-      setSortDirection(false)
-      setSortField(key)
+  const onHeaderClick = (key: string, name: String | undefined) => {
+    if (name) {
+      if (sortField && sortField === key) {
+        setSortDirection((prev) => !prev)
+      } else {
+        setSortDirection(false)
+        setSortField(key)
+      }
     }
   }
 
@@ -320,18 +322,20 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
                 <StyledTableCell
                   key={key}
                   align={align || 'left'}
-                  onClick={() => onHeaderClick(key)}
+                  onClick={() => onHeaderClick(key, name)}
                 >
                   <Box display="flex" sx={{ gap: '10px' }}>
                     {name}
-                    {sortField && sortField === key ? (
+                    {!name ? (
+                      <div style={{ width: '24px', height: '24px' }} />
+                    ) : sortField && sortField === key ? (
                       sortDirection ? (
-                        <ArrowDropUpIcon />
-                      ) : (
                         <ArrowDropDownIcon />
+                      ) : (
+                        <ArrowDropUpIcon />
                       )
                     ) : (
-                      <div style={{ width: '24px', height: '24px' }} />
+                      <ArrowDropDownIcon color="disabled" />
                     )}
                   </Box>
                 </StyledTableCell>

@@ -78,7 +78,6 @@ const CustomerIndex = () => {
       },
       {
         key: 'id',
-        name: '',
         align: 'right',
         render: (value) => (
           <Button
