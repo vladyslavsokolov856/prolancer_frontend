@@ -1,6 +1,7 @@
 import Index from '@/pages/index'
 import Cusomters from '@/pages/customers'
-import New from '@/pages/cusotmer/new'
+import New from '@/pages/customers/new'
+
 
 export interface RouteConfig {
   path: string

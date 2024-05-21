@@ -15,6 +15,7 @@ import {
   Typography,
   Button,
   Divider,
+  CircularProgress,
 } from '@mui/material'
 import { countries } from 'countries-list'
 import { styled } from '@mui/material/styles'
@@ -23,17 +24,17 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 
 type Inputs = {
   country: string
-  customerType: string
-  companyName: string
+  type: string
+  company_name: string
   language: string
-  name: string
-  email: string
-  telephone: string
+  name_contact_person: string
+  email_contact_person: string
+  phone_contact_person: string
   address: string
   city: string
-  postalCode: string
-  paymentDueDays: number
-  orgRegNum: number
+  postal_code: string
+  payment_due_days: number
+  company_id: number
   ean: number
 }
 
@@ -73,7 +74,6 @@ const CreateCustomer = () => {
     console.log(data)
     setIsSubmitting(false)
     reset()
-    // navigate('/')
   }
 
   return (
@@ -94,6 +94,7 @@ const CreateCustomer = () => {
                   labelId="country-select-label"
                   id="country-select"
                   label="Country"
+                  defaultValue=""
                   {...register('country', {
                     required: 'Country is a required field',
                   })}
@@ -119,7 +120,7 @@ const CreateCustomer = () => {
                   row
                   defaultValue="business"
                   aria-labelledby="customer-type-radio-group-label"
-                  {...register('customerType', {
+                  {...register('type', {
                     required: 'Customer type is a required field',
                   })}
                   sx={{ gap: '100px' }}
@@ -151,10 +152,10 @@ const CreateCustomer = () => {
                 <TextField
                   label="Company name *"
                   style={{ margin: '1px' }}
-                  {...register('companyName', {
+                  {...register('company_name', {
                     required: 'Company name is a required field',
                   })}
-                  error={!!errors.companyName}
+                  error={!!errors.company_name}
                   helperText={
                     <Typography
                       component="span"
@@ -162,8 +163,8 @@ const CreateCustomer = () => {
                       fontSize={11}
                       color="error"
                     >
-                      {errors.companyName &&
-                        (errors.companyName?.message || '')}
+                      {errors.company_name &&
+                        (errors.company_name?.message || '')}
                     </Typography>
                   }
                   fullWidth
@@ -201,7 +202,7 @@ const CreateCustomer = () => {
                 <TextField
                   label="Name"
                   style={{ margin: '1px', marginBottom: '.75rem' }}
-                  {...register('name')}
+                  {...register('name_contact_person')}
                   fullWidth
                 />
               </Grid>
@@ -210,8 +211,8 @@ const CreateCustomer = () => {
                   label="Email *"
                   type="email"
                   style={{ margin: '1px', marginBottom: '.75rem' }}
-                  error={!!errors.email}
-                  {...register('email', {
+                  error={!!errors.email_contact_person}
+                  {...register('email_contact_person', {
                     required: 'Email is a reuqired field',
                   })}
                   helperText={
@@ -221,7 +222,8 @@ const CreateCustomer = () => {
                       fontSize={11}
                       color="error"
                     >
-                      {errors.email && (errors.email?.message || '')}
+                      {errors.email_contact_person &&
+                        (errors.email_contact_person?.message || '')}
                     </Typography>
                   }
                   fullWidth
@@ -231,10 +233,10 @@ const CreateCustomer = () => {
                 <TextField
                   label="Telephone *"
                   style={{ margin: '1px', marginBottom: '.75rem' }}
-                  {...register('telephone', {
+                  {...register('phone_contact_person', {
                     required: 'Telephone is a reuqired field',
                   })}
-                  error={!!errors.telephone}
+                  error={!!errors.phone_contact_person}
                   helperText={
                     <Typography
                       component="span"
@@ -242,7 +244,8 @@ const CreateCustomer = () => {
                       fontSize={11}
                       color="error"
                     >
-                      {errors.telephone && (errors.telephone?.message || '')}
+                      {errors.phone_contact_person &&
+                        (errors.phone_contact_person?.message || '')}
                     </Typography>
                   }
                   fullWidth
@@ -331,10 +334,10 @@ const CreateCustomer = () => {
                   label="Postal code *"
                   type="number"
                   style={{ margin: '1px', marginBottom: '.75rem' }}
-                  {...register('postalCode', {
+                  {...register('postal_code', {
                     required: 'Postal code is a reuqired field',
                   })}
-                  error={!!errors.postalCode}
+                  error={!!errors.postal_code}
                   helperText={
                     <Typography
                       component="span"
@@ -342,7 +345,8 @@ const CreateCustomer = () => {
                       fontSize={11}
                       color="error"
                     >
-                      {errors.postalCode && (errors.postalCode?.message || '')}
+                      {errors.postal_code &&
+                        (errors.postal_code?.message || '')}
                     </Typography>
                   }
                   fullWidth
@@ -367,8 +371,8 @@ const CreateCustomer = () => {
                   label="Payment due days"
                   style={{ margin: '1px', marginBottom: '.75rem' }}
                   type="number"
-                  {...register('paymentDueDays')}
-                  error={!!errors.paymentDueDays}
+                  {...register('payment_due_days')}
+                  error={!!errors.payment_due_days}
                   fullWidth
                 />
                 <span style={{ color: '#98a6ad', fontSize: '.75rem' }}>
@@ -381,8 +385,8 @@ const CreateCustomer = () => {
                   label="Organization or registration number"
                   type="number"
                   style={{ margin: '1px', marginBottom: '.75rem' }}
-                  {...register('orgRegNum')}
-                  error={!!errors.orgRegNum}
+                  {...register('company_id')}
+                  error={!!errors.company_id}
                   fullWidth
                 />
               </Grid>
@@ -401,8 +405,18 @@ const CreateCustomer = () => {
               </Grid>
             </Grid>
             <Divider sx={{ marginTop: '15px', marginBottom: '15px' }} />
-            <Button type="submit" variant="contained">
-              Create Customer
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={isSubmitting}
+              startIcon={
+                isSubmitting ? (
+                  <CircularProgress size={18} color="info" />
+                ) : undefined
+              }
+              disableElevation
+            >
+              {!isSubmitting ? 'Create Customer' : 'Saving'}
             </Button>
           </StyledPaper>
         )}
