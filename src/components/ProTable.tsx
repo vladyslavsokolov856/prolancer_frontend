@@ -16,9 +16,7 @@ import Grid from '@mui/material/Grid'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import { TablePagination } from '@mui/material'
-import { ArrowUpwardOutlined } from '@mui/icons-material'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 
@@ -57,7 +55,7 @@ interface IFilterItem {
 }
 
 interface ISorterFilters {
-  sortBy: IItem[]
+  sortBy?: IItem[]
   filters?: IFilterItem[]
 }
 
@@ -81,7 +79,7 @@ interface IFilterOptions {
   [key: string]: string
 }
 
-const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
+const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
   const [showFilterList, setShowFilterList] = useState<boolean>(false)
   const [filterOptions, setFilterOptions] = useState<IFilterOptions>({})
   const [rowsPerPage, setRowsPerPage] = useState<number>(100)
@@ -196,45 +194,6 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
           >
             <Box sx={{ color: 'rgb(255, 255, 255)' }}>
               <Grid container spacing={2} alignItems="end">
-                {/* <Grid item xs={12} md={4}>
-                  <Box display="flex" flexDirection="column">
-                    <span>Sort By</span>
-                    <Box display="flex" sx={{ width: '100%' }}>
-                      <FormControl
-                        fullWidth
-                        sx={{ backgroundColor: 'white', flexGrow: 1 }}
-                      >
-                        <Select
-                          size="small"
-                          value={sortField}
-                          onChange={(e) => setSortField(e.target.value)}
-                        >
-                          {sortBy.map(({ key, name }) => (
-                            <MenuItem value={key} key={key}>
-                              {name}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <IconButton
-                        sx={{
-                          borderLeft: '1px solid rgb(221, 221, 221) !important',
-                          backgroundColor: '#eef2f7',
-                          borderRadius: '0px !important',
-                          minWidth: '40px',
-                        }}
-                        onClick={() => setSortDirection((prev) => !prev)}
-                      >
-                        {sortDirection ? (
-                          <ArrowUpwardOutlined />
-                        ) : (
-                          <ArrowDownwardIcon />
-                        )}
-                      </IconButton>
-                    </Box>
-                  </Box>
-                </Grid> */}
-
                 {filters &&
                   filters.map((filter) => (
                     <Grid item xs={12} md={4} key={filter.key}>

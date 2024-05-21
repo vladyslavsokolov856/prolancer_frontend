@@ -7,7 +7,7 @@ import Link from '@mui/material/Link'
 import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import ProTable, { ColumnType, RecordType } from '@/components/ProTable'
-import { useNavigate } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 
 const mockData: RecordType[] = [
   {
@@ -68,32 +68,34 @@ const columns: ColumnType[] = [
     key: 'id',
     align: 'right',
     render: (value) => (
-      <Link href={`/customers/${value}/edit`}>
-        <Button variant="contained" startIcon={<EditIcon />} size="small">
-          Edit
-        </Button>
-      </Link>
+      <Button
+        variant="contained"
+        startIcon={<EditIcon />}
+        size="small"
+        component={RouterLink}
+        to={`/customers/${value}/edit`}
+      >
+        Edit
+      </Button>
     ),
   },
 ]
 
 const CustomerIndex = () => {
-  const navigate = useNavigate()
-
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h4">Customers </Typography>
 
-        <Link href="/customers/new">
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            sx={{ height: '35px' }}
-          >
-            Create Customer
-          </Button>
-        </Link>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          sx={{ height: '35px' }}
+          component={RouterLink}
+          to="/customers/new"
+        >
+          Create Customer
+        </Button>
       </Box>
 
       <Alert
@@ -113,16 +115,7 @@ const CustomerIndex = () => {
         option to create new ones and edit existing ones
       </Alert>
 
-      <ProTable
-        columns={columns}
-        data={mockData}
-        sortBy={[
-          { key: 'name', name: 'Name' },
-          { key: 'address', name: 'Address' },
-          { key: 'email', name: 'Email' },
-          { key: 'created_at', name: 'Created At' },
-        ]}
-      />
+      <ProTable columns={columns} data={mockData} />
     </Box>
   )
 }
