@@ -94,6 +94,7 @@ const CreateCustomer = () => {
                   labelId="country-select-label"
                   id="country-select"
                   label="Country"
+                  defaultValue=""
                   {...register('country', {
                     required: 'Country is a required field',
                   })}
