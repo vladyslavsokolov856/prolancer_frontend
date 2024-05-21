@@ -1,5 +1,6 @@
 import Index from '@/pages/index'
 import Cusomters from '@/pages/customers'
+import New from '@/pages/cusotmer/new'
 
 export interface RouteConfig {
   path: string
@@ -8,11 +9,20 @@ export interface RouteConfig {
   label?: string
 }
 
+const customerRoutes: RouteConfig[] = [
+  {
+    path: '/customers/new',
+    element: <New />,
+    label: 'New Customer',
+  },
+]
+
 const routesConfig: RouteConfig[] = [
   {
     path: '/',
     element: <Index />,
   },
+  ...customerRoutes,
   {
     path: '/customers',
     element: <Cusomters />,
