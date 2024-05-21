@@ -16,9 +16,9 @@ import Grid from '@mui/material/Grid'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select from '@mui/material/Select'
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import { TablePagination } from '@mui/material'
-import { ArrowUpwardOutlined } from '@mui/icons-material'
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 
 const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.head}`]: {
@@ -55,7 +55,7 @@ interface IFilterItem {
 }
 
 interface ISorterFilters {
-  sortBy: IItem[]
+  sortBy?: IItem[]
   filters?: IFilterItem[]
 }
 
@@ -65,7 +65,7 @@ export interface RecordType {
 
 export interface ColumnType {
   key: string
-  name: String
+  name?: String
   align?: 'inherit' | 'left' | 'center' | 'right' | 'justify'
   render?: (value: any, record: RecordType, index: number) => React.ReactNode
 }
@@ -79,7 +79,7 @@ interface IFilterOptions {
   [key: string]: string
 }
 
-const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
+const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
   const [showFilterList, setShowFilterList] = useState<boolean>(false)
   const [filterOptions, setFilterOptions] = useState<IFilterOptions>({})
   const [rowsPerPage, setRowsPerPage] = useState<number>(100)
@@ -87,16 +87,34 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
   const [page, setPage] = useState<number>(0)
   const [sortField, setSortField] = useState<string | null>(null)
   const [sortDirection, setSortDirection] = useState<boolean>(false)
+  const [search, setSearch] = useState<string>('')
 
   const onFilterClick = () => {
     setShowFilterList((prev) => !prev)
+  }
+
+  const onHeaderClick = (key: string, name: String | undefined) => {
+    if (name) {
+      if (sortField && sortField === key) {
+        setSortDirection((prev) => !prev)
+      } else {
+        setSortDirection(false)
+        setSortField(key)
+      }
+    }
   }
 
   useEffect(() => {
     const startIndex = page * rowsPerPage
     const endIndex = startIndex + rowsPerPage
 
-    const filteredItems = data
+    const filteredData = data.filter((record) =>
+      Object.values(record).some((value) =>
+        value.toString().toLowerCase().includes(search.toLowerCase())
+      )
+    )
+
+    const filteredItems = filteredData
       .filter((item) => {
         return Object.keys(filterOptions).every((key) => {
           return item.hasOwnProperty(key) && item[key] === filterOptions[key]
@@ -113,13 +131,13 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
       : filteredItems
 
     setFilteredData(sortedItems)
-  }, [filterOptions, page, rowsPerPage, sortField, sortDirection])
+  }, [data, filterOptions, page, rowsPerPage, sortField, sortDirection, search])
 
   const handleFilterOptions = (key: string, value: string) => {
     setFilterOptions((prev) => ({ ...prev, [key]: value }))
   }
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage)
   }
 
@@ -146,7 +164,10 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
           <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
             <SearchIcon />
           </IconButton>
-          <InputBase sx={{ ml: 1, flex: 1 }} />
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            onChange={(e) => setSearch(e.target.value)}
+          />
           <IconButton
             color="primary"
             sx={{
@@ -173,45 +194,6 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
           >
             <Box sx={{ color: 'rgb(255, 255, 255)' }}>
               <Grid container spacing={2} alignItems="end">
-                <Grid item xs={12} md={4}>
-                  <Box display="flex" flexDirection="column">
-                    <span>Sort By</span>
-                    <Box display="flex" sx={{ width: '100%' }}>
-                      <FormControl
-                        fullWidth
-                        sx={{ backgroundColor: 'white', flexGrow: 1 }}
-                      >
-                        <Select
-                          size="small"
-                          value={sortField}
-                          onChange={(e) => setSortField(e.target.value)}
-                        >
-                          {sortBy.map(({ key, name }) => (
-                            <MenuItem value={key} key={key}>
-                              {name}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                      <IconButton
-                        sx={{
-                          borderLeft: '1px solid rgb(221, 221, 221) !important',
-                          backgroundColor: '#eef2f7',
-                          borderRadius: '0px !important',
-                          minWidth: '40px',
-                        }}
-                        onClick={() => setSortDirection((prev) => !prev)}
-                      >
-                        {sortDirection ? (
-                          <ArrowUpwardOutlined />
-                        ) : (
-                          <ArrowDownwardIcon />
-                        )}
-                      </IconButton>
-                    </Box>
-                  </Box>
-                </Grid>
-
                 {filters &&
                   filters.map((filter) => (
                     <Grid item xs={12} md={4} key={filter.key}>
@@ -296,8 +278,25 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
           <TableHead>
             <TableRow>
               {columns.map(({ key, name, align }) => (
-                <StyledTableCell key={key} align={align || 'left'}>
-                  {name}
+                <StyledTableCell
+                  key={key}
+                  align={align || 'left'}
+                  onClick={() => onHeaderClick(key, name)}
+                >
+                  <Box display="flex" sx={{ gap: '10px' }}>
+                    {name}
+                    {!name ? (
+                      <div style={{ width: '24px', height: '24px' }} />
+                    ) : sortField && sortField === key ? (
+                      sortDirection ? (
+                        <ArrowDropDownIcon />
+                      ) : (
+                        <ArrowDropUpIcon />
+                      )
+                    ) : (
+                      <ArrowDropDownIcon color="disabled" />
+                    )}
+                  </Box>
                 </StyledTableCell>
               ))}
             </TableRow>
@@ -305,11 +304,11 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
           <TableBody>
             {filteredData.map((row, index) => {
               return (
-                <StyledTableRow key={`row ${index}`}>
+                <StyledTableRow key={`row-${index}`}>
                   {columns.map((column, rowIndex) => {
                     if (column.render)
                       return (
-                        <StyledTableCell>
+                        <StyledTableCell align={column.align || 'left'}>
                           {column.render(row[column.key], row, rowIndex)}
                         </StyledTableCell>
                       )
