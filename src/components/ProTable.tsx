@@ -137,7 +137,7 @@ const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
     setFilterOptions((prev) => ({ ...prev, [key]: value }))
   }
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_: unknown, newPage: number) => {
     setPage(newPage)
   }
 
