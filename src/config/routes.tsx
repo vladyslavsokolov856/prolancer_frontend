@@ -1,7 +1,5 @@
 import Index from '@/pages/index'
 import Cusomters from '@/pages/customers'
-import SignIn from '@/pages/signin.tsx'
-import SignUp from '@/pages/signup.tsx'
 import New from '@/pages/cusotmer/new'
 
 export interface RouteConfig {
