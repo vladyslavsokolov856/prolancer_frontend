@@ -116,6 +116,9 @@ const CustomerIndex = () => {
           marginBottom: '1rem',
           border: '1px solid transparent',
           marginTop: '20px',
+          '& .MuiAlert-message': {
+            padding: 0,
+          },
         }}
       >
         Here is the overview of your various customers 🤝 You also have the
