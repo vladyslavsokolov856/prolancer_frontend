@@ -19,6 +19,8 @@ import Select from '@mui/material/Select'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import { TablePagination } from '@mui/material'
 import { ArrowUpwardOutlined } from '@mui/icons-material'
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 
 const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.head}`]: {
@@ -87,16 +89,32 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
   const [page, setPage] = useState<number>(0)
   const [sortField, setSortField] = useState<string | null>(null)
   const [sortDirection, setSortDirection] = useState<boolean>(false)
+  const [search, setSearch] = useState<string>('')
 
   const onFilterClick = () => {
     setShowFilterList((prev) => !prev)
+  }
+
+  const onHeaderClick = (key: string) => {
+    if (sortField && sortField === key) {
+      setSortDirection((prev) => !prev)
+    } else {
+      setSortDirection(false)
+      setSortField(key)
+    }
   }
 
   useEffect(() => {
     const startIndex = page * rowsPerPage
     const endIndex = startIndex + rowsPerPage
 
-    const filteredItems = data
+    const filteredData = data.filter((record) =>
+      Object.values(record).some((value) =>
+        value.toString().toLowerCase().includes(search.toLowerCase())
+      )
+    )
+
+    const filteredItems = filteredData
       .filter((item) => {
         return Object.keys(filterOptions).every((key) => {
           return item.hasOwnProperty(key) && item[key] === filterOptions[key]
@@ -113,7 +131,7 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
       : filteredItems
 
     setFilteredData(sortedItems)
-  }, [filterOptions, page, rowsPerPage, sortField, sortDirection])
+  }, [data, filterOptions, page, rowsPerPage, sortField, sortDirection, search])
 
   const handleFilterOptions = (key: string, value: string) => {
     setFilterOptions((prev) => ({ ...prev, [key]: value }))
@@ -146,7 +164,10 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
           <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
             <SearchIcon />
           </IconButton>
-          <InputBase sx={{ ml: 1, flex: 1 }} />
+          <InputBase
+            sx={{ ml: 1, flex: 1 }}
+            onChange={(e) => setSearch(e.target.value)}
+          />
           <IconButton
             color="primary"
             sx={{
@@ -296,8 +317,23 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
           <TableHead>
             <TableRow>
               {columns.map(({ key, name, align }) => (
-                <StyledTableCell key={key} align={align || 'left'}>
-                  {name}
+                <StyledTableCell
+                  key={key}
+                  align={align || 'left'}
+                  onClick={() => onHeaderClick(key)}
+                >
+                  <Box display="flex" sx={{ gap: '10px' }}>
+                    {name}
+                    {sortField && sortField === key ? (
+                      sortDirection ? (
+                        <ArrowDropUpIcon />
+                      ) : (
+                        <ArrowDropDownIcon />
+                      )
+                    ) : (
+                      <div style={{ width: '24px', height: '24px' }} />
+                    )}
+                  </Box>
                 </StyledTableCell>
               ))}
             </TableRow>
@@ -305,11 +341,11 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
           <TableBody>
             {filteredData.map((row, index) => {
               return (
-                <StyledTableRow key={`row ${index}`}>
+                <StyledTableRow key={`row-${index}`}>
                   {columns.map((column, rowIndex) => {
                     if (column.render)
                       return (
-                        <StyledTableCell>
+                        <StyledTableCell align={column.align || 'left'}>
                           {column.render(row[column.key], row, rowIndex)}
                         </StyledTableCell>
                       )
