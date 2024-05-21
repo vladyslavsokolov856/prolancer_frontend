@@ -15,6 +15,7 @@ import {
   Typography,
   Button,
   Divider,
+  CircularProgress,
 } from '@mui/material'
 import { countries } from 'countries-list'
 import { styled } from '@mui/material/styles'
@@ -73,7 +74,6 @@ const CreateCustomer = () => {
     console.log(data)
     setIsSubmitting(false)
     reset()
-    // navigate('/')
   }
 
   return (
@@ -222,7 +222,8 @@ const CreateCustomer = () => {
                       fontSize={11}
                       color="error"
                     >
-                      {errors.email && (errors.email?.message || '')}
+                      {errors.email_contact_person &&
+                        (errors.email_contact_person?.message || '')}
                     </Typography>
                   }
                   fullWidth
@@ -404,8 +405,18 @@ const CreateCustomer = () => {
               </Grid>
             </Grid>
             <Divider sx={{ marginTop: '15px', marginBottom: '15px' }} />
-            <Button type="submit" variant="contained">
-              Create Customer
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={isSubmitting}
+              startIcon={
+                isSubmitting ? (
+                  <CircularProgress size={18} color="info" />
+                ) : undefined
+              }
+              disableElevation
+            >
+              {!isSubmitting ? 'Create Customer' : 'Saving'}
             </Button>
           </StyledPaper>
         )}
