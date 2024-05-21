@@ -8,11 +8,11 @@ import SignUp from '@/pages/signup'
 function App() {
   return (
     <BrowserRouter>
-    <Routes>
-      <Route path="/signin" Component={SignIn} />
-      <Route path="/signup" Component={SignUp} />
-      <Route path="*" Component={Layout} />
-    </Routes>
+      <Routes>
+        <Route path="/signin" Component={SignIn} />
+        <Route path="/signup" Component={SignUp} />
+        <Route path="*" Component={Layout} />
+      </Routes>
     </BrowserRouter>
   )
 }
