@@ -115,7 +115,7 @@ const CustomerIndex = () => {
           padding: '.75rem 1.25rem',
           marginBottom: '1rem',
           border: '1px solid transparent',
-          paddingTop: '20px',
+          marginTop: '20px',
         }}
       >
         Here is the overview of your various customers 🤝 You also have the

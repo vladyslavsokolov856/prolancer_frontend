@@ -196,7 +196,7 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
           >
             <Box sx={{ color: 'rgb(255, 255, 255)' }}>
               <Grid container spacing={2} alignItems="end">
-                <Grid item xs={12} md={4}>
+                {/* <Grid item xs={12} md={4}>
                   <Box display="flex" flexDirection="column">
                     <span>Sort By</span>
                     <Box display="flex" sx={{ width: '100%' }}>
@@ -233,7 +233,7 @@ const ProTable: React.FC<IProTable> = ({ columns, data, sortBy, filters }) => {
                       </IconButton>
                     </Box>
                   </Box>
-                </Grid>
+                </Grid> */}
 
                 {filters &&
                   filters.map((filter) => (
