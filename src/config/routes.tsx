@@ -1,7 +1,7 @@
 import Index from '@/pages/index'
 import Cusomters from '@/pages/customers'
 import New from '@/pages/customers/new'
-
+import UserIndexPage from '@/pages/users'
 
 export interface RouteConfig {
   path: string
@@ -27,6 +27,10 @@ const routesConfig: RouteConfig[] = [
   {
     path: '/customers',
     element: <Cusomters />,
+  },
+  {
+    path: '/admin/users',
+    element: <UserIndexPage />,
   },
   {
     path: '*',
