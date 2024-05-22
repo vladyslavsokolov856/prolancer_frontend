@@ -22,7 +22,7 @@ const UserIndex = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [selectedUser, setSelectedUser] = useState<SelectedUserType>(null)
 
-  const handleDeleteClick = (id: number | string) => {
+  const handleDeleteClick = (id: number) => {
     setSelectedUser(users.find((item) => item.id === id))
     setOpen(true)
   }
@@ -76,7 +76,7 @@ const UserIndex = () => {
         ),
       },
     ],
-    []
+    [handleDeleteClick]
   )
 
   return (
