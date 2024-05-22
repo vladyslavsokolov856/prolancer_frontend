@@ -1,8 +1,10 @@
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
+import Chip from '@mui/material/Chip'
 import AddIcon from '@mui/icons-material/Add'
 import useUsers from '@/hooks/useUsers'
+import useDeleteUser from '@/hooks/useDeleteUser'
 import { Link as RouterLink } from 'react-router-dom'
 import { useMemo, useState } from 'react'
 import ProTable, { ColumnType } from '@/components/ProTable'
@@ -14,31 +16,38 @@ import User from '@/types/users'
 type SelectedUserType = User | null | undefined
 
 const UserIndex = () => {
-  const { users, deleteUserMutation } = useUsers()
+  const { users } = useUsers()
+  const { deleteUserMutation } = useDeleteUser()
 
   const [open, setOpen] = useState<boolean>(false)
   const [selectedUser, setSelectedUser] = useState<SelectedUserType>(null)
 
-  const handleDeleteClick = (user: SelectedUserType) => {
-    setSelectedUser(user)
+  const handleDeleteClick = (id: number | string) => {
+    setSelectedUser(users.find((item) => item.id === id))
     setOpen(true)
   }
-
-  const activeUsers: User[] = useMemo(
-    () => users.filter((item) => !item.deleted),
-    [users]
-  )
 
   const columns: ColumnType[] = useMemo(
     () => [
       {
         key: 'display_name',
-        name: 'name',
+        name: 'Name',
         render: (value, record) => `${record.first_name} ${record.last_name}`,
       },
       { key: 'email', name: 'Email' },
-      { key: 'phone_number', name: 'Phone Number' },
-      { key: 'role', name: 'Role' },
+      { key: 'phone_number', name: 'Phone' },
+      {
+        key: 'role',
+        name: 'Role',
+        render: (role) => (
+          <Chip
+            label={role}
+            color="primary"
+            sx={{ borderRadius: '2px' }}
+            size="small"
+          />
+        ),
+      },
       {
         key: 'id',
         align: 'right',
@@ -50,6 +59,7 @@ const UserIndex = () => {
               size="small"
               component={RouterLink}
               to={`/admin/users/${value}/edit`}
+              color="secondary"
             >
               Edit
             </Button>
@@ -57,9 +67,8 @@ const UserIndex = () => {
               variant="contained"
               startIcon={<DeleteIcon />}
               size="small"
-              onClick={() =>
-                handleDeleteClick(activeUsers.find((item) => item.id === value))
-              }
+              onClick={() => handleDeleteClick(value)}
+              color="error"
             >
               Delete
             </Button>
@@ -86,7 +95,7 @@ const UserIndex = () => {
         </Button>
       </Box>
 
-      <ProTable columns={columns} data={activeUsers} />
+      <ProTable columns={columns} data={users} />
 
       <ConfirmDialog
         open={open}

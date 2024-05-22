@@ -6,6 +6,15 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 
+type ColorType =
+  | 'inherit'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'error'
+  | 'info'
+  | 'warning'
+
 interface ConfirmDialogProps {
   open: boolean
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -13,6 +22,8 @@ interface ConfirmDialogProps {
   content: string | React.ReactNode
   submitText?: string
   cancelText?: string
+  submitTextColor?: ColorType
+  cancelTextColor?: ColorType
   onSubmit?: () => Promise<void> | void
 }
 
@@ -21,8 +32,10 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   setOpen,
   title,
   content,
-  submitText = 'Submit',
+  submitText = 'Confirm',
   cancelText = 'Cancel',
+  submitTextColor = 'primary',
+  cancelTextColor = 'primary',
   onSubmit,
 }) => {
   const handleSubmit = async () => {
@@ -54,8 +67,10 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleSubmit}>{submitText}</Button>
-        <Button onClick={handleClose} autoFocus>
+        <Button onClick={handleSubmit} color={submitTextColor}>
+          {submitText}
+        </Button>
+        <Button onClick={handleClose} color={cancelTextColor} autoFocus>
           {cancelText}
         </Button>
       </DialogActions>
