@@ -1,8 +1,13 @@
-import { useQuery, UseQueryResult } from '@tanstack/react-query'
-import { fetchUsers } from '@/services/userService'
+import {
+  useQuery,
+  UseQueryResult,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query'
+import { fetchUsers, deleteUser } from '@/services/userService'
 import User from '@/types/users'
 
-const useUsers = () => {
+export const useUsers = () => {
   const {
     data: users,
     isLoading,
@@ -21,4 +26,17 @@ const useUsers = () => {
   }
 }
 
-export default useUsers
+export const useDeleteUser = () => {
+  const queryClient = useQueryClient()
+  const { mutate: deleteUserMutation, isPending: isDeleting } = useMutation({
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+    },
+  })
+
+  return {
+    deleteUserMutation,
+    isDeleting,
+  }
+}

@@ -49,7 +49,7 @@ const columns: ColumnType[] = [
       )
     },
   },
-  { key: 'address', name: 'Address', render: () => <h1>Hello</h1> },
+  { key: 'address', name: 'Address' },
   { key: 'telephone', name: 'Telephone' },
   {
     key: 'customer_type',
