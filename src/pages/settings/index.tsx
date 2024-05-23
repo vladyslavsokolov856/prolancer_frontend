@@ -7,7 +7,7 @@ import ProfileForm from '@/components/Form/ProfileForm'
 const ProfileSettings = () => {
   const form = useForm<Inputs>()
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async () => {
     form.reset()
   }
 
