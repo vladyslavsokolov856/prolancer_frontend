@@ -34,12 +34,14 @@ export type Inputs = {
   postal_code: string
   country: string
   email_preferences: string
-  bank_name: string
-  bank_registration_number: string
-  bank_account_number: string
-  cpr: string
+  bank_information: {
+    name: string
+    registration_number: string
+    account_number: string
+  }
+  tax_person_id: string
   tax_card: string
-  salary_payment_type: string
+  salary_payment_type_requested: string
   holiday_payment: boolean
 }
 
@@ -444,10 +446,10 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             <TextField
               label="Bank name *"
               style={{ margin: '1px' }}
-              {...register('bank_name', {
+              {...register('bank_information.name', {
                 required: 'Bank name is a required field',
               })}
-              error={!!errors.bank_name}
+              error={!!errors.bank_information?.name}
               helperText={
                 <Typography
                   component="span"
@@ -455,7 +457,8 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                   fontSize={11}
                   color="error"
                 >
-                  {errors.bank_name && (errors.bank_name?.message || '')}
+                  {errors.bank_information?.name &&
+                    (errors.bank_information?.name?.message || '')}
                 </Typography>
               }
               fullWidth
@@ -466,10 +469,10 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             <TextField
               label="Bank registration number *"
               style={{ margin: '1px' }}
-              {...register('bank_registration_number', {
+              {...register('bank_information.registration_number', {
                 required: 'Bank registration number is a required field',
               })}
-              error={!!errors.bank_registration_number}
+              error={!!errors.bank_information?.registration_number}
               helperText={
                 <Typography
                   component="span"
@@ -477,8 +480,9 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                   fontSize={11}
                   color="error"
                 >
-                  {errors.bank_registration_number &&
-                    (errors.bank_registration_number?.message || '')}
+                  {errors.bank_information?.registration_number &&
+                    (errors.bank_information?.registration_number?.message ||
+                      '')}
                 </Typography>
               }
               fullWidth
@@ -488,10 +492,10 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             <TextField
               label="Bank account number *"
               style={{ margin: '1px' }}
-              {...register('bank_account_number', {
+              {...register('bank_information.account_number', {
                 required: 'Bank account number is a required field',
               })}
-              error={!!errors.bank_account_number}
+              error={!!errors.bank_information?.account_number}
               helperText={
                 <Typography
                   component="span"
@@ -499,8 +503,8 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                   fontSize={11}
                   color="error"
                 >
-                  {errors.bank_account_number &&
-                    (errors.bank_account_number?.message || '')}
+                  {errors.bank_information?.account_number &&
+                    (errors.bank_information?.account_number?.message || '')}
                 </Typography>
               }
               fullWidth
@@ -514,10 +518,10 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             <TextField
               label="CPR *"
               style={{ margin: '1px' }}
-              {...register('cpr', {
+              {...register('tax_person_id', {
                 required: 'CPR is a required field',
               })}
-              error={!!errors.cpr}
+              error={!!errors.tax_person_id}
               helperText={
                 <Typography
                   component="span"
@@ -525,7 +529,8 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                   fontSize={11}
                   color="error"
                 >
-                  {errors.cpr && (errors.cpr?.message || '')}
+                  {errors.tax_person_id &&
+                    (errors.tax_person_id?.message || '')}
                 </Typography>
               }
               fullWidth
@@ -579,14 +584,14 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
           <Grid item md={6} xs={12}>
             <FormControl fullWidth>
               <InputLabel id="requested-salary-payment-label">
-                Requested salary payment type
+                Requested salary payment type *
               </InputLabel>
               <Select
                 labelId="requested-salary-payment-label"
                 id="requested-salary-payment"
-                label="Requested salary payment type"
+                label="Requested salary payment type *"
                 defaultValue="none"
-                {...register('salary_payment_type', {
+                {...register('salary_payment_type_requested', {
                   required: 'Requested salary payment type is a required field',
                 })}
                 fullWidth
@@ -595,6 +600,10 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                 <MenuItem value="last">Last of Month</MenuItem>
                 <MenuItem value="none">None selected</MenuItem>
               </Select>
+              <FormHelperText error>
+                {errors.salary_payment_type_requested &&
+                  (errors.salary_payment_type_requested?.message || '')}
+              </FormHelperText>
             </FormControl>
           </Grid>
           <Grid item md={6} xs={12}></Grid>
