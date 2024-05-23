@@ -11,6 +11,7 @@ import {
   FormControlLabel,
   FormControlLabelProps,
   FormHelperText,
+  FormLabel,
   Grid,
   IconButton,
   InputLabel,
@@ -559,6 +560,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             </Grid>
             <Grid item xs={12}>
               <FormControl sx={{ width: '100%', marginBottom: '20px' }}>
+                <FormLabel id="pyament-type-group-label">
+                  Payment type
+                </FormLabel>
                 <RadioGroup row {...register('payment_type')}>
                   <Grid
                     container
@@ -747,7 +751,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
-                label="Number of hours"
+                label="Number of hours *"
                 style={{ margin: '1px' }}
                 error={!!errors.minutes_spent}
                 {...register('minutes_spent', {
