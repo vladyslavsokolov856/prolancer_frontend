@@ -560,7 +560,10 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             </Grid>
             <Grid item xs={12}>
               <FormControl sx={{ width: '100%', marginBottom: '20px' }}>
-                <FormLabel id="pyament-type-group-label">
+                <FormLabel
+                  id="pyament-type-group-label"
+                  sx={{ marginBottom: '10px' }}
+                >
                   Payment type
                 </FormLabel>
                 <RadioGroup row {...register('payment_type')}>
