@@ -2,6 +2,7 @@ import Index from '@/pages/index'
 import Cusomters from '@/pages/customers'
 import New from '@/pages/customers/new'
 import UserIndexPage from '@/pages/users'
+import NewTaskPage from '@/pages/tasks/new'
 
 export interface RouteConfig {
   path: string
@@ -18,12 +19,21 @@ const customerRoutes: RouteConfig[] = [
   },
 ]
 
+const taskRoutes: RouteConfig[] = [
+  {
+    path: '/tasks/new',
+    element: <NewTaskPage />,
+    label: 'New Task',
+  },
+]
+
 const routesConfig: RouteConfig[] = [
   {
     path: '/',
     element: <Index />,
   },
   ...customerRoutes,
+  ...taskRoutes,
   {
     path: '/customers',
     element: <Cusomters />,
