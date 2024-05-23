@@ -1,4 +1,5 @@
 import Index from '@/pages/index'
+import Settings from '@/pages/settings'
 import Cusomters from '@/pages/customers'
 import New from '@/pages/customers/new'
 import UserIndexPage from '@/pages/users'
@@ -43,9 +44,13 @@ const routesConfig: RouteConfig[] = [
     element: <UserIndexPage />,
   },
   {
+    path: '/settings',
+    element: <Settings />,
+  },
+  {
     path: '*',
     element: <h1>Page not found.</h1>,
   },
 ]
 
-export default routesConfig
+export default routesConfig;
