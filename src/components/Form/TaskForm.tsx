@@ -25,14 +25,13 @@ import {
 import { styled } from '@mui/material/styles'
 import { UseFormReturn, SubmitHandler } from 'react-hook-form'
 import { Link as RouterLink } from 'react-router-dom'
-import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined'
 import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import CurrencyList from 'currency-list'
 import { Dayjs } from 'dayjs'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useJobTypes } from '@/hooks/useJobTypes'
 
 export type Inputs = {
@@ -40,10 +39,8 @@ export type Inputs = {
   status: string
   title: string
   reference: string
-  po_number: string
+  purchase_order_number: string
   description: string
-  email_contact_person: string
-  name_contact_person: string
   customer_message: string
   job_type_id: number
   user_id: string
@@ -144,6 +141,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 interface PreviewDialogProps {
   data: Inputs
+  customer: any
   open: boolean
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -152,6 +150,7 @@ const PreviewDialog: React.FC<PreviewDialogProps> = ({
   data,
   open,
   setOpen,
+  customer,
 }) => {
   const handleClose = () => {
     setOpen(false)
@@ -182,7 +181,9 @@ const PreviewDialog: React.FC<PreviewDialogProps> = ({
             color: '#98a6ad',
           }}
         >
-          <p>Dear {data.name_contact_person},</p>
+          <p>
+            Dear {customer?.first_name} {customer?.last_name},
+          </p>
           <p>
             We are writing from Factofly, a freelance agency that Guesmia
             Abdelmadjid uses to perform and bill for work to be delivered to
@@ -282,6 +283,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
     handleSubmit,
     setValue,
     getValues,
+    watch,
     formState: { errors, isValid },
   } = form
 
@@ -290,6 +292,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null)
   const [showPreviewDialog, setShowPreviewDialog] = useState(false)
   const [showErrorAlert, setShowErrorAlert] = useState(false)
+  const customerId = watch('customer_id')
 
   const StyledPaper = styled(Paper)(({ theme }) => ({
     margin: theme.spacing(1),
@@ -297,7 +300,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
   }))
 
   const handlePreview = () => {
-    console.log('isvalid', isValid)
     if (!isValid) {
       form.trigger()
       setShowErrorAlert(true)
@@ -306,6 +308,13 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
       setShowPreviewDialog(true)
     }
   }
+
+  useEffect(() => {
+    const selectedCustomerData = customers.find(
+      (customer) => customer.id === customerId
+    )
+    setSelectedCustomer(selectedCustomerData)
+  }, [customerId])
 
   return (
     <Box>
@@ -336,24 +345,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                       required: 'Customer is a required field',
                     })}
                     error={!!errors.customer_id}
-                    onChange={(e) => {
-                      const selectedCustomerData = customers.find(
-                        (customer) => customer.id === parseInt(e.target.value)
-                      )
-                      setValue('customer_id', parseInt(e.target.value))
-                      setValue(
-                        'email_contact_person',
-                        selectedCustomerData!.email
-                      )
-                      setValue(
-                        'name_contact_person',
-                        `${selectedCustomerData!.first_name} ${
-                          selectedCustomerData!.last_name
-                        }`
-                      )
-                      setSelectedCustomer(selectedCustomerData)
-                    }}
-                    value={selectedCustomer?.id}
                     fullWidth
                   >
                     {customers.map(({ id, name }) => (
@@ -382,21 +373,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
               <TextField
                 label="Customer contact *"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
-                error={!!errors.name_contact_person}
-                {...register('name_contact_person', {
-                  required: 'Customer contact is a reuqired field',
-                })}
-                helperText={
-                  <Typography
-                    component="span"
-                    fontWeight={500}
-                    fontSize={11}
-                    color="error"
-                  >
-                    {errors.name_contact_person &&
-                      (errors.name_contact_person?.message || '')}
-                  </Typography>
+                value={
+                  selectedCustomer
+                    ? `${selectedCustomer?.first_name} ${selectedCustomer?.last_name}`
+                    : ''
                 }
+                disabled
                 fullWidth
               />
             </Grid>
@@ -405,21 +387,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                 label="Customer email *"
                 type="email"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
-                error={!!errors.email_contact_person}
-                {...register('email_contact_person', {
-                  required: 'Customer email is a reuqired field',
-                })}
-                helperText={
-                  <Typography
-                    component="span"
-                    fontWeight={500}
-                    fontSize={11}
-                    color="error"
-                  >
-                    {errors.email_contact_person &&
-                      (errors.email_contact_person?.message || '')}
-                  </Typography>
-                }
+                value={selectedCustomer ? `${selectedCustomer?.email}` : ''}
+                disabled
                 fullWidth
               />
             </Grid>
@@ -523,8 +492,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
               <TextField
                 label="PO Number"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
-                error={!!errors.po_number}
-                {...register('po_number')}
+                error={!!errors.purchase_order_number}
+                {...register('purchase_order_number')}
                 helperText={
                   <Typography
                     component="span"
@@ -532,7 +501,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                     fontSize={11}
                     color="error"
                   >
-                    {errors.po_number && (errors.po_number?.message || '')}
+                    {errors.purchase_order_number &&
+                      (errors.purchase_order_number?.message || '')}
                   </Typography>
                 }
                 fullWidth
@@ -586,33 +556,6 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                 rows={3}
                 fullWidth
               />
-              <span
-                style={{
-                  display: 'flex',
-                  gap: '5px',
-                  alignItems: 'center',
-                  color: '#98a6ad',
-                  fontSize: '0.75rem',
-                }}
-              >
-                See an example of a good task description
-                <a
-                  target="_blank"
-                  href="https://intercom.help/factofly/en/articles/8530778-sadan-beskriver-det-arbejde-du-skal-udfore"
-                  rel="noreferrer"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '3px',
-                    color: '#0142c2',
-                  }}
-                >
-                  here{' '}
-                  <OpenInNewOutlinedIcon
-                    sx={{ width: '12px', hieght: '12px' }}
-                  />
-                </a>
-              </span>
             </Grid>
             <Grid item xs={12}>
               <FormControl sx={{ width: '100%', marginBottom: '20px' }}>
@@ -704,7 +647,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                   <Grid item xs={12} md={4}>
                     <FormControlLabel
                       control={
-                        <Checkbox {...register('show_customer_price')} />
+                        <Checkbox
+                          {...register('show_customer_price')}
+                          defaultChecked={
+                            getValues('show_customer_price') || false
+                          }
+                        />
                       }
                       label="Show price"
                     />
@@ -716,7 +664,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                   <Grid item xs={12} md={4}>
                     <FormControlLabel
                       control={
-                        <Checkbox {...register('request_allow_mileages')} />
+                        <Checkbox
+                          {...register('request_allow_mileages')}
+                          defaultChecked={
+                            getValues('request_allow_mileages') || false
+                          }
+                        />
                       }
                       label="Request mileages"
                     />
@@ -727,7 +680,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                   </Grid>
                   <Grid item xs={12} md={4}>
                     <FormControlLabel
-                      control={<Checkbox {...register('allow_mileages')} />}
+                      control={
+                        <Checkbox
+                          {...register('allow_mileages')}
+                          defaultChecked={getValues('allow_mileages') || false}
+                        />
+                      }
                       label="Retainer"
                     />
                     <div style={{ color: '#98a6ad', fontSize: '0.75rem' }}>
@@ -750,16 +708,20 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                   required: 'Start date is required field',
                 })}
                 onChange={(value) => setValue('start_date', value)}
-                label="Start Date"
+                label="Start Date *"
                 sx={{
                   width: '100%',
-                  border: !!errors.start_date ? '1px solid red' : 'none',
                   borderRadius: '4px',
                 }}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    variant: 'outlined',
+                    error: !!errors.start_date,
+                    helperText: errors.start_date?.message || '',
+                  },
+                }}
               />
-              <FormHelperText error>
-                {errors.start_date && (errors.start_date?.message || '')}
-              </FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <DatePicker
@@ -768,16 +730,20 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                   required: 'End date is required field',
                 })}
                 onChange={(value) => setValue('end_date', value)}
-                label="End Date"
+                label="End Date *"
                 sx={{
                   width: '100%',
-                  border: !!errors.end_date ? '1px solid red' : 'none',
                   borderRadius: '4px',
                 }}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    variant: 'outlined',
+                    error: !!errors.end_date,
+                    helperText: errors.end_date?.message || '',
+                  },
+                }}
               />
-              <FormHelperText error>
-                {errors.end_date && (errors.end_date?.message || '')}
-              </FormHelperText>
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
@@ -905,6 +871,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                     {...register('terms_accepted', {
                       required: 'Terms accepted is required field',
                     })}
+                    defaultChecked={getValues('terms_accepted') || false}
                   />
                 }
                 label="Terms accpeted"
@@ -930,6 +897,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
         open={showPreviewDialog}
         setOpen={setShowPreviewDialog}
         data={form.getValues()}
+        customer={selectedCustomer}
       />
     </Box>
   )
