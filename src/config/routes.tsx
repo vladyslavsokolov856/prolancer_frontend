@@ -1,7 +1,7 @@
 import Index from '@/pages/index'
 import Cusomters from '@/pages/customers'
 import New from '@/pages/customers/new'
-
+import TimeRegistration from '@/pages/time'
 
 export interface RouteConfig {
   path: string
@@ -16,6 +16,17 @@ const customerRoutes: RouteConfig[] = [
     element: <New />,
     label: 'New Customer',
   },
+  {
+    path: '/customers',
+    element: <Cusomters />,
+  },
+]
+
+const timeRoutes: RouteConfig[] = [
+  {
+    path: '/time-registration',
+    element: <TimeRegistration />,
+  },
 ]
 
 const routesConfig: RouteConfig[] = [
@@ -24,10 +35,7 @@ const routesConfig: RouteConfig[] = [
     element: <Index />,
   },
   ...customerRoutes,
-  {
-    path: '/customers',
-    element: <Cusomters />,
-  },
+  ...timeRoutes,
   {
     path: '*',
     element: <h1>Page not found.</h1>,
