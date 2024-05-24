@@ -1,7 +1,10 @@
 import Index from '@/pages/index'
+import Settings from '@/pages/settings'
 import Cusomters from '@/pages/customers'
 import New from '@/pages/customers/new'
 import TimeRegistration from '@/pages/time'
+import UserIndexPage from '@/pages/users'
+import NewTaskPage from '@/pages/tasks/new'
 
 export interface RouteConfig {
   path: string
@@ -29,6 +32,14 @@ const timeRoutes: RouteConfig[] = [
   },
 ]
 
+const taskRoutes: RouteConfig[] = [
+  {
+    path: '/tasks/new',
+    element: <NewTaskPage />,
+    label: 'New Task',
+  },
+]
+
 const routesConfig: RouteConfig[] = [
   {
     path: '/',
@@ -36,10 +47,23 @@ const routesConfig: RouteConfig[] = [
   },
   ...customerRoutes,
   ...timeRoutes,
+  ...taskRoutes,
+  {
+    path: '/customers',
+    element: <Cusomters />,
+  },
+  {
+    path: '/admin/users',
+    element: <UserIndexPage />,
+  },
+  {
+    path: '/settings',
+    element: <Settings />,
+  },
   {
     path: '*',
     element: <h1>Page not found.</h1>,
   },
 ]
 
-export default routesConfig
+export default routesConfig;

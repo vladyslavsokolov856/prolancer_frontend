@@ -109,8 +109,9 @@ const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
     const endIndex = startIndex + rowsPerPage
 
     const filteredData = data.filter((record) =>
-      Object.values(record).some((value) =>
-        value.toString().toLowerCase().includes(search.toLowerCase())
+      Object.values(record).some(
+        (value) =>
+          value && value.toString().toLowerCase().includes(search.toLowerCase())
       )
     )
 
@@ -308,13 +309,18 @@ const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
                   {columns.map((column, rowIndex) => {
                     if (column.render)
                       return (
-                        <StyledTableCell align={column.align || 'left'}>
+                        <StyledTableCell
+                          align={column.align || 'left'}
+                          key={`cell-${column.key}-${rowIndex}`}
+                        >
                           {column.render(row[column.key], row, rowIndex)}
                         </StyledTableCell>
                       )
                     else
                       return (
-                        <StyledTableCell>{row[column.key]}</StyledTableCell>
+                        <StyledTableCell key={`cell-${column.key}-${rowIndex}`}>
+                          {row[column.key]}
+                        </StyledTableCell>
                       )
                   })}
                 </StyledTableRow>
