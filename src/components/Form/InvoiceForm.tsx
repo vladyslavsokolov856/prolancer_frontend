@@ -48,6 +48,7 @@ export type Inputs = {
   currency: string
   payment_days: string
   terms_accepted: boolean
+  hours_worked: number
   order_lines: IOrderLine[]
 }
 
@@ -150,6 +151,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
 
   const customerId = watch('customer_id')
   const taskId = watch('task_id')
+  const currency = watch('currency', 'DKK')
   const orderLines = watch('order_lines', [
     { description: '', quantity: null, unitPrice: null },
   ])
@@ -173,7 +175,6 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
   }, [taskId])
 
   useEffect(() => {
-    console.log('Hello')
     const mount = orderLines?.reduce((pre, cur) => {
       if (cur.quantity && cur.unitPrice)
         return pre + cur.quantity * cur.unitPrice
@@ -412,10 +413,23 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
             <Grid item xs={12} md={6}>
               <TextField
                 label="Hours worked *"
-                type="number"
-                value={selectedTask ? selectedTask.minutes_spent : ''}
+                style={{ margin: '1px', marginBottom: '.75rem' }}
+                error={!!errors.hours_worked}
+                {...register('hours_worked', {
+                  required: 'Hours worked is required field',
+                })}
+                helperText={
+                  <Typography
+                    component="span"
+                    fontWeight={500}
+                    fontSize={11}
+                    color="error"
+                  >
+                    {errors.hours_worked &&
+                      (errors.hours_worked?.message || '')}
+                  </Typography>
+                }
                 fullWidth
-                disabled
               />
             </Grid>
 
@@ -451,7 +465,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                   labelId="currency-label"
                   id="currency"
                   label="Currency *"
-                  defaultValue={getValues('currency') || ''}
+                  value={currency}
                   {...register('currency', {
                     required: 'Currency is a required field',
                   })}
@@ -587,7 +601,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                             />
                           </Button>
                           <span style={{ fontWeight: 600, marginLeft: '10px' }}>
-                            {`DKK ${
+                            {`${currency} ${
                               quantity && unitPrice
                                 ? Number(quantity * unitPrice).toFixed(2)
                                 : '0.00'
@@ -613,19 +627,19 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                       <StyledTableCell rowSpan={3} />
                       <StyledTableCell align="right">Subtotal</StyledTableCell>
                       <StyledTableCell align="right" sx={{ fontWeight: 600 }}>
-                        {`DKK ${totalAmount.toFixed(2)}`}
+                        {`${currency} ${totalAmount.toFixed(2)}`}
                       </StyledTableCell>
                     </TableRow>
                     <TableRow>
                       <StyledTableCell align="right">VAT 25%</StyledTableCell>
                       <StyledTableCell align="right" sx={{ fontWeight: 600 }}>
-                        {`DKK ${(totalAmount / 4).toFixed(2)}`}
+                        {`${currency} ${(totalAmount / 4).toFixed(2)}`}
                       </StyledTableCell>
                     </TableRow>
                     <TableRow>
                       <StyledTableCell align="right">In total</StyledTableCell>
                       <StyledTableCell align="right" sx={{ fontWeight: 600 }}>
-                        {`DKK ${(totalAmount * 1.25).toFixed(2)}`}
+                        {`${currency} ${(totalAmount * 1.25).toFixed(2)}`}
                       </StyledTableCell>
                     </TableRow>
                   </TableBody>
