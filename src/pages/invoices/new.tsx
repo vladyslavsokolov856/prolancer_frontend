@@ -1,8 +1,8 @@
 import { Box } from '@mui/material'
+import InvoiceForm from '@/components/Form/InvoiceForm'
 import { styled } from '@mui/material/styles'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import CustomerForm from '@/components/Form/CustomerForm'
-import { Inputs } from '@/components/Form/CustomerForm'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { Inputs } from '@/components/Form/InvoiceForm'
 
 const Title = styled('span')({
   fontWeight: 700,
@@ -10,7 +10,7 @@ const Title = styled('span')({
   color: 'rgb(108, 117, 125)',
 })
 
-const CreateCustomer = () => {
+const CreateInvoice = () => {
   const form = useForm<Inputs>()
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
@@ -20,11 +20,11 @@ const CreateCustomer = () => {
 
   return (
     <Box display="flex" justifyContent="left" flexDirection="column">
-      <Title>Create customer</Title>
+      <Title>Create invoice</Title>
 
-      <CustomerForm form={form} onSubmit={onSubmit} />
+      <InvoiceForm form={form} onSubmit={onSubmit} />
     </Box>
   )
 }
 
-export default CreateCustomer
+export default CreateInvoice
