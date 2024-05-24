@@ -11,34 +11,44 @@ import {
   MenuItem,
   Paper,
   Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
   Typography,
   styled,
+  tableCellClasses,
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
+import DeleteIcon from '@mui/icons-material/Delete'
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, UseFormReturn, useForm } from 'react-hook-form'
 import { useJobTypes } from '@/hooks/useJobTypes'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { DatePicker } from '@mui/x-date-pickers'
 import CurrencyList from 'currency-list'
 import FormDialog from '../FormDialog'
 import TaskForm, { Inputs as TaskFormInputs } from './TaskForm'
 import CustomerForm, { Inputs as CustomerFormInputs } from './CustomerForm'
 
+interface IOrderLine {
+  description: string
+  quantity: number | null
+  unitPrice: number | null
+}
+
 export type Inputs = {
   customer_id: number
   send_invoice_copy_to: string
   task_id: number
-  created_date: Dayjs | null
-  customer_payment_date: Dayjs | null
   invoice_date: Dayjs | null
-  reference: string
-  hours_worked: number
-  job_type_id: number
   currency: string
   payment_days: string
   terms_accepted: boolean
+  order_lines: IOrderLine[]
 }
 
 const customers = [
@@ -59,8 +69,24 @@ const customers = [
 ]
 
 const tasks = [
-  { id: 1, title: 'Task 1' },
-  { id: 2, title: 'Task 2' },
+  {
+    id: 1,
+    title: 'Task 1',
+    start_date: Date.now(),
+    end_date: Date.now(),
+    reference: 'reference 1',
+    job_type_id: 1,
+    minutes_spent: 20,
+  },
+  {
+    id: 2,
+    title: 'Task 2',
+    start_date: Date.now(),
+    end_date: Date.now(),
+    reference: 'reference 2',
+    job_type_id: 2,
+    minutes_spent: 10,
+  },
 ]
 
 const currencies = CurrencyList.getAll('en_US')
@@ -68,6 +94,19 @@ const currencies = CurrencyList.getAll('en_US')
 const StyledPaper = styled(Paper)(({ theme }) => ({
   margin: theme.spacing(1),
   padding: theme.spacing(2),
+}))
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: '#313a46',
+    color: theme.palette.common.white,
+    border: 'none',
+  },
+  [`&.${tableCellClasses.body}`]: {
+    color: '#6c757d',
+    fontSize: 14,
+    border: 'none',
+  },
 }))
 
 interface SectionHeaderProps {
@@ -110,18 +149,52 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
   const customerHookForm = useForm<CustomerFormInputs>()
 
   const customerId = watch('customer_id')
+  const taskId = watch('task_id')
+  const orderLines = watch('order_lines', [
+    { description: '', quantity: null, unitPrice: null },
+  ])
 
   const { data: jobTypes } = useJobTypes()
 
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null)
+  const [selectedTask, setSelectedTask] = useState<any>(null)
   const [showDialog, setShowDialog] = useState<boolean>(false)
   const [formType, setFormType] = useState<'Customer' | 'Task'>('Customer')
+  const [totalAmount, setTotalAmount] = useState(0)
 
   useEffect(() => {
     setSelectedCustomer(
       customers.find((customer) => customer.id === customerId)
     )
   }, [customerId])
+
+  useEffect(() => {
+    setSelectedTask(tasks.find((task) => task.id === taskId))
+  }, [taskId])
+
+  useEffect(() => {
+    console.log('Hello')
+    const mount = orderLines?.reduce((pre, cur) => {
+      if (cur.quantity && cur.unitPrice)
+        return pre + cur.quantity * cur.unitPrice
+      else return pre
+    }, 0)
+    setTotalAmount(mount || 0)
+  })
+
+  const handleAddOrderLine = () => {
+    setValue('order_lines', [
+      ...(orderLines || []),
+      { description: '', quantity: null, unitPrice: null },
+    ])
+  }
+
+  const handleDeelteOrderLine = (index: number) => {
+    setValue(
+      'order_lines',
+      (orderLines || []).filter((item, i) => index !== i)
+    )
+  }
 
   const handleCreateCustomerClick = () => {
     setShowDialog(true)
@@ -288,56 +361,33 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
             <Grid item xs={12} md={6}>
               <TextField
                 label="Customer reference"
-                style={{ margin: '1px', marginBottom: '.75rem' }}
-                error={!!errors.reference}
-                {...register('reference')}
-                helperText={
-                  <Typography
-                    component="span"
-                    fontWeight={500}
-                    fontSize={11}
-                    color="error"
-                  >
-                    {errors.reference && (errors.reference?.message || '')}
-                  </Typography>
-                }
+                value={selectedTask ? selectedTask.reference : ''}
                 fullWidth
+                disabled
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <DatePicker
-                defaultValue={getValues('created_date') || null}
-                {...register('created_date', {
-                  required: 'Start date is required field',
-                })}
-                onChange={(value) => setValue('created_date', value)}
                 label="Start Date *"
+                value={selectedTask ? dayjs(selectedTask.start_date) : null}
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    variant: 'outlined',
-                    error: !!errors.created_date,
-                    helperText: errors.created_date?.message || '',
                   },
                 }}
+                disabled
               />
             </Grid>
             <Grid item xs={12} md={6}>
               <DatePicker
-                defaultValue={getValues('customer_payment_date') || null}
-                {...register('customer_payment_date', {
-                  required: 'End date is required field',
-                })}
-                onChange={(value) => setValue('customer_payment_date', value)}
                 label="End Date *"
+                value={selectedTask ? dayjs(selectedTask.end_date) : null}
                 slotProps={{
                   textField: {
                     fullWidth: true,
-                    variant: 'outlined',
-                    error: !!errors.customer_payment_date,
-                    helperText: errors.customer_payment_date?.message || '',
                   },
                 }}
+                disabled
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -347,12 +397,9 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                   labelId="job-type-label"
                   id="job_type_id"
                   label="Job type"
-                  defaultValue={getValues('job_type_id') || ''}
-                  {...register('job_type_id', {
-                    required: 'Payment term is a required field',
-                  })}
+                  value={selectedTask ? selectedTask.job_type_id : ''}
                   fullWidth
-                  error={!!errors.job_type_id}
+                  disabled
                 >
                   {jobTypes?.map(({ id, name }) => (
                     <MenuItem key={id} value={id}>
@@ -360,32 +407,15 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                     </MenuItem>
                   ))}
                 </Select>
-                <FormHelperText error>
-                  {errors.job_type_id && (errors.job_type_id?.message || '')}
-                </FormHelperText>
               </FormControl>
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
                 label="Hours worked *"
                 type="number"
-                style={{ margin: '1px', marginBottom: '.75rem' }}
-                error={!!errors.hours_worked}
-                {...register('hours_worked', {
-                  required: 'Hours worked is a reuqired field',
-                })}
-                helperText={
-                  <Typography
-                    component="span"
-                    fontWeight={500}
-                    fontSize={11}
-                    color="error"
-                  >
-                    {errors.hours_worked &&
-                      (errors.hours_worked?.message || '')}
-                  </Typography>
-                }
+                value={selectedTask ? selectedTask.minutes_spent : ''}
                 fullWidth
+                disabled
               />
             </Grid>
 
@@ -462,6 +492,147 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
               <SectionHeader title="Order llines" />
             </Grid>
             <Grid item xs={12}>
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell>Description</StyledTableCell>
+                      <StyledTableCell>Quantity</StyledTableCell>
+                      <StyledTableCell>Price</StyledTableCell>
+                      <StyledTableCell sx={{ minWidth: '180px' }}>
+                        Total
+                      </StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {orderLines?.map(({ quantity, unitPrice }, index) => (
+                      <TableRow
+                        key={index}
+                        sx={{
+                          '&:last-child td, &:last-child th': { border: 0 },
+                        }}
+                      >
+                        <StyledTableCell component="th" scope="row">
+                          <TextField
+                            label="Description"
+                            error={!!errors.order_lines?.[index]?.description}
+                            {...register(`order_lines.${index}.description`)}
+                            helperText={
+                              <Typography
+                                component="span"
+                                fontWeight={500}
+                                fontSize={11}
+                                color="error"
+                              >
+                                {errors.payment_days &&
+                                  (errors.payment_days?.message || '')}
+                              </Typography>
+                            }
+                            size="small"
+                            fullWidth
+                          />
+                        </StyledTableCell>
+                        <StyledTableCell component="th" scope="row">
+                          <TextField
+                            label="Quantity"
+                            type="number"
+                            error={!!errors.order_lines?.[index]?.quantity}
+                            {...register(`order_lines.${index}.quantity`)}
+                            helperText={
+                              <Typography
+                                component="span"
+                                fontWeight={500}
+                                fontSize={11}
+                                color="error"
+                              >
+                                {errors.payment_days &&
+                                  (errors.payment_days?.message || '')}
+                              </Typography>
+                            }
+                            size="small"
+                            fullWidth
+                          />
+                        </StyledTableCell>
+                        <StyledTableCell component="th" scope="row">
+                          <TextField
+                            label="Unit Price"
+                            type="number"
+                            error={!!errors.order_lines?.[index]?.unitPrice}
+                            {...register(`order_lines.${index}.unitPrice`)}
+                            helperText={
+                              <Typography
+                                component="span"
+                                fontWeight={500}
+                                fontSize={11}
+                                color="error"
+                              >
+                                {errors.payment_days &&
+                                  (errors.payment_days?.message || '')}
+                              </Typography>
+                            }
+                            size="small"
+                            fullWidth
+                          />
+                        </StyledTableCell>
+                        <StyledTableCell>
+                          <Button
+                            color="error"
+                            variant="contained"
+                            size="small"
+                            onClick={() => handleDeelteOrderLine(index)}
+                            sx={{ minWidth: '40px' }}
+                          >
+                            <DeleteIcon
+                              sx={{ width: '20px', height: '20px' }}
+                            />
+                          </Button>
+                          <span style={{ fontWeight: 600, marginLeft: '10px' }}>
+                            {`DKK ${
+                              quantity && unitPrice
+                                ? Number(quantity * unitPrice).toFixed(2)
+                                : '0.00'
+                            }`}
+                          </span>
+                        </StyledTableCell>
+                      </TableRow>
+                    ))}
+                    <TableRow>
+                      <StyledTableCell>
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          startIcon={<AddIcon />}
+                          onClick={handleAddOrderLine}
+                        >
+                          Add order line
+                        </Button>
+                      </StyledTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <StyledTableCell rowSpan={3} />
+                      <StyledTableCell rowSpan={3} />
+                      <StyledTableCell align="right">Subtotal</StyledTableCell>
+                      <StyledTableCell align="right" sx={{ fontWeight: 600 }}>
+                        {`DKK ${totalAmount.toFixed(2)}`}
+                      </StyledTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <StyledTableCell align="right">VAT 25%</StyledTableCell>
+                      <StyledTableCell align="right" sx={{ fontWeight: 600 }}>
+                        {`DKK ${(totalAmount / 4).toFixed(2)}`}
+                      </StyledTableCell>
+                    </TableRow>
+                    <TableRow>
+                      <StyledTableCell align="right">In total</StyledTableCell>
+                      <StyledTableCell align="right" sx={{ fontWeight: 600 }}>
+                        {`DKK ${(totalAmount * 1.25).toFixed(2)}`}
+                      </StyledTableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Grid>
+            <Grid item xs={12}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -482,7 +653,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
 
           <Divider />
 
-          <Box display="flex" sx={{ gap: '10px' }}>
+          <Box display="flex" sx={{ gap: '10px', marginTop: '10px' }}>
             <Button color="primary" variant="contained">
               Save as draft
             </Button>
