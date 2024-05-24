@@ -37,11 +37,16 @@ const InvoiceIndex = () => {
         render: (id) => (
           <Chip label={id} size="small" sx={{ borderRadius: '2px' }} />
         ),
+        initialSort: 'desc',
       },
       { key: 'customer_id', name: 'Customer' },
       { key: 'amount', name: 'Amount' },
       { key: 'status', name: 'Status' },
-      { key: 'invoice_date', name: 'Invoice date' },
+      {
+        key: 'invoice_date',
+        name: 'Invoice date',
+        render: (date) => date && new Date(date).toLocaleDateString(),
+      },
       {
         key: 'display_name',
         name: 'Name',
@@ -62,7 +67,7 @@ const InvoiceIndex = () => {
         ),
       },
       {
-        key: 'id',
+        key: '_actions',
         align: 'right',
         render: (value) => (
           <Box display="flex" justifyContent="flex-end" sx={{ gap: '10px' }}>
