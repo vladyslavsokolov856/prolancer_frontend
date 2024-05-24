@@ -32,6 +32,21 @@ const InvoiceIndex = () => {
   const columns: ColumnType[] = useMemo(
     () => [
       {
+        key: 'id',
+        name: 'Customer reference',
+        render: (id) => (
+          <Chip
+            label={id}
+            sx={{ borderRadius: '4px', paddingX: '5px' }}
+            size="small"
+          />
+        ),
+      },
+      { key: 'customer_id', name: 'Customer' },
+      { key: 'amount', name: 'Amount' },
+      { key: 'status', name: 'Status' },
+      { key: 'invoice_date', name: 'Invoice date' },
+      {
         key: 'display_name',
         name: 'Name',
         render: (value, record) => `${record.first_name} ${record.last_name}`,
