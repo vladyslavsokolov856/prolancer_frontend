@@ -1,5 +1,6 @@
 import Index from '@/pages/index'
 import Settings from '@/pages/settings'
+import Invoices from '@/pages/invoices'
 import Customers from '@/pages/customers'
 import New from '@/pages/customers/new'
 import UserIndexPage from '@/pages/users'
@@ -35,6 +36,10 @@ const routesConfig: RouteConfig[] = [
   },
   ...customerRoutes,
   ...taskRoutes,
+  {
+    path: '/invoices',
+    element: <Invoices />,
+  },
   {
     path: '/customers',
     element: <Customers />,
