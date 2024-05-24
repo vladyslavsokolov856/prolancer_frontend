@@ -80,20 +80,20 @@ const columns: ColumnType[] = [
   },
 ]
 
-const CustomerIndex = () => {
+const InvoiceIndex = () => {
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h4">Customers </Typography>
+        <Typography variant="h4">Invoices </Typography>
 
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           sx={{ height: '35px' }}
           component={RouterLink}
-          to="/customers/new"
+          to="/invoices/new"
         >
-          Create Customer
+          Create Invoice
         </Button>
       </Box>
 
@@ -110,7 +110,7 @@ const CustomerIndex = () => {
           },
         }}
       >
-        Here is the overview of your various customers 🤝 You also have the
+        Here is the overview of your various invoices 🤝 You also have the
         option to create new ones and edit existing ones
       </Alert>
 
@@ -119,4 +119,4 @@ const CustomerIndex = () => {
   )
 }
 
-export default CustomerIndex
+export default InvoiceIndex
