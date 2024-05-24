@@ -3,6 +3,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert'
 import Chip from '@mui/material/Chip'
+import { Link } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import ProTable, { ColumnType, RecordType } from '@/components/ProTable'
@@ -110,8 +111,16 @@ const InvoiceIndex = () => {
           },
         }}
       >
-        Here is the overview of your various invoices 🤝 You also have the
-        option to create new ones and edit existing ones
+        Get a comprehensive overview of your invoices. Send an invoice to your
+        customer quick and easy and track the invoice status from sent to paid.
+        Read more about invoices and the status descriptions{' '}
+        <Link
+          href="https://intercom.help/factofly/en/articles/5900739-invoice"
+          target="_blank"
+          referrerPolicy="no-referrer"
+        >
+          here
+        </Link>
       </Alert>
 
       <ProTable columns={columns} data={mockData} />
