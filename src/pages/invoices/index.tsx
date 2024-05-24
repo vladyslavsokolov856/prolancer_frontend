@@ -60,7 +60,7 @@ const InvoiceIndex = () => {
               startIcon={<EditIcon />}
               size="small"
               component={RouterLink}
-              to={`/admin/invoices/${value}/edit`}
+              to={`/invoices/${value}/edit`}
               color="secondary"
             >
               Edit
