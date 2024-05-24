@@ -69,29 +69,30 @@ const InvoiceIndex = () => {
       {
         key: '_actions',
         align: 'right',
-        render: (value) => (
-          <Box display="flex" justifyContent="flex-end" sx={{ gap: '10px' }}>
-            <Button
-              variant="contained"
-              startIcon={<EditIcon />}
-              size="small"
-              component={RouterLink}
-              to={`/invoices/${value}/edit`}
-              color="secondary"
-            >
-              Edit
-            </Button>
-            <Button
-              variant="contained"
-              startIcon={<DeleteIcon />}
-              size="small"
-              onClick={() => handleDeleteClick(value)}
-              color="error"
-            >
-              Delete
-            </Button>
-          </Box>
-        ),
+        render: (value, record) =>
+          record.status !== 'draft' ? null : (
+            <Box display="flex" justifyContent="flex-end" sx={{ gap: '10px' }}>
+              <Button
+                variant="contained"
+                startIcon={<EditIcon />}
+                size="small"
+                component={RouterLink}
+                to={`/invoices/${record.id}/edit`}
+                color="secondary"
+              >
+                Edit
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={<DeleteIcon />}
+                size="small"
+                onClick={() => handleDeleteClick(record.id)}
+                color="error"
+              >
+                Delete
+              </Button>
+            </Box>
+          ),
       },
     ],
     [handleDeleteClick]
