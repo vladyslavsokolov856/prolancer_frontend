@@ -5,6 +5,7 @@ import Customers from '@/pages/customers'
 import New from '@/pages/customers/new'
 import UserIndexPage from '@/pages/users'
 import NewTaskPage from '@/pages/tasks/new'
+import NewInvoicePage from '@/pages/invoices/new'
 
 export interface RouteConfig {
   path: string
@@ -29,6 +30,14 @@ const taskRoutes: RouteConfig[] = [
   },
 ]
 
+const invoiceRoutes: RouteConfig[] = [
+  {
+    path: '/invoices/new',
+    element: <NewInvoicePage />,
+    label: 'New Invoice',
+  },
+]
+
 const routesConfig: RouteConfig[] = [
   {
     path: '/',
@@ -36,6 +45,7 @@ const routesConfig: RouteConfig[] = [
   },
   ...customerRoutes,
   ...taskRoutes,
+  ...invoiceRoutes,
   {
     path: '/invoices',
     element: <Invoices />,
