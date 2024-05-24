@@ -1,6 +1,6 @@
 import Index from '@/pages/index'
 import Settings from '@/pages/settings'
-import Cusomters from '@/pages/customers'
+import Customers from '@/pages/customers'
 import New from '@/pages/customers/new'
 import UserIndexPage from '@/pages/users'
 import NewTaskPage from '@/pages/tasks/new'
@@ -37,7 +37,7 @@ const routesConfig: RouteConfig[] = [
   ...taskRoutes,
   {
     path: '/customers',
-    element: <Cusomters />,
+    element: <Customers />,
   },
   {
     path: '/admin/users',
@@ -53,4 +53,4 @@ const routesConfig: RouteConfig[] = [
   },
 ]
 
-export default routesConfig;
+export default routesConfig
