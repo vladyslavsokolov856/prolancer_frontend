@@ -68,6 +68,7 @@ export interface ColumnType {
   name?: String
   align?: 'inherit' | 'left' | 'center' | 'right' | 'justify'
   render?: (value: any, record: RecordType, index: number) => React.ReactNode
+  initialSort?: 'asc' | 'desc'
 }
 
 interface IProTable extends ISorterFilters {
@@ -103,6 +104,14 @@ const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
       }
     }
   }
+
+  useEffect(() => {
+    const column = columns.find((column) => column.initialSort)
+    if (column) {
+      setSortDirection(column.initialSort === 'asc')
+      setSortField(column.key)
+    }
+  }, [])
 
   useEffect(() => {
     const startIndex = page * rowsPerPage
