@@ -5,26 +5,27 @@ import Alert from '@mui/material/Alert'
 import Chip from '@mui/material/Chip'
 import { Link } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
-import { useUsers, useDeleteUser } from '@/hooks/useUsers'
+import { useInvoices, useDeleteInvoice } from '@/hooks/useInvoices'
 import { Link as RouterLink } from 'react-router-dom'
 import { useMemo, useState } from 'react'
 import ProTable, { ColumnType } from '@/components/ProTable'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ConfirmDialog from '@/components/ConfirmDialog'
-import User from '@/types/users'
+import Invoice from '@/types/invoices'
 
-type SelectedUserType = User | null | undefined
+type SelectedInvoiceType = Invoice | null | undefined
 
 const InvoiceIndex = () => {
-  const { users } = useUsers()
-  const { deleteUserMutation } = useDeleteUser()
+  const { invoices } = useInvoices()
+  const { deleteInvoiceMutation } = useDeleteInvoice()
 
   const [open, setOpen] = useState<boolean>(false)
-  const [selectedUser, setSelectedUser] = useState<SelectedUserType>(null)
+  const [selectedInvoice, setSelectedInvoice] =
+    useState<SelectedInvoiceType>(null)
 
   const handleDeleteClick = (id: number) => {
-    setSelectedUser(users.find((item) => item.id === id))
+    setSelectedInvoice(invoices.find((item) => item.id === id))
     setOpen(true)
   }
 
@@ -59,7 +60,7 @@ const InvoiceIndex = () => {
               startIcon={<EditIcon />}
               size="small"
               component={RouterLink}
-              to={`/admin/users/${value}/edit`}
+              to={`/admin/invoices/${value}/edit`}
               color="secondary"
             >
               Edit
@@ -121,14 +122,14 @@ const InvoiceIndex = () => {
         </Link>
       </Alert>
 
-      <ProTable columns={columns} data={users} />
+      <ProTable columns={columns} data={invoices} />
 
       <ConfirmDialog
         open={open}
         setOpen={setOpen}
-        title={`Delete ${selectedUser?.first_name} ${selectedUser?.last_name}`}
-        content="Are you sure you want to delete this user?"
-        onSubmit={() => deleteUserMutation(selectedUser?.id)}
+        title={`Delete Invoice ${selectedInvoice?.id}`}
+        content="Are you sure you want to delete this invoice?"
+        onSubmit={() => deleteInvoiceMutation(selectedInvoice?.id)}
       />
     </Box>
   )
