@@ -35,11 +35,7 @@ const InvoiceIndex = () => {
         key: 'id',
         name: 'Customer reference',
         render: (id) => (
-          <Chip
-            label={id}
-            sx={{ borderRadius: '4px', paddingX: '5px' }}
-            size="small"
-          />
+          <Chip label={id} size="small" sx={{ borderRadius: '2px' }} />
         ),
       },
       { key: 'customer_id', name: 'Customer' },
