@@ -84,25 +84,6 @@ const InvoiceIndex = () => {
         render: (date) => date && new Date(date).toLocaleDateString(),
       },
       {
-        key: 'display_name',
-        name: 'Name',
-        render: (value, record) => `${record.first_name} ${record.last_name}`,
-      },
-      { key: 'email', name: 'Email' },
-      { key: 'phone_number', name: 'Phone' },
-      {
-        key: 'role',
-        name: 'Role',
-        render: (role) => (
-          <Chip
-            label={role}
-            color="primary"
-            sx={{ borderRadius: '2px' }}
-            size="small"
-          />
-        ),
-      },
-      {
         key: '_actions',
         align: 'right',
         render: (value, record) =>
