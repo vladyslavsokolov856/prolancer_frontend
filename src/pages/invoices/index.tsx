@@ -82,8 +82,9 @@ const InvoiceIndex = () => {
         },
       },
       {
-        key: '_invoice_date',
+        key: 'invoice_date',
         name: 'Invoice date',
+        render: (date) => date && new Date(date).toLocaleDateString(),
       },
       {
         key: '_actions',
