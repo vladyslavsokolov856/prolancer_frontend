@@ -116,28 +116,29 @@ const InvoiceIndex = () => {
   const totalInvoices = invoices.length
   let totalHours = 0
   let totalAmount = 0
-  const formattedInvoices = invoices.map((invoice) => {
-    const date = invoice.invoice_date
-    const customer = invoice.customer
-    const amount = invoice.amount || 0
-    const newInvoice = {
-      ...invoice,
-      _amount:
-        'DKK ' +
-        new Intl.NumberFormat('en-US', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }).format(amount),
-      _customer:
-        customer && customer.customer_type === 'private'
-          ? customer.name_contact_person
-          : customer.company_name,
-      _invoice_date: date && new Date(date).toLocaleDateString(),
+  const formattedInvoices = invoices.map(
+    ({ customer, order_lines, ...invoice }) => {
+      const date = invoice.invoice_date
+      const amount = invoice.amount || 0
+      const newInvoice = {
+        ...invoice,
+        _amount:
+          'DKK ' +
+          new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(amount),
+        _customer:
+          customer && customer.customer_type === 'private'
+            ? customer.name_contact_person
+            : customer.company_name,
+        _invoice_date: date && new Date(date).toLocaleDateString(),
+      }
+      totalAmount += invoice.amount
+      totalHours += invoice.hours_worked || 0
+      return newInvoice
     }
-    totalAmount += invoice.amount
-    totalHours += invoice.hours_worked || 0
-    return newInvoice
-  })
+  )
 
   return (
     <Box>
