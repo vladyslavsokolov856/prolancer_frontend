@@ -45,7 +45,17 @@ const InvoiceIndex = () => {
         ),
         initialSort: 'desc',
       },
-      { key: 'customer_id', name: 'Customer' },
+      {
+        key: 'customer',
+        name: 'Customer',
+        render: (customer) => {
+          if (customer) {
+            return customer.customer_type === 'private'
+              ? customer.name_contact_person
+              : customer.company_name
+          }
+        },
+      },
       {
         key: 'amount',
         name: 'Amount',
