@@ -46,7 +46,13 @@ const InvoiceIndex = () => {
         initialSort: 'desc',
       },
       { key: 'customer_id', name: 'Customer' },
-      { key: 'amount', name: 'Amount' },
+      {
+        key: 'amount',
+        name: 'Amount',
+        render: (amount) => {
+          return 'DKK ' + (amount || 0).toFixed(2)
+        },
+      },
       {
         key: 'status',
         name: 'Status',
