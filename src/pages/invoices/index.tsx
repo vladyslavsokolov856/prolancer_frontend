@@ -121,9 +121,10 @@ const InvoiceIndex = () => {
             maximumFractionDigits: 2,
           }).format(amount),
         _customer:
-          customer && customer.customer_type === 'private'
+          customer &&
+          (customer.customer_type === 'private'
             ? customer.name_contact_person
-            : customer.company_name,
+            : customer.company_name),
         _invoice_date: date && new Date(date).toLocaleDateString(),
       }
       totalAmount += invoice.amount
