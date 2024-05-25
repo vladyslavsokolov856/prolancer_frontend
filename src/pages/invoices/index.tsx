@@ -11,6 +11,7 @@ import { useMemo, useState } from 'react'
 import ProTable, { ColumnType } from '@/components/ProTable'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import Invoice from '@/types/invoices'
 import InvoiceSummary from '@/components/Utils/InvoiceSummary'
@@ -180,8 +181,9 @@ const InvoiceIndex = () => {
           href="https://intercom.help/factofly/en/articles/5900739-invoice"
           target="_blank"
           referrerPolicy="no-referrer"
+          sx={{ textDecoration: 'none' }}
         >
-          here
+          here <OpenInNewIcon sx={{ fontSize: 14 }} />
         </Link>
       </Alert>
 
