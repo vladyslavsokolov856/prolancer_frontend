@@ -47,15 +47,8 @@ const InvoiceIndex = () => {
         initialSort: 'desc',
       },
       {
-        key: 'customer',
+        key: '_customer',
         name: 'Customer',
-        render: (customer) => {
-          if (customer) {
-            return customer.customer_type === 'private'
-              ? customer.name_contact_person
-              : customer.company_name
-          }
-        },
       },
       {
         key: '_amount',
@@ -77,9 +70,8 @@ const InvoiceIndex = () => {
         },
       },
       {
-        key: 'invoice_date',
+        key: '_invoice_date',
         name: 'Invoice date',
-        render: (date) => date && new Date(date).toLocaleDateString(),
       },
       {
         key: '_actions',
