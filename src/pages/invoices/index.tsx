@@ -58,11 +58,8 @@ const InvoiceIndex = () => {
         },
       },
       {
-        key: 'amount',
+        key: '_amount',
         name: 'Amount',
-        render: (amount) => {
-          return 'DKK ' + (amount || 0).toFixed(2)
-        },
       },
       {
         key: 'status',
@@ -120,7 +117,23 @@ const InvoiceIndex = () => {
   let totalHours = 0
   let totalAmount = 0
   const formattedInvoices = invoices.map((invoice) => {
-    const newInvoice = { ...invoice }
+    const date = invoice.invoice_date
+    const customer = invoice.customer
+    const amount = invoice.amount || 0
+    const newInvoice = {
+      ...invoice,
+      _amount:
+        'DKK ' +
+        new Intl.NumberFormat('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(amount),
+      _customer:
+        customer && customer.customer_type === 'private'
+          ? customer.name_contact_person
+          : customer.company_name,
+      _invoice_date: date && new Date(date).toLocaleDateString(),
+    }
     totalAmount += invoice.amount
     totalHours += invoice.hours_worked || 0
     return newInvoice
@@ -169,7 +182,7 @@ const InvoiceIndex = () => {
 
       <ProTable
         columns={columns}
-        data={invoices}
+        data={formattedInvoices}
         beforeTable={
           <InvoiceSummary
             totalInvoices={totalInvoices}

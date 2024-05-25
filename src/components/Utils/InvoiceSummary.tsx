@@ -46,7 +46,13 @@ const InvoiceSummary = ({
               <Label variant="body2">
                 Total Amount<span style={{ color: '#6c757d' }}> (ex. VAT)</span>
               </Label>
-              <Value>DKK {totalAmount}</Value>
+              <Value>
+                {'DKK ' +
+                  new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }).format(totalAmount)}
+              </Value>
             </div>
           </Grid>
         </Grid>
