@@ -16,6 +16,12 @@ import Invoice from '@/types/invoices'
 
 type SelectedInvoiceType = Invoice | null | undefined
 
+const statusColors: Record<string, string> = {
+  cancelled: 'default',
+  draft: 'secondary',
+  sent: 'primary',
+}
+
 const InvoiceIndex = () => {
   const { invoices } = useInvoices()
   const { deleteInvoiceMutation } = useDeleteInvoice()
@@ -41,7 +47,21 @@ const InvoiceIndex = () => {
       },
       { key: 'customer_id', name: 'Customer' },
       { key: 'amount', name: 'Amount' },
-      { key: 'status', name: 'Status' },
+      {
+        key: 'status',
+        name: 'Status',
+        render: (status) => {
+          const color = statusColors[status]
+          return status ? (
+            <Chip
+              label={status}
+              color={color || 'default'}
+              sx={{ borderRadius: '2px' }}
+              size="small"
+            />
+          ) : null
+        },
+      },
       {
         key: 'invoice_date',
         name: 'Invoice date',
@@ -70,7 +90,7 @@ const InvoiceIndex = () => {
         key: '_actions',
         align: 'right',
         render: (value, record) =>
-          record.status !== 'draft' ? null : (
+          record.status === 'draft' ? (
             <Box display="flex" justifyContent="flex-end" sx={{ gap: '10px' }}>
               <Button
                 variant="contained"
@@ -92,7 +112,7 @@ const InvoiceIndex = () => {
                 Delete
               </Button>
             </Box>
-          ),
+          ) : null,
       },
     ],
     [handleDeleteClick]
