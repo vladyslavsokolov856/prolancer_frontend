@@ -15,7 +15,16 @@ const Label = styled(Typography)({
 
 const Value = styled(Typography)({})
 
-const InvoiceSummary = () => {
+type InvoiceSummaryProps = {
+  totalInvoices: number
+  totalHours: number
+  totalAmount: number
+}
+const InvoiceSummary = ({
+  totalInvoices,
+  totalHours,
+  totalAmount,
+}: InvoiceSummaryProps) => {
   return (
     <StyledCard>
       <div style={{ padding: 16 }}>
@@ -23,13 +32,13 @@ const InvoiceSummary = () => {
           <Grid item xs={8}>
             <div>
               <Label variant="body2">Invoices Found</Label>
-              <Value>3</Value>
+              <Value>{totalInvoices}</Value>
             </div>
           </Grid>
           <Grid item xs={2} style={{ textAlign: 'end' }}>
             <div>
               <Label variant="body2">Total Hours</Label>
-              <Value>7</Value>
+              <Value>{totalHours}</Value>
             </div>
           </Grid>
           <Grid item xs={2} style={{ textAlign: 'end' }}>
@@ -37,7 +46,7 @@ const InvoiceSummary = () => {
               <Label variant="body2">
                 Total Amount<span style={{ color: '#6c757d' }}> (ex. VAT)</span>
               </Label>
-              <Value>DKK 1,202.00</Value>
+              <Value>DKK {totalAmount}</Value>
             </div>
           </Grid>
         </Grid>

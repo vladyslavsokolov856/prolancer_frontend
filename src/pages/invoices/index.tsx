@@ -116,6 +116,16 @@ const InvoiceIndex = () => {
     [handleDeleteClick]
   )
 
+  const totalInvoices = invoices.length
+  let totalHours = 0
+  let totalAmount = 0
+  const formattedInvoices = invoices.map((invoice) => {
+    const newInvoice = { ...invoice }
+    totalAmount += invoice.amount
+    totalHours += invoice.hours_worked || 0
+    return newInvoice
+  })
+
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -160,7 +170,13 @@ const InvoiceIndex = () => {
       <ProTable
         columns={columns}
         data={invoices}
-        beforeTable={<InvoiceSummary />}
+        beforeTable={
+          <InvoiceSummary
+            totalInvoices={totalInvoices}
+            totalHours={totalHours}
+            totalAmount={totalAmount}
+          />
+        }
       />
 
       <ConfirmDialog
