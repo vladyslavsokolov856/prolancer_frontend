@@ -51,8 +51,19 @@ const InvoiceIndex = () => {
         name: 'Customer',
       },
       {
-        key: '_amount',
+        key: 'amount',
         name: 'Amount',
+        render: (amount) => {
+          if (amount != null) {
+            return (
+              'DKK ' +
+              new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }).format(amount)
+            )
+          }
+        },
       },
       {
         key: 'status',
