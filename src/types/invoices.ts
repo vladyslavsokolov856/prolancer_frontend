@@ -1,3 +1,5 @@
+import Customer from './customers'
+
 export default interface Invoice {
   id: number
   status: string
@@ -12,4 +14,8 @@ export default interface Invoice {
   user_id: number
   customer_id: number
   vat_percentage: number
+  task_id: number
+  payment_days: number
+  customer: Customer
+  amount: number
 }
