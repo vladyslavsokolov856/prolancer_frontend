@@ -13,6 +13,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import Invoice from '@/types/invoices'
+import InvoiceSummary from '@/components/Utils/InvoiceSummary'
 
 type SelectedInvoiceType = Invoice | null | undefined
 
@@ -156,7 +157,11 @@ const InvoiceIndex = () => {
         </Link>
       </Alert>
 
-      <ProTable columns={columns} data={invoices} />
+      <ProTable
+        columns={columns}
+        data={invoices}
+        beforeTable={<InvoiceSummary />}
+      />
 
       <ConfirmDialog
         open={open}

@@ -10,7 +10,7 @@ import Box from '@mui/material/Box'
 import InputBase from '@mui/material/InputBase'
 import SearchIcon from '@mui/icons-material/Search'
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactNode } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Grid from '@mui/material/Grid'
 import MenuItem from '@mui/material/MenuItem'
@@ -74,13 +74,19 @@ export interface ColumnType {
 interface IProTable extends ISorterFilters {
   columns: ColumnType[]
   data: RecordType[]
+  beforeTable?: ReactNode
 }
 
 interface IFilterOptions {
   [key: string]: string
 }
 
-const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
+const ProTable: React.FC<IProTable> = ({
+  columns,
+  data,
+  filters,
+  beforeTable,
+}) => {
   const [showFilterList, setShowFilterList] = useState<boolean>(false)
   const [filterOptions, setFilterOptions] = useState<IFilterOptions>({})
   const [rowsPerPage, setRowsPerPage] = useState<number>(100)
@@ -270,6 +276,7 @@ const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
         )}
       </Box>
 
+      {beforeTable}
       <TableContainer
         component={Paper}
         sx={{
