@@ -44,14 +44,6 @@ const InvoiceIndex = () => {
   const columns: ColumnType[] = useMemo(
     () => [
       {
-        key: 'id',
-        name: 'Customer reference',
-        render: (id) => (
-          <Chip label={id} size="small" sx={{ borderRadius: '2px' }} />
-        ),
-        initialSort: 'desc',
-      },
-      {
         key: '_customer',
         name: 'Customer',
       },
