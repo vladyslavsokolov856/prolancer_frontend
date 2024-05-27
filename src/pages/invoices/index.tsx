@@ -135,7 +135,7 @@ const InvoiceIndex = () => {
           }).format(amount),
         _customer:
           customer &&
-          (customer.customer_type === 'private'
+          (customer.type === 'private'
             ? customer.name_contact_person
             : customer.company_name),
         _invoice_date: date && new Date(date).toLocaleDateString(),
