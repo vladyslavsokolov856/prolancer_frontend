@@ -108,7 +108,14 @@ const TaskIndex = () => {
       {
         key: 'status',
         name: 'Status',
-        render: (value) => <Chip label={value} color="primary" />,
+        render: (value) => (
+          <Chip
+            label={value}
+            color="primary"
+            size="small"
+            sx={{ borderRadius: '2px' }}
+          />
+        ),
       },
       {
         key: 'start_date',
@@ -127,7 +134,7 @@ const TaskIndex = () => {
           <Box
             display="flex"
             alignItems="center"
-            justifyContent="center"
+            justifyContent="flex-end"
             sx={{ gap: '10px' }}
           >
             {record.status === 'draft' && (
@@ -148,6 +155,8 @@ const TaskIndex = () => {
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
               variant="outlined"
+              size="small"
+              sx={{ minWidth: '50px' }}
             >
               <MoreHorizIcon />
             </Button>

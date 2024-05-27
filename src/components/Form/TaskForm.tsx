@@ -772,10 +772,10 @@ const TaskForm: React.FC<TaskFormProps> = ({
             </Grid>
             <Grid item xs={12} md={4}>
               <TextField
-                label="Number of hours *"
+                label="Number of minutes *"
                 error={!!errors.expected_minutes}
                 {...register('expected_minutes', {
-                  required: 'Number of hours is required field',
+                  required: 'Number of minutes is required field',
                 })}
                 helperText={
                   <Typography
