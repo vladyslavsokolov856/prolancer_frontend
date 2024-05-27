@@ -283,7 +283,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
     formState: { errors, isValid },
   } = form
 
-  const { data: jobTypes } = useJobTypes()
+  const { data: jobTypes, isLoading: isJobTypesLoading } = useJobTypes()
   const { customers, isLoading: isCustomersLoading } = useCustomers()
 
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null)
@@ -307,14 +307,14 @@ const TaskForm: React.FC<TaskFormProps> = ({
   }
 
   useEffect(() => {
-    if (initialValues && !isCustomersLoading) {
-      const { start_date, end_date, ...rest } = initialValues
+    if (initialValues && !isCustomersLoading && !isJobTypesLoading) {
+      const { id, start_date, end_date, ...rest } = initialValues
       reset(rest)
       setValue('start_date', dayjs(start_date))
       setValue('end_date', dayjs(end_date))
     }
     setValue('status', 'sent')
-  }, [initialValues, isCustomersLoading])
+  }, [initialValues, isCustomersLoading, isJobTypesLoading])
 
   useEffect(() => {
     const selectedCustomerData = customers.find(

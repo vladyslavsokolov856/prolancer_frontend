@@ -199,7 +199,7 @@ const TaskIndex = () => {
           (customer) => customer.id === task.customer_id
         )?.name_contact_person,
       })),
-    [isCustomerLoading, isTaskLoading]
+    [isCustomerLoading, isTaskLoading, tasks]
   )
 
   return (
