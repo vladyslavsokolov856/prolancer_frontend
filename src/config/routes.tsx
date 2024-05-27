@@ -3,6 +3,7 @@ import Settings from '@/pages/settings'
 import Invoices from '@/pages/invoices'
 import Customers from '@/pages/customers'
 import New from '@/pages/customers/new'
+import TimeRegistration from '@/pages/time'
 import UserIndexPage from '@/pages/users'
 import NewTaskPage from '@/pages/tasks/new'
 import NewInvoicePage from '@/pages/invoices/new'
@@ -19,6 +20,17 @@ const customerRoutes: RouteConfig[] = [
     path: '/customers/new',
     element: <New />,
     label: 'New Customer',
+  },
+  {
+    path: '/customers',
+    element: <Cusomters />,
+  },
+]
+
+const timeRoutes: RouteConfig[] = [
+  {
+    path: '/time-registration',
+    element: <TimeRegistration />,
   },
 ]
 
@@ -44,6 +56,7 @@ const routesConfig: RouteConfig[] = [
     element: <Index />,
   },
   ...customerRoutes,
+  ...timeRoutes,
   ...taskRoutes,
   ...invoiceRoutes,
   {
