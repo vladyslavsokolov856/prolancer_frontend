@@ -145,7 +145,7 @@ const InvoiceIndex = () => {
       _invoice_date: date && new Date(date).toLocaleDateString(),
     }
     totalAmount += amount
-    totalHours += invoice.hours_worked || 0
+    totalHours += +invoice.hours_worked || 0
     return newInvoice
   })
 
