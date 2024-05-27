@@ -21,7 +21,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat'
 
 dayjs.extend(customParseFormat)
 
-const format = 'M/D/YYYY, h:mm:ss A'
+const format = 'M/D/YYYY, hh:mm:ss A'
 
 interface IProListItem {
   item: IListItem
@@ -37,7 +37,7 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
   useEffect(() => {
     setStartTime(dayjs(item.start_time, format))
     setDuration(item.duration)
-    setTask(item.task)
+    setTask(item.task_id)
     setNotes(item.notes)
   }, [item])
 
@@ -95,6 +95,7 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
         startTime: dayjs(startTime).format('M/D/YYYY, h:mm:ss A'),
         notes,
         task,
+        selectedId,
       })
     }
   }
@@ -115,8 +116,8 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
             <TimeIcon /> {item.duration + ' min'}
           </Typography>
           <Typography>
-            {item.task
-              ? mockTaskData.find(({ id: taskId }) => taskId === item.task)
+            {item.task_id
+              ? mockTaskData.find(({ id: taskId }) => taskId === item.task_id)
                   ?.name
               : 'No task selected'}
           </Typography>

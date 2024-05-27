@@ -50,8 +50,9 @@ const CreateTimeRegistration: React.FC<ICreateTimeRegistration> = ({
           id: prevItems.length + 1,
           start_time: dayjs(startTime).format('M/D/YYYY, h:mm:ss A'),
           duration,
-          task: mockTaskData.find(({ id }) => id === parseInt(task as string))
-            ?.id,
+          task_id: mockTaskData.find(
+            ({ id }) => id === parseInt(task as string)
+          )?.id,
           notes,
         }
 
@@ -75,64 +76,59 @@ const CreateTimeRegistration: React.FC<ICreateTimeRegistration> = ({
         Add time registration
       </DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          <Box>
-            <Box sx={{ padding: '1.5rem' }}>
-              <Grid container rowSpacing={1} columnSpacing={1}>
-                <Grid item md={9}>
-                  <FormControl fullWidth>
-                    <InputLabel id="country-select-label">Task</InputLabel>
-                    <Select
-                      labelId="country-select-label"
-                      id="country-select"
-                      label="Country"
-                      value={task}
-                      onChange={handleChange(setTask)}
-                      fullWidth
-                    >
-                      {mockTaskOptions}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item md={3}>
-                  <Button
-                    startIcon={<AddIcon />}
-                    variant="contained"
-                    size="large"
+        <Box>
+          <Box sx={{ padding: '1.5rem' }}>
+            <Grid container rowSpacing={1} columnSpacing={1}>
+              <Grid item md={9}>
+                <FormControl fullWidth>
+                  <InputLabel>Task</InputLabel>
+                  <Select
+                    value={task}
+                    onChange={handleChange(setTask)}
                     fullWidth
                   >
-                    Create task
-                  </Button>
-                </Grid>
-                <Grid item md={6}>
-                  <DateTimePicker
-                    sx={{ width: '100%' }}
-                    value={startTime}
-                    onChange={handleDateChange}
-                  />
-                </Grid>
-                <Grid item md={6}>
-                  <TextField
-                    label="Duration (minutes) *"
-                    type="number"
-                    value={duration}
-                    onChange={handleChange(setDuration)}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item md={12}>
-                  <TextField
-                    label="Notes"
-                    value={notes}
-                    onChange={handleChange(setNotes)}
-                    fullWidth
-                  />
-                </Grid>
+                    {mockTaskOptions}
+                  </Select>
+                </FormControl>
               </Grid>
-            </Box>
-            <Divider />
+              <Grid item md={3}>
+                <Button
+                  startIcon={<AddIcon />}
+                  variant="contained"
+                  size="large"
+                  fullWidth
+                >
+                  Create task
+                </Button>
+              </Grid>
+              <Grid item md={6}>
+                <DateTimePicker
+                  sx={{ width: '100%' }}
+                  value={startTime}
+                  onChange={handleDateChange}
+                />
+              </Grid>
+              <Grid item md={6}>
+                <TextField
+                  label="Duration (minutes) *"
+                  type="number"
+                  value={duration}
+                  onChange={handleChange(setDuration)}
+                  fullWidth
+                />
+              </Grid>
+              <Grid item md={12}>
+                <TextField
+                  label="Notes"
+                  value={notes}
+                  onChange={handleChange(setNotes)}
+                  fullWidth
+                />
+              </Grid>
+            </Grid>
           </Box>
-        </DialogContentText>
+          <Divider />
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>

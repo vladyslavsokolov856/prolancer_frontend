@@ -3,7 +3,6 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert'
 import AddIcon from '@mui/icons-material/Add'
-import { Link as RouterLink } from 'react-router-dom'
 import PlayIcon from '@mui/icons-material/PlayArrowOutlined'
 import StopIcon from '@mui/icons-material/StopOutlined'
 import {
@@ -26,7 +25,7 @@ const filters: IFilter[] = [
   {
     name: 'Task',
     type: 'select',
-    key: 'task',
+    key: 'task_id',
     items: [
       { key: 1, name: 'Task1' },
       { key: 2, name: 'Task2' },
@@ -45,7 +44,7 @@ export interface IListItem {
   id: number
   start_time: string
   duration: number
-  task?: number
+  task_id?: number
   notes: string
   editable?: boolean
 }
@@ -59,7 +58,7 @@ export interface ISortItem {
 
 const sortItems: ISortItem[] = [
   { name: 'Duration (minutes)', field: 'duration' },
-  { name: 'Task', field: 'task' },
+  { name: 'Task', field: 'task_id' },
   { name: 'Start time', field: 'start_time' },
   { name: 'Notes', field: 'notes' },
 ]
@@ -71,14 +70,14 @@ const mockListItems: IListItem[] = [
     id: 1,
     start_time: '5/22/2024, 8:15:33 PM',
     duration: 1,
-    task: 1,
+    task_id: 1,
     notes: 'note1',
   },
   {
     id: 2,
     start_time: '5/21/2024, 11:24:25 AM',
     duration: 5,
-    task: 2,
+    task_id: 2,
     notes: 'note2',
   },
 ]
@@ -96,7 +95,7 @@ export const mockTaskOptions = mockTaskData.map(({ id, name }) => (
 
 type Inputs = {
   notes: string
-  task: string
+  task_id: string
 }
 
 const TimeRegistration = () => {
@@ -143,8 +142,9 @@ const TimeRegistration = () => {
           id: prevItems.length + 1,
           start_time: now,
           duration: hours * 60 + minutes + 1,
-          task: mockTaskData.find(({ id }) => id === parseInt(watch('task')))
-            ?.id,
+          task_id: mockTaskData.find(
+            ({ id }) => id === parseInt(watch('task_id'))
+          )?.id,
           notes: watch('notes'),
         }
 
@@ -203,7 +203,7 @@ const TimeRegistration = () => {
           justifyContent: 'space-between',
         }}
       >
-        <Grid container>
+        <Grid container alignItems={'center'}>
           <Grid item md={1} display="flex" alignItems="center">
             <Button
               variant="contained"
@@ -240,11 +240,13 @@ const TimeRegistration = () => {
               </Grid>
               <Grid item md={3} sx={{ paddingX: '5px' }}>
                 <FormControl fullWidth>
-                  <InputLabel>Task</InputLabel>
+                  <InputLabel size="small" sx={{ bgcolor: 'white' }}>
+                    Task
+                  </InputLabel>
                   <Select
                     defaultValue=""
                     size="small"
-                    {...register('task')}
+                    {...register('task_id')}
                     fullWidth
                   >
                     {mockTaskOptions}

@@ -60,8 +60,8 @@ const ProFilter: React.FC<IProFilter> = ({
   const [search, setSearch] = useState<string>('')
   const [rowsPerPage, setRowsPerPage] = useState<number>(100)
   const [filterOptions, setFilterOptions] = useState<IFilterOptions>({})
-  const [page, setPage] = useState<number>(0)
-  const [sortField, setSortField] = useState<IListItemKey | null>(null)
+  const [page] = useState<number>(0)
+  const [sortField, setSortField] = useState<IListItemKey | null>()
   const [sortDirection, setSortDirection] = useState<boolean>(false)
 
   const onFilterClick = () => {
@@ -91,10 +91,7 @@ const ProFilter: React.FC<IProFilter> = ({
         return Object.keys(filterOptions).every((key) => {
           return (
             item.hasOwnProperty(key) &&
-            (item[key as IListItemKey] === filterOptions[key as IListItemKey] ||
-              (item[key as IListItemKey] as string).includes(
-                filterOptions[key as IListItemKey] as string
-              ))
+            item[key as IListItemKey] === filterOptions[key as IListItemKey]
           )
         })
       })
@@ -224,7 +221,10 @@ const ProFilter: React.FC<IProFilter> = ({
 
               <Grid item xs={12} md={3} display="flex">
                 <FormControl fullWidth sx={{ backgroundColor: 'white' }}>
-                  <Select value={sortField} onChange={handleSortFieldChange}>
+                  <Select
+                    value={sortField || ''}
+                    onChange={handleSortFieldChange}
+                  >
                     {sortItems.map(({ name, field }) => (
                       <MenuItem key={field} value={field}>
                         {name}
