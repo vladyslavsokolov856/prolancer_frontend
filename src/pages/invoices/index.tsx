@@ -15,6 +15,8 @@ import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import Invoice from '@/types/invoices'
 import InvoiceSummary from '@/components/Utils/InvoiceSummary'
+import { useCustomers } from '@/hooks/useCustomers'
+import { useOrderLines } from '@/hooks/useOrderLines'
 
 type SelectedInvoiceType = Invoice | null | undefined
 
@@ -26,6 +28,8 @@ const statusColors: Record<string, string> = {
 
 const InvoiceIndex = () => {
   const { invoices } = useInvoices()
+  const { customers } = useCustomers()
+  const { orderLines } = useOrderLines()
   const { deleteInvoiceMutation } = useDeleteInvoice()
 
   const [open, setOpen] = useState<boolean>(false)
@@ -121,30 +125,37 @@ const InvoiceIndex = () => {
   const totalInvoices = invoices.length
   let totalHours = 0
   let totalAmount = 0
-  const formattedInvoices = invoices.map(
-    ({ customer, order_lines, ...invoice }) => {
-      const date = invoice.invoice_date
-      const amount = invoice.amount || 0
-      const newInvoice = {
-        ...invoice,
-        _amount:
-          'DKK ' +
-          new Intl.NumberFormat('en-US', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }).format(amount),
-        _customer:
-          customer &&
-          (customer.type === 'private'
-            ? customer.name_contact_person
-            : customer.company_name),
-        _invoice_date: date && new Date(date).toLocaleDateString(),
+  const formattedInvoices = invoices.map((invoice) => {
+    const customer = customers.find(({ id }) => id == invoice.customer_id)
+    const date = invoice.invoice_date
+    const amount = orderLines.reduce((acc, next) => {
+      if (next.invoice_id == invoice.id) {
+        const quantity = next.quantity || 0
+        const unitPrice = next.unit_price || 0
+        acc += quantity * unitPrice
       }
-      totalAmount += invoice.amount
-      totalHours += invoice.hours_worked || 0
-      return newInvoice
+      return acc
+    }, 0)
+    const newInvoice = {
+      ...invoice,
+      amount,
+      _amount:
+        'DKK ' +
+        new Intl.NumberFormat('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(amount),
+      _customer:
+        customer &&
+        (customer.type === 'private'
+          ? customer.name_contact_person
+          : customer.company_name),
+      _invoice_date: date && new Date(date).toLocaleDateString(),
     }
-  )
+    totalAmount += amount
+    totalHours += invoice.hours_worked || 0
+    return newInvoice
+  })
 
   return (
     <Box>
