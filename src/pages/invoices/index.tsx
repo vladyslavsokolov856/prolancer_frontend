@@ -123,7 +123,7 @@ const InvoiceIndex = () => {
     const amount = orderLines.reduce((acc, next) => {
       if (next.invoice_id == invoice.id) {
         const quantity = next.quantity || 0
-        const unitPrice = next.unit_price || 0
+        const unitPrice = +next.unit_price || 0
         acc += quantity * unitPrice
       }
       return acc
