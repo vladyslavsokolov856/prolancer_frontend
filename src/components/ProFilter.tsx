@@ -185,7 +185,6 @@ const ProFilter: React.FC<IProFilter> = ({
                             sx={{ backgroundColor: 'white' }}
                           >
                             <Select
-                              size="small"
                               defaultValue=""
                               onChange={(e) =>
                                 handleFilterOptions(
@@ -205,7 +204,6 @@ const ProFilter: React.FC<IProFilter> = ({
                       ) : type === 'date' ? (
                         <Box>
                           <DatePicker
-                            label={name}
                             onChange={(date) =>
                               handleFilterOptions(
                                 key,
@@ -235,7 +233,6 @@ const ProFilter: React.FC<IProFilter> = ({
                   </Select>
                 </FormControl>
                 <Button
-                  size="small"
                   variant="contained"
                   sx={{
                     color: 'white',
@@ -264,7 +261,6 @@ const ProFilter: React.FC<IProFilter> = ({
                     sx={{ backgroundColor: 'white', width: '100px' }}
                   >
                     <Select
-                      size="small"
                       defaultValue={100}
                       onChange={(e) => setRowsPerPage(e.target.value as number)}
                     >

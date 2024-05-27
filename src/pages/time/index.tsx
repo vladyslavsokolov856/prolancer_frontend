@@ -20,6 +20,7 @@ import ProFilter, { IFilter } from '@/components/ProFilter'
 import ProList from '@/components/ProList'
 import dayjs from 'dayjs'
 import { useForm } from 'react-hook-form'
+import CreateTimeRegistration from './new'
 
 const filters: IFilter[] = [
   {
@@ -141,7 +142,7 @@ const TimeRegistration = () => {
         const newItem: IListItem = {
           id: prevItems.length + 1,
           start_time: now,
-          duration: hours * 60 + minutes,
+          duration: hours * 60 + minutes + 1,
           task: mockTaskData.find(({ id }) => id === parseInt(watch('task')))
             ?.id,
           notes: watch('notes'),
@@ -153,6 +154,15 @@ const TimeRegistration = () => {
     setIsRecording((prevStatus) => !prevStatus)
   }
 
+  const [addTimeRegistrationDialogOpen, setAddTimeRegistrationDialogOpen] =
+    useState(false)
+
+  const handleAddTimeRegistrationClick = () =>
+    setAddTimeRegistrationDialogOpen(true)
+
+  const closeAddTimeRegistrationDialogClose = () =>
+    setAddTimeRegistrationDialogOpen(false)
+
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -162,8 +172,7 @@ const TimeRegistration = () => {
           variant="contained"
           startIcon={<AddIcon />}
           sx={{ height: '35px' }}
-          component={RouterLink}
-          to="/customers/new"
+          onClick={handleAddTimeRegistrationClick}
         >
           Add time registration
         </Button>
@@ -219,23 +228,22 @@ const TimeRegistration = () => {
             </Typography>
           </Grid>
           <Grid item md={9}>
-            <Grid container>
+            <Grid container display="flex" alignItems="flex-start">
               <Grid item md={6} sx={{ paddingX: '5px' }}>
                 <TextField
                   label="Notes"
                   sx={{ height: '20px' }}
                   {...register('notes')}
+                  size="small"
                   fullWidth
                 />
               </Grid>
               <Grid item md={3} sx={{ paddingX: '5px' }}>
                 <FormControl fullWidth>
-                  <InputLabel id="country-select-label">Task</InputLabel>
+                  <InputLabel>Task</InputLabel>
                   <Select
-                    labelId="country-select-label"
-                    id="country-select"
-                    label="Country"
                     defaultValue=""
+                    size="small"
                     {...register('task')}
                     fullWidth
                   >
@@ -257,8 +265,6 @@ const TimeRegistration = () => {
                   variant="contained"
                   startIcon={<AddIcon />}
                   sx={{ height: '35px' }}
-                  component={RouterLink}
-                  to="/customers/new"
                   fullWidth
                 >
                   Create task
@@ -277,6 +283,14 @@ const TimeRegistration = () => {
         sortItems={sortItems}
       />
       <ProList items={listItems} setItems={setListItems} />
+
+      {addTimeRegistrationDialogOpen && (
+        <CreateTimeRegistration
+          open={true}
+          onClose={closeAddTimeRegistrationDialogClose}
+          setListItems={setListItems}
+        />
+      )}
     </Box>
   )
 }
