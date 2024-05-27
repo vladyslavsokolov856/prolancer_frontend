@@ -1,11 +1,11 @@
-import { Box } from '@mui/material'
+import { Box, CircularProgress } from '@mui/material'
 import TaskForm from '@/components/Form/TaskForm'
 import { styled } from '@mui/material/styles'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Inputs } from '@/components/Form/TaskForm'
-import { useCreateTask } from '@/hooks/useTasks'
+import { useTask, useEditTask } from '@/hooks/useTasks'
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 
 const Title = styled('span')({
@@ -14,14 +14,19 @@ const Title = styled('span')({
   color: 'rgb(108, 117, 125)',
 })
 
-const CreateTask = () => {
+const EditTask = () => {
+  let { taskId } = useParams()
+
   const navigate = useNavigate()
   const { enqueueSnackbar } = useSnackbar()
   const form = useForm<Inputs>()
-  const { isCreating, isCreated, createTaskMutation } = useCreateTask()
+  const { task, isLoading } = useTask(parseInt(taskId || ''))
+  const { isEditing, isEdited, updateTaskMutation } = useEditTask(
+    parseInt(taskId || '')
+  )
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    createTaskMutation({
+    updateTaskMutation({
       ...data,
       start_date: data.start_date ? data.start_date.toDate() : null,
       end_date: data.end_date ? data.end_date.toDate() : null,
@@ -29,11 +34,24 @@ const CreateTask = () => {
   }
 
   useEffect(() => {
-    if (isCreated) {
-      enqueueSnackbar('Task Created!', { variant: 'success' })
+    if (isEdited) {
+      enqueueSnackbar('Task Edited!', { variant: 'success' })
       navigate('/tasks')
     }
-  }, [isCreated])
+  }, [isEdited])
+
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ height: 'calc(100vh - 100px)' }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
 
   return (
     <Box display="flex" justifyContent="left" flexDirection="column">
@@ -42,10 +60,12 @@ const CreateTask = () => {
       <TaskForm
         form={form}
         onSubmit={onSubmit}
-        submitButtonDisabled={isCreating}
+        submitButtonDisabled={isEditing}
+        type="Update"
+        initialValues={task}
       />
     </Box>
   )
 }
 
-export default CreateTask
+export default EditTask

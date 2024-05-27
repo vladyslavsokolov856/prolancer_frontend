@@ -24,16 +24,18 @@ import {
   Typography,
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { UseFormReturn, SubmitHandler } from 'react-hook-form'
+import { UseFormReturn, SubmitHandler, Controller } from 'react-hook-form'
 import { Link as RouterLink } from 'react-router-dom'
 import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import CurrencyList from 'currency-list'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import React, { useEffect, useState } from 'react'
 import { useJobTypes } from '@/hooks/useJobTypes'
+import { useCustomers } from '@/hooks/userCustomers'
+import Task from '@/types/tasks'
 
 export type Inputs = {
   customer_id: number
@@ -44,20 +46,19 @@ export type Inputs = {
   description: string
   customer_message: string
   job_type_id: number
-  user_id: string
   start_date: Dayjs | null
   end_date: Dayjs | null
   terms_accepted: boolean
-  is_retainer: boolean
   payment_term: string
   payment_term_days: number
   payment_type: string
   payment_amount: number
   currency: string
   request_allow_mileages: boolean
-  allow_mileages: boolean
   show_customer_price: boolean
-  minutes_spent: number
+  allow_mileages: boolean
+  is_retainer: boolean
+  expected_minutes: number
 }
 
 const currencies = CurrencyList.getAll('en_US')
@@ -67,23 +68,6 @@ const paymentTerms = [
   { key: 'onging_week', name: 'Onging week' },
   { key: 'other', name: 'Other' },
   { key: 'task_end', name: 'Task end' },
-]
-
-const customers = [
-  {
-    id: 1,
-    name: 'customer 1',
-    email: 'customer1@gmail.com',
-    first_name: 'C1',
-    last_name: 'Customer 1',
-  },
-  {
-    id: 2,
-    name: 'customer 2',
-    email: 'customer1@gmai2.com',
-    first_name: 'C2',
-    last_name: 'Customer 2',
-  },
 ]
 
 interface SectionHeaderProps {
@@ -125,11 +109,6 @@ const StyledFormControlLabel = styled(FormControlLabel)<FormControlLabelProps>(
     },
   })
 )
-
-interface TaskFormProps {
-  form: UseFormReturn<Inputs, any, any>
-  onSubmit: SubmitHandler<Inputs>
-}
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -278,17 +257,34 @@ const PreviewDialog: React.FC<PreviewDialogProps> = ({
   )
 }
 
-const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
+interface TaskFormProps {
+  form: UseFormReturn<Inputs, any, any>
+  onSubmit: SubmitHandler<Inputs>
+  submitButtonDisabled?: boolean
+  type?: 'Create' | 'Update'
+  initialValues?: Task | null
+}
+
+const TaskForm: React.FC<TaskFormProps> = ({
+  form,
+  onSubmit,
+  submitButtonDisabled = false,
+  type = 'Create',
+  initialValues,
+}) => {
   const {
     register,
     handleSubmit,
     setValue,
     getValues,
+    reset,
     watch,
+    control,
     formState: { errors, isValid },
   } = form
 
   const { data: jobTypes } = useJobTypes()
+  const { customers, isLoading: isCustomersLoading } = useCustomers()
 
   const [selectedCustomer, setSelectedCustomer] = useState<any>(null)
   const [showPreviewDialog, setShowPreviewDialog] = useState(false)
@@ -309,6 +305,15 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
       setShowPreviewDialog(true)
     }
   }
+
+  useEffect(() => {
+    if (initialValues && !isCustomersLoading) {
+      const { start_date, end_date, ...rest } = initialValues
+      reset(rest)
+      setValue('start_date', dayjs(start_date))
+      setValue('end_date', dayjs(end_date))
+    }
+  }, [initialValues, isCustomersLoading])
 
   useEffect(() => {
     const selectedCustomerData = customers.find(
@@ -348,9 +353,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                     error={!!errors.customer_id}
                     fullWidth
                   >
-                    {customers.map(({ id, name }) => (
+                    {customers.map(({ id, name_contact_person }) => (
                       <MenuItem key={id} value={id}>
-                        {name}
+                        {name_contact_person}
                       </MenuItem>
                     ))}
                   </Select>
@@ -376,7 +381,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 value={
                   selectedCustomer
-                    ? `${selectedCustomer?.first_name} ${selectedCustomer?.last_name}`
+                    ? `${selectedCustomer?.name_contact_person}`
                     : ''
                 }
                 disabled
@@ -388,7 +393,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                 label="Customer email *"
                 type="email"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
-                value={selectedCustomer ? `${selectedCustomer?.email}` : ''}
+                value={
+                  selectedCustomer
+                    ? `${selectedCustomer?.email_contact_person}`
+                    : ''
+                }
                 disabled
                 fullWidth
               />
@@ -566,35 +575,42 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                 >
                   Payment type
                 </FormLabel>
-                <RadioGroup row {...register('payment_type')}>
-                  <Grid
-                    container
-                    rowSpacing={1}
-                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                  >
-                    <Grid item xs={12} md={4}>
-                      <StyledFormControlLabel
-                        value="per_day"
-                        control={<Radio />}
-                        label="Per day"
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                      <StyledFormControlLabel
-                        value="per_hour"
-                        control={<Radio />}
-                        label="Per hour"
-                      />
-                    </Grid>
-                    <Grid item xs={12} md={4}>
-                      <StyledFormControlLabel
-                        value="project_price"
-                        control={<Radio />}
-                        label="Project price"
-                      />
-                    </Grid>
-                  </Grid>
-                </RadioGroup>
+                <Controller
+                  name="payment_type"
+                  control={control}
+                  defaultValue=""
+                  render={({ field }) => (
+                    <RadioGroup row {...field}>
+                      <Grid
+                        container
+                        rowSpacing={1}
+                        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                      >
+                        <Grid item xs={12} md={4}>
+                          <StyledFormControlLabel
+                            value="per_day"
+                            control={<Radio />}
+                            label="Per day"
+                          />
+                        </Grid>
+                        <Grid item xs={12} md={4}>
+                          <StyledFormControlLabel
+                            value="per_hour"
+                            control={<Radio />}
+                            label="Per hour"
+                          />
+                        </Grid>
+                        <Grid item xs={12} md={4}>
+                          <StyledFormControlLabel
+                            value="project_price"
+                            control={<Radio />}
+                            label="Project price"
+                          />
+                        </Grid>
+                      </Grid>
+                    </RadioGroup>
+                  )}
+                />
               </FormControl>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -756,8 +772,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
               <TextField
                 label="Number of hours *"
                 style={{ margin: '1px' }}
-                error={!!errors.minutes_spent}
-                {...register('minutes_spent', {
+                error={!!errors.expected_minutes}
+                {...register('expected_minutes', {
                   required: 'Number of hours is required field',
                 })}
                 helperText={
@@ -767,8 +783,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
                     fontSize={11}
                     color="error"
                   >
-                    {errors.minutes_spent &&
-                      (errors.minutes_spent?.message || '')}
+                    {errors.expected_minutes &&
+                      (errors.expected_minutes?.message || '')}
                   </Typography>
                 }
                 fullWidth
@@ -891,11 +907,21 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
           </Grid>
           <Divider />
           <Box display="flex" style={{ gap: '10px', marginTop: '10px' }}>
-            <Button type="submit" variant="contained">
-              Save as draft
-            </Button>
-            <Button type="submit" variant="contained">
-              Submit task
+            {type === 'Create' && (
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={submitButtonDisabled}
+              >
+                Save as draft
+              </Button>
+            )}
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={submitButtonDisabled}
+            >
+              {type === 'Create' ? 'Submit task' : 'Update Task'}
             </Button>
           </Box>
         </StyledPaper>
