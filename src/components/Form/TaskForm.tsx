@@ -705,8 +705,8 @@ const TaskForm: React.FC<TaskFormProps> = ({
                     <FormControlLabel
                       control={
                         <Checkbox
-                          {...register('allow_mileages')}
-                          defaultChecked={getValues('allow_mileages') || false}
+                          {...register('is_retainer')}
+                          defaultChecked={getValues('is_retainer') || false}
                         />
                       }
                       label="Retainer"
