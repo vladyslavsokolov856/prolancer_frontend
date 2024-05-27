@@ -4,6 +4,7 @@ import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
 import AddIcon from '@mui/icons-material/Add'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
+import EditIcon from '@mui/icons-material/Edit'
 import TextSnippetOutlinedIcon from '@mui/icons-material/TextSnippetOutlined'
 import HighlightOffIcon from '@mui/icons-material/HighlightOff'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
@@ -92,9 +93,9 @@ const TaskIndex = () => {
                 <CheckCircleOutlineIcon
                   sx={{ color: 'green', width: '20px', height: '20px' }}
                 />
-                {`${record.minutes_spent} mins / ${
+                {`${record.minutes_spent || 0} mins / ${(
                   record.expected_minutes / 60.0
-                } hrs`}
+                ).toFixed(2)} hrs`}
               </Box>
             ) : (
               <HighlightOffIcon
@@ -120,10 +121,26 @@ const TaskIndex = () => {
         render: (value) => dayjs(value).format('M/DD/YYYY'),
       },
       {
-        key: 'action',
+        key: 'id',
         name: '',
-        render: () => (
-          <div>
+        render: (value, record) => (
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            sx={{ gap: '10px' }}
+          >
+            {record.status === 'draft' && (
+              <Button
+                variant="contained"
+                startIcon={<EditIcon />}
+                size="small"
+                component={RouterLink}
+                to={`/tasks/${value}/edit`}
+              >
+                Edit
+              </Button>
+            )}
             <Button
               id="action-button"
               aria-controls={open ? 'action-menu' : undefined}
@@ -158,7 +175,7 @@ const TaskIndex = () => {
                 </Box>
               </MenuItem>
             </Menu>
-          </div>
+          </Box>
         ),
       },
     ],

@@ -55,7 +55,7 @@ const EditTask = () => {
 
   return (
     <Box display="flex" justifyContent="left" flexDirection="column">
-      <Title>Create task</Title>
+      <Title>Edit task</Title>
 
       <TaskForm
         form={form}

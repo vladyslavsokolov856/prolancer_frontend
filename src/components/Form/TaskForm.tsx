@@ -313,6 +313,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
       setValue('start_date', dayjs(start_date))
       setValue('end_date', dayjs(end_date))
     }
+    setValue('status', 'sent')
   }, [initialValues, isCustomersLoading])
 
   useEffect(() => {
@@ -321,6 +322,15 @@ const TaskForm: React.FC<TaskFormProps> = ({
     )
     setSelectedCustomer(selectedCustomerData)
   }, [customerId])
+
+  const handleSaveasDraft = () => {
+    if (isValid) {
+      setValue('status', 'draft')
+      onSubmit(getValues())
+    } else {
+      form.trigger()
+    }
+  }
 
   return (
     <Box>
@@ -378,7 +388,6 @@ const TaskForm: React.FC<TaskFormProps> = ({
             <Grid item xs={12} md={6}>
               <TextField
                 label="Customer contact *"
-                style={{ margin: '1px', marginBottom: '.75rem' }}
                 value={
                   selectedCustomer
                     ? `${selectedCustomer?.name_contact_person}`
@@ -392,7 +401,6 @@ const TaskForm: React.FC<TaskFormProps> = ({
               <TextField
                 label="Customer email *"
                 type="email"
-                style={{ margin: '1px', marginBottom: '.75rem' }}
                 value={
                   selectedCustomer
                     ? `${selectedCustomer?.email_contact_person}`
@@ -435,7 +443,6 @@ const TaskForm: React.FC<TaskFormProps> = ({
               <TextField
                 label="Payment days *"
                 type="number"
-                style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.payment_term_days}
                 {...register('payment_term_days', {
                   required: 'Payment days is a reuqired field',
@@ -461,7 +468,6 @@ const TaskForm: React.FC<TaskFormProps> = ({
             <Grid item xs={12}>
               <TextField
                 label="Title *"
-                style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.title}
                 {...register('title', {
                   required: 'Title is a reuqired field',
@@ -482,7 +488,6 @@ const TaskForm: React.FC<TaskFormProps> = ({
             <Grid item xs={12} md={6}>
               <TextField
                 label="Customer reference"
-                style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.reference}
                 {...register('reference')}
                 helperText={
@@ -501,7 +506,6 @@ const TaskForm: React.FC<TaskFormProps> = ({
             <Grid item xs={12} md={6}>
               <TextField
                 label="PO Number"
-                style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.purchase_order_number}
                 {...register('purchase_order_number')}
                 helperText={
@@ -547,7 +551,6 @@ const TaskForm: React.FC<TaskFormProps> = ({
             <Grid item xs={12}>
               <TextField
                 label="Task description *"
-                style={{ margin: '1px' }}
                 error={!!errors.description}
                 {...register('description', {
                   required: 'Task description is a reuqired field',
@@ -571,7 +574,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
               <FormControl sx={{ width: '100%', marginBottom: '20px' }}>
                 <FormLabel
                   id="pyament-type-group-label"
-                  sx={{ marginBottom: '10px' }}
+                  sx={{ marginBottom: '10px', marginTop: '10px' }}
                 >
                   Payment type
                 </FormLabel>
@@ -616,7 +619,6 @@ const TaskForm: React.FC<TaskFormProps> = ({
             <Grid item xs={12} md={6}>
               <TextField
                 label="Payment amount *"
-                style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.payment_amount}
                 {...register('payment_amount', {
                   required: 'Payment amount is a reuqired field',
@@ -771,7 +773,6 @@ const TaskForm: React.FC<TaskFormProps> = ({
             <Grid item xs={12} md={4}>
               <TextField
                 label="Number of hours *"
-                style={{ margin: '1px' }}
                 error={!!errors.expected_minutes}
                 {...register('expected_minutes', {
                   required: 'Number of hours is required field',
@@ -797,7 +798,6 @@ const TaskForm: React.FC<TaskFormProps> = ({
             <Grid item xs={12}>
               <TextField
                 label="Message *"
-                style={{ margin: '1px' }}
                 error={!!errors.customer_message}
                 {...register('customer_message', {
                   required: 'Message is required field',
@@ -907,21 +907,19 @@ const TaskForm: React.FC<TaskFormProps> = ({
           </Grid>
           <Divider />
           <Box display="flex" style={{ gap: '10px', marginTop: '10px' }}>
-            {type === 'Create' && (
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={submitButtonDisabled}
-              >
-                Save as draft
-              </Button>
-            )}
+            <Button
+              variant="contained"
+              disabled={submitButtonDisabled}
+              onClick={handleSaveasDraft}
+            >
+              {type === 'Create' ? 'Save as draft' : 'Update Task'}
+            </Button>
             <Button
               type="submit"
               variant="contained"
               disabled={submitButtonDisabled}
             >
-              {type === 'Create' ? 'Submit task' : 'Update Task'}
+              Submit task
             </Button>
           </Box>
         </StyledPaper>
