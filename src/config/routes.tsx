@@ -21,10 +21,6 @@ const customerRoutes: RouteConfig[] = [
     element: <New />,
     label: 'New Customer',
   },
-  {
-    path: '/customers',
-    element: <Cusomters />,
-  },
 ]
 
 const timeRoutes: RouteConfig[] = [
