@@ -15,6 +15,16 @@ import { useMemo, useState } from 'react'
 import { useTasks } from '@/hooks/useTasks'
 import { useCustomers } from '@/hooks/userCustomers'
 
+const taskStatus = [
+  { key: 'approved', name: 'Approved' },
+  { key: 'canceled', name: 'Canceled' },
+  { key: 'changes_requrested', name: 'Changes requested' },
+  { key: 'pending', name: 'Pending' },
+  { key: 'denied', name: 'Denied' },
+  { key: 'draft', name: 'Draft' },
+  { key: 'more_info_added', name: 'More Info needed' },
+]
+
 const TaskIndex = () => {
   const { isLoading: isTaskLoading, tasks } = useTasks()
   const { isLoading: isCustomerLoading, customers } = useCustomers()
@@ -182,7 +192,25 @@ const TaskIndex = () => {
         </Button>
       </Box>
 
-      <ProTable columns={columns} data={taskData || []} />
+      <ProTable
+        columns={columns}
+        data={taskData || []}
+        filters={[
+          {
+            key: 'customer_id',
+            name: 'Customer',
+            items: customers.map((customer) => ({
+              key: customer.id,
+              name: customer.name_contact_person,
+            })),
+          },
+          {
+            key: 'status',
+            name: 'Status',
+            items: taskStatus,
+          },
+        ]}
+      />
     </Box>
   )
 }

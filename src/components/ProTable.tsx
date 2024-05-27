@@ -44,12 +44,12 @@ const StyledTableRow = styled(TableRow)(() => ({
 }))
 
 interface IItem {
-  key: string
+  key: string | number
   name: String
 }
 
 interface IFilterItem {
-  key: string
+  key: string | number
   name: string
   items: IItem[]
 }
@@ -134,7 +134,7 @@ const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
     setFilteredData(sortedItems)
   }, [data, filterOptions, page, rowsPerPage, sortField, sortDirection, search])
 
-  const handleFilterOptions = (key: string, value: string) => {
+  const handleFilterOptions = (key: string | number, value: string) => {
     setFilterOptions((prev) => ({ ...prev, [key]: value }))
   }
 
