@@ -17,6 +17,7 @@ import Invoice from '@/types/invoices'
 import InvoiceSummary from '@/components/Utils/InvoiceSummary'
 import { useCustomers } from '@/hooks/useCustomers'
 import { useOrderLines } from '@/hooks/useOrderLines'
+import { useCurrencyRates } from '@/hooks/useCurrencyRates'
 
 type SelectedInvoiceType = Invoice | null | undefined
 
@@ -30,6 +31,7 @@ const InvoiceIndex = () => {
   const { invoices } = useInvoices()
   const { customers } = useCustomers()
   const { orderLines } = useOrderLines()
+  // const { currencyRates } = useCurrencyRates()
   const { deleteInvoiceMutation } = useDeleteInvoice()
 
   const [open, setOpen] = useState<boolean>(false)
@@ -50,15 +52,12 @@ const InvoiceIndex = () => {
       {
         key: 'amount',
         name: 'Amount',
-        render: (amount) => {
+        render: (amount, record) => {
           if (amount != null) {
-            return (
-              'DKK ' +
-              new Intl.NumberFormat('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              }).format(amount)
-            )
+            return `${record.currency} ${new Intl.NumberFormat('en-US', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }).format(amount)}`
           }
         },
       },
@@ -128,15 +127,15 @@ const InvoiceIndex = () => {
       }
       return acc
     }, 0)
+    const currency = invoice.currency || 'DKK'
     const newInvoice = {
       ...invoice,
       amount,
-      _amount:
-        'DKK ' +
-        new Intl.NumberFormat('en-US', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        }).format(amount),
+      currency,
+      _amount: `${currency} ${new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }).format(amount)}`,
       _customer:
         customer &&
         (customer.type === 'private'
