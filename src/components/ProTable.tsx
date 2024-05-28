@@ -19,6 +19,8 @@ import Select from '@mui/material/Select'
 import { TablePagination } from '@mui/material'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import dayjs from 'dayjs'
 
 const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.head}`]: {
@@ -48,10 +50,13 @@ interface IItem {
   name: String
 }
 
+type FilterFunctionType = (itemValue: string, filterValue: string) => boolean
 interface IFilterItem {
   key: string | number
   name: string
   items: IItem[]
+  type?: string
+  filterFunction?: FilterFunctionType
 }
 
 interface ISorterFilters {
@@ -130,9 +135,23 @@ const ProTable: React.FC<IProTable> = ({
       )
     )
 
+    const filterFunctions = {} as Record<string, FilterFunctionType>
+    filters?.forEach((filter) => {
+      if (filter.filterFunction) {
+        filterFunctions[filter.key] = filter.filterFunction
+      }
+    })
+
     const filteredItems = filteredData
       .filter((item) => {
         return Object.keys(filterOptions).every((key) => {
+          const filterFunction = filterFunctions[key]
+          if (filterFunction) {
+            return (
+              item.hasOwnProperty(key) &&
+              filterFunction(item[key], filterOptions[key])
+            )
+          }
           return item.hasOwnProperty(key) && item[key] === filterOptions[key]
         })
       })
@@ -147,7 +166,16 @@ const ProTable: React.FC<IProTable> = ({
       : filteredItems
 
     setFilteredData(sortedItems)
-  }, [data, filterOptions, page, rowsPerPage, sortField, sortDirection, search])
+  }, [
+    data,
+    filterOptions,
+    page,
+    rowsPerPage,
+    sortField,
+    sortDirection,
+    search,
+    filters,
+  ])
 
   const handleFilterOptions = (key: string | number, value: string) => {
     setFilterOptions((prev) => ({ ...prev, [key]: value }))
@@ -215,28 +243,45 @@ const ProTable: React.FC<IProTable> = ({
                     <Grid item xs={12} md={4} key={filter.key}>
                       <Box display="flex" flexDirection="column">
                         <span>{filter.name}</span>
-                        <Box display="flex" sx={{ width: '100%' }}>
-                          <FormControl
-                            fullWidth
-                            sx={{ backgroundColor: 'white' }}
-                          >
-                            <Select
-                              size="small"
-                              onChange={(e) =>
+                        {filter.type === 'date' ? (
+                          <Box>
+                            <DatePicker
+                              slotProps={{
+                                textField: { size: 'small', fullWidth: true },
+                              }}
+                              onChange={(date) =>
                                 handleFilterOptions(
                                   filter.key,
-                                  e.target.value as string
+                                  dayjs(date).format('M/D/YYYY')
                                 )
                               }
+                              sx={{ backgroundColor: 'white' }}
+                            />
+                          </Box>
+                        ) : (
+                          <Box display="flex" sx={{ width: '100%' }}>
+                            <FormControl
+                              fullWidth
+                              sx={{ backgroundColor: 'white' }}
                             >
-                              {filter.items.map(({ key, name }) => (
-                                <MenuItem value={key} key={key}>
-                                  {name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
+                              <Select
+                                size="small"
+                                onChange={(e) =>
+                                  handleFilterOptions(
+                                    filter.key,
+                                    e.target.value as string
+                                  )
+                                }
+                              >
+                                {filter.items.map(({ key, name }) => (
+                                  <MenuItem value={key} key={key}>
+                                    {name}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          </Box>
+                        )}
                       </Box>
                     </Grid>
                   ))}

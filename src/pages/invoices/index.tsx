@@ -18,6 +18,7 @@ import InvoiceSummary from '@/components/Utils/InvoiceSummary'
 import { useCustomers } from '@/hooks/useCustomers'
 import { useOrderLines } from '@/hooks/useOrderLines'
 import { useCurrencyRates } from '@/hooks/useCurrencyRates'
+import dayjs from 'dayjs'
 
 type SelectedInvoiceType = Invoice | null | undefined
 
@@ -101,13 +102,22 @@ const InvoiceIndex = () => {
       })),
       columnSize: 3,
     },
+    {
+      name: 'Invoice date',
+      type: 'date',
+      key: '_invoice_date',
+      columnSize: 3,
+    },
+    {
+      name: 'Invoice date before',
+      type: 'date',
+      key: '_invoice_date_before',
+      columnSize: 3,
+      filterFunction: (itemValue: string, filterValue: string) => {
+        return dayjs(itemValue) < dayjs(filterValue)
+      },
+    },
     statusFilter,
-    // {
-    //   name: 'Date',
-    //   type: 'date',
-    //   key: 'invoice_date',
-    //   columnSize: 3,
-    // },
   ]
 
   const columns: ColumnType[] = useMemo(
@@ -146,7 +156,7 @@ const InvoiceIndex = () => {
       {
         key: 'invoice_date',
         name: 'Invoice date',
-        render: (date) => date && new Date(date).toLocaleDateString(),
+        render: (date) => dayjs(date).format('M/D/YYYY'),
       },
       {
         key: '_actions',
@@ -195,6 +205,7 @@ const InvoiceIndex = () => {
       return acc
     }, 0)
     const currency = invoice.currency || 'DKK'
+    const invoiceDate = dayjs(date).format('M/D/YYYY')
     const newInvoice = {
       ...invoice,
       amount,
@@ -208,7 +219,8 @@ const InvoiceIndex = () => {
         (customer.type === 'private'
           ? customer.name_contact_person
           : customer.company_name),
-      _invoice_date: date && new Date(date).toLocaleDateString(),
+      _invoice_date: invoiceDate,
+      _invoice_date_before: invoiceDate,
     }
     const convertedAmount = amount / (currencyRates[currency] || 1)
     totalAmount += convertedAmount
