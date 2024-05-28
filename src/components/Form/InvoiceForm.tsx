@@ -25,7 +25,7 @@ import {
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
 import React, { useEffect, useState } from 'react'
-import { SubmitHandler, UseFormReturn, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { useJobTypes } from '@/hooks/useJobTypes'
 import dayjs, { Dayjs } from 'dayjs'
 import { DatePicker } from '@mui/x-date-pickers'
@@ -40,7 +40,7 @@ interface IOrderLine {
   unitPrice: number | null
 }
 
-export type Inputs = {
+export type InvoiceInputs = {
   customer_id: number
   send_invoice_copy_to: string
   task_id: number
@@ -93,7 +93,6 @@ const tasks = [
 const currencies = CurrencyList.getAll('en_US')
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  margin: theme.spacing(1),
   padding: theme.spacing(2),
 }))
 
@@ -132,11 +131,11 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title }) => {
 }
 
 interface InvoiceFormProps {
-  form: UseFormReturn<Inputs, any, any>
-  onSubmit: SubmitHandler<Inputs>
+  onSubmit: SubmitHandler<InvoiceInputs>
+  type?: 'create' | 'update'
 }
 
-const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
+const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
   const {
     register,
     watch,
@@ -144,7 +143,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
     setValue,
     handleSubmit,
     formState: { errors },
-  } = form
+  } = useForm<InvoiceInputs>()
 
   const taskHookForm = useForm<TaskFormInputs>()
   const customerHookForm = useForm<CustomerFormInputs>()
@@ -190,7 +189,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
     ])
   }
 
-  const handleDeelteOrderLine = (index: number) => {
+  const handleDelteOrderLine = (index: number) => {
     setValue(
       'order_lines',
       (orderLines || []).filter((_, i) => index !== i)
@@ -591,7 +590,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                             color="error"
                             variant="contained"
                             size="small"
-                            onClick={() => handleDeelteOrderLine(index)}
+                            onClick={() => handleDelteOrderLine(index)}
                             sx={{ minWidth: '40px' }}
                           >
                             <DeleteIcon
@@ -667,7 +666,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
 
           <Box display="flex" sx={{ gap: '10px', marginTop: '10px' }}>
             <Button color="primary" variant="contained">
-              Save as draft
+              {type === 'create' ? 'Save as draft' : 'Update invoice'}
             </Button>
             <Button color="primary" variant="contained">
               Submit invoice
