@@ -18,20 +18,10 @@ const Label = styled(Typography)({
 const Value = styled(Typography)({})
 
 type InvoiceSummaryProps = {
-  // totalInvoices: number
-  // totalHours: number
-  // totalAmount: number
   list: Invoice[]
 }
-const InvoiceSummary = ({
-  // totalInvoices,
-  // totalHours,
-  // totalAmount,
-  list: invoices,
-}: InvoiceSummaryProps) => {
-  // const { currencyRates } = useCurrencyRates()
-  const { currencyRates } = { currencyRates: {} }
-  console.log('invoices', invoices)
+const InvoiceSummary = ({ list: invoices }: InvoiceSummaryProps) => {
+  const { currencyRates } = useCurrencyRates()
   const totalInvoices = invoices.length
   let totalHours = 0
   let totalAmount = 0

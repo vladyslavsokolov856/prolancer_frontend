@@ -17,7 +17,6 @@ import Invoice from '@/types/invoices'
 import InvoiceSummary from '@/components/Utils/InvoiceSummary'
 import { useCustomers } from '@/hooks/useCustomers'
 import { useOrderLines } from '@/hooks/useOrderLines'
-import { useCurrencyRates } from '@/hooks/useCurrencyRates'
 import dayjs from 'dayjs'
 
 type SelectedInvoiceType = Invoice | null | undefined
@@ -74,7 +73,6 @@ const InvoiceIndex = () => {
   const { invoices } = useInvoices()
   const { customers } = useCustomers()
   const { orderLines } = useOrderLines()
-  const { currencyRates } = { currencyRates: {} }
   const { deleteInvoiceMutation } = useDeleteInvoice()
 
   const [open, setOpen] = useState<boolean>(false)
@@ -187,9 +185,6 @@ const InvoiceIndex = () => {
     [handleDeleteClick]
   )
 
-  const totalInvoices = invoices.length
-  let totalHours = 0
-  let totalAmount = 0
   const formattedInvoices = invoices.map((invoice) => {
     const customer = customers.find(({ id }) => id == invoice.customer_id)
     const date = invoice.invoice_date
@@ -219,9 +214,6 @@ const InvoiceIndex = () => {
       _invoice_date: invoiceDate,
       _invoice_date_before: invoiceDate,
     }
-    const convertedAmount = amount / (currencyRates[currency] || 1)
-    totalAmount += convertedAmount
-    totalHours += +invoice.hours_worked || 0
     return newInvoice
   })
 
