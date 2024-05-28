@@ -47,7 +47,7 @@ const StyledTableRow = styled(TableRow)(() => ({
 
 interface IItem {
   key: string | number
-  name: String
+  name: string
 }
 
 type FilterFunctionType = (itemValue: string, filterValue: string) => boolean
@@ -70,7 +70,7 @@ export interface RecordType {
 
 export interface ColumnType {
   key: string
-  name?: String
+  name?: string
   align?: 'inherit' | 'left' | 'center' | 'right' | 'justify'
   render?: (value: any, record: RecordType, index: number) => React.ReactNode
   initialSort?: 'asc' | 'desc'
@@ -105,7 +105,7 @@ const ProTable: React.FC<IProTable> = ({
     setShowFilterList((prev) => !prev)
   }
 
-  const onHeaderClick = (key: string, name: String | undefined) => {
+  const onHeaderClick = (key: string, name: string | undefined) => {
     if (name) {
       if (sortField && sortField === key) {
         setSortDirection((prev) => !prev)
