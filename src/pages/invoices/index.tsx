@@ -27,11 +27,62 @@ const statusColors: Record<string, string> = {
   sent: 'primary',
 }
 
+const filters = [
+  {
+    name: 'Status',
+    type: 'select',
+    key: 'status',
+    items: [
+      { key: 'approved_by_company', name: 'Approved by company' },
+      { key: 'awaiting_task_approval', name: 'Awaiting task approval' },
+      { key: 'cancelled', name: 'Cancelled' },
+      { key: 'company_dispute', name: 'Company Dispute' },
+      { key: 'debt_collection', name: 'Debt Collection' },
+      { key: 'denied_by_company', name: 'Denied by Company' },
+      { key: 'draft', name: 'Draft' },
+      { key: 'late_payment', name: 'Late Payment' },
+      { key: 'more_info_needed', name: 'More info needed' },
+      { key: 'paid', name: 'Paid' },
+      { key: 'payment_on_hold', name: 'Payment on hold' },
+      { key: 'payment_received', name: 'Payment received' },
+      { key: 'pending', name: 'Pending' },
+      { key: 'salary_paid', name: 'Salary Paid' },
+      {
+        key: 'salary_paid_customer_not_paid',
+        name: 'Salary paid - customer not paid',
+      },
+      { key: 'salary_paid_customer_paid', name: 'Salary paid - customer paid' },
+      { key: 'sent', name: 'Sent' },
+      { key: 'sent_to_company', name: 'Sent to Company' },
+      {
+        key: 'sent_to_company_awaiting_approval',
+        name: 'Sent to company - Awaiting approval',
+      },
+      {
+        key: 'sent_to_company_contract_made',
+        name: 'Sent to company - contract made',
+      },
+      {
+        key: 'sent_to_company_needs_contract',
+        name: 'Sent to company - needs contract',
+      },
+      { key: 'none', name: 'None' },
+    ],
+    columnSize: 3,
+  },
+  // {
+  //   name: 'Date',
+  //   type: 'date',
+  //   key: 'invoice_date',
+  //   columnSize: 3,
+  // },
+]
+
 const InvoiceIndex = () => {
   const { invoices } = useInvoices()
   const { customers } = useCustomers()
   const { orderLines } = useOrderLines()
-  const { currencyRates } = useCurrencyRates()
+  const { currencyRates } = { currencyRates: {} }
   const { deleteInvoiceMutation } = useDeleteInvoice()
 
   const [open, setOpen] = useState<boolean>(false)
@@ -42,6 +93,21 @@ const InvoiceIndex = () => {
     setSelectedInvoice(invoices.find((item) => item.id === id))
     setOpen(true)
   }
+
+  filters.unshift({
+    name: 'Customer',
+    type: 'select',
+    key: 'customer_id',
+    items: customers.map((customer) => ({
+      key: customer.id,
+      name:
+        customer &&
+        (customer.type === 'private'
+          ? customer.name_contact_person
+          : customer.company_name),
+    })),
+    columnSize: 3,
+  })
 
   const columns: ColumnType[] = useMemo(
     () => [
@@ -194,6 +260,7 @@ const InvoiceIndex = () => {
       <ProTable
         columns={columns}
         data={formattedInvoices}
+        filters={filters}
         beforeTable={
           <InvoiceSummary
             totalInvoices={totalInvoices}
