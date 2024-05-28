@@ -193,7 +193,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
   const handleDeelteOrderLine = (index: number) => {
     setValue(
       'order_lines',
-      (orderLines || []).filter((item, i) => index !== i)
+      (orderLines || []).filter((_, i) => index !== i)
     )
   }
 
@@ -202,9 +202,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
     setFormType('Customer')
   }
 
-  const onCustomerFormSubmit: SubmitHandler<CustomerFormInputs> = async (
-    data
-  ) => {
+  const onCustomerFormSubmit: SubmitHandler<CustomerFormInputs> = async () => {
     setShowDialog(false)
     customerHookForm.reset()
   }
@@ -214,7 +212,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
     setFormType('Task')
   }
 
-  const onTaskFormSubmit: SubmitHandler<TaskFormInputs> = async (data) => {
+  const onTaskFormSubmit: SubmitHandler<TaskFormInputs> = async () => {
     setShowDialog(false)
     taskHookForm.reset()
   }

@@ -84,36 +84,39 @@ const InvoiceIndex = () => {
     setOpen(true)
   }
 
-  const filters = [
-    {
-      name: 'Customer',
-      type: 'select',
-      key: 'customer_id',
-      items: customers.map((customer) => ({
-        key: customer.id,
-        name:
-          customer &&
-          (customer.type === 'private'
-            ? customer.name_contact_person
-            : customer.company_name),
-      })),
-    },
-    {
-      name: 'Invoice date',
-      type: 'date',
-      key: '_invoice_date',
-    },
-    {
-      name: 'Invoice date before',
-      type: 'date',
-      key: '_invoice_date_before',
-
-      filterFunction: (itemValue: string, filterValue: string) => {
-        return dayjs(itemValue) < dayjs(filterValue)
+  const filters = useMemo(
+    () => [
+      {
+        name: 'Customer',
+        type: 'select',
+        key: 'customer_id',
+        items: customers.map((customer) => ({
+          key: customer.id,
+          name:
+            customer &&
+            (customer.type === 'private'
+              ? customer.name_contact_person
+              : customer.company_name),
+        })),
       },
-    },
-    statusFilter,
-  ]
+      {
+        name: 'Invoice date',
+        type: 'date',
+        key: '_invoice_date',
+      },
+      {
+        name: 'Invoice date before',
+        type: 'date',
+        key: '_invoice_date_before',
+
+        filterFunction: (itemValue: string, filterValue: string) => {
+          return dayjs(itemValue) < dayjs(filterValue)
+        },
+      },
+      statusFilter,
+    ],
+    [customers]
+  )
 
   const columns: ColumnType[] = useMemo(
     () => [
@@ -156,7 +159,7 @@ const InvoiceIndex = () => {
       {
         key: '_actions',
         align: 'right',
-        render: (value, record) =>
+        render: (_, record) =>
           record.status === 'draft' ? (
             <Box display="flex" justifyContent="flex-end" sx={{ gap: '10px' }}>
               <Button
