@@ -271,13 +271,6 @@ const InvoiceIndex = () => {
         columns={columns}
         data={formattedInvoices}
         filters={filters}
-        beforeTable={
-          <InvoiceSummary
-            totalInvoices={totalInvoices}
-            totalHours={totalHours}
-            totalAmount={totalAmount}
-          />
-        }
         BeforeTableComponent={InvoiceSummary}
       />
 
