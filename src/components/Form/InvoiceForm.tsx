@@ -24,7 +24,7 @@ import {
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useJobTypes } from '@/hooks/useJobTypes'
 import dayjs, { Dayjs } from 'dayjs'
@@ -39,7 +39,7 @@ import { useTasks } from '@/hooks/useTasks'
 interface IOrderLine {
   description: string
   quantity: number | null
-  unitPrice: number | null
+  unit_price: number | null
 }
 
 export type InvoiceInputs = {
@@ -49,9 +49,10 @@ export type InvoiceInputs = {
   invoice_date: Dayjs | null
   currency: string
   payment_days: string
-  terms_accepted: boolean
+  terms_accepted?: boolean
   hours_worked: number
   order_lines: IOrderLine[]
+  status: string
 }
 
 const currencies = CurrencyList.getAll('en_US')
@@ -119,7 +120,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
   const taskId = watch('task_id')
   const currency = watch('currency', 'DKK')
   const orderLines = watch('order_lines', [
-    { description: '', quantity: null, unitPrice: null },
+    { description: '', quantity: null, unit_price: null },
   ])
 
   const { data: jobTypes } = useJobTypes()
@@ -136,14 +137,15 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
   }, [taskId])
 
   const totalAmount = orderLines?.reduce((pre, cur) => {
-    if (cur.quantity && cur.unitPrice) return pre + cur.quantity * cur.unitPrice
+    if (cur.quantity && cur.unit_price)
+      return pre + cur.quantity * cur.unit_price
     else return pre
   }, 0)
 
   const handleAddOrderLine = () => {
     setValue('order_lines', [
       ...(orderLines || []),
-      { description: '', quantity: null, unitPrice: null },
+      { description: '', quantity: null, unit_price: null },
     ])
   }
 
@@ -470,7 +472,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {orderLines?.map(({ quantity, unitPrice }, index) => (
+                    {orderLines?.map(({ quantity, unit_price }, index) => (
                       <TableRow
                         key={index}
                         sx={{
@@ -522,8 +524,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
                           <TextField
                             label="Unit Price"
                             type="number"
-                            error={!!errors.order_lines?.[index]?.unitPrice}
-                            {...register(`order_lines.${index}.unitPrice`)}
+                            error={!!errors.order_lines?.[index]?.unit_price}
+                            {...register(`order_lines.${index}.unit_price`)}
                             helperText={
                               <Typography
                                 component="span"
@@ -553,8 +555,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
                           </Button>
                           <span style={{ fontWeight: 600, marginLeft: '10px' }}>
                             {`${currency} ${
-                              quantity && unitPrice
-                                ? Number(quantity * unitPrice).toFixed(2)
+                              quantity && unit_price
+                                ? Number(quantity * unit_price).toFixed(2)
                                 : '0.00'
                             }`}
                           </span>
@@ -619,10 +621,20 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
           <Divider />
 
           <Box display="flex" sx={{ gap: '10px', marginTop: '10px' }}>
-            <Button color="primary" variant="contained">
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              onClick={() => setValue('status', 'draft')}
+            >
               {type === 'create' ? 'Save as draft' : 'Update invoice'}
             </Button>
-            <Button color="primary" variant="contained">
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              onClick={() => setValue('status', 'sent')}
+            >
               Submit invoice
             </Button>
           </Box>

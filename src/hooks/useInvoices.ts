@@ -4,7 +4,11 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query'
-import { fetchInvoices, deleteInvoice } from '@/services/invoiceService'
+import {
+  fetchInvoices,
+  deleteInvoice,
+  createInvoice,
+} from '@/services/invoiceService'
 import Invoice from '@/types/invoices'
 
 export const useInvoices = () => {
@@ -39,4 +43,15 @@ export const useDeleteInvoice = () => {
     deleteInvoiceMutation,
     isDeleting,
   }
+}
+
+export const useCreateInvoice = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: createInvoice,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['invoices'] })
+    },
+  })
 }
