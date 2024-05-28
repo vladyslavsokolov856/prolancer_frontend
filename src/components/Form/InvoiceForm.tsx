@@ -24,7 +24,7 @@ import {
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useJobTypes } from '@/hooks/useJobTypes'
 import dayjs, { Dayjs } from 'dayjs'
@@ -33,6 +33,8 @@ import CurrencyList from 'currency-list'
 import FormDialog from '../FormDialog'
 import TaskForm, { Inputs as TaskFormInputs } from './TaskForm'
 import CustomerForm, { Inputs as CustomerFormInputs } from './CustomerForm'
+import { useCustomers } from '@/hooks/useCustomers'
+import { useTasks } from '@/hooks/useTasks'
 
 interface IOrderLine {
   description: string
@@ -51,44 +53,6 @@ export type InvoiceInputs = {
   hours_worked: number
   order_lines: IOrderLine[]
 }
-
-const customers = [
-  {
-    id: 1,
-    name: 'customer 1',
-    email: 'customer1@gmail.com',
-    first_name: 'C1',
-    last_name: 'Customer 1',
-  },
-  {
-    id: 2,
-    name: 'customer 2',
-    email: 'customer1@gmai2.com',
-    first_name: 'C2',
-    last_name: 'Customer 2',
-  },
-]
-
-const tasks = [
-  {
-    id: 1,
-    title: 'Task 1',
-    start_date: Date.now(),
-    end_date: Date.now(),
-    reference: 'reference 1',
-    job_type_id: 1,
-    minutes_spent: 20,
-  },
-  {
-    id: 2,
-    title: 'Task 2',
-    start_date: Date.now(),
-    end_date: Date.now(),
-    reference: 'reference 2',
-    job_type_id: 2,
-    minutes_spent: 10,
-  },
-]
 
 const currencies = CurrencyList.getAll('en_US')
 
@@ -148,6 +112,9 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
   const taskHookForm = useForm<TaskFormInputs>()
   const customerHookForm = useForm<CustomerFormInputs>()
 
+  const { customers } = useCustomers()
+  const { tasks } = useTasks()
+
   const customerId = watch('customer_id')
   const taskId = watch('task_id')
   const currency = watch('currency', 'DKK')
@@ -157,30 +124,21 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
 
   const { data: jobTypes } = useJobTypes()
 
-  const [selectedCustomer, setSelectedCustomer] = useState<any>(null)
-  const [selectedTask, setSelectedTask] = useState<any>(null)
   const [showDialog, setShowDialog] = useState<boolean>(false)
   const [formType, setFormType] = useState<'Customer' | 'Task'>('Customer')
-  const [totalAmount, setTotalAmount] = useState(0)
 
-  useEffect(() => {
-    setSelectedCustomer(
-      customers.find((customer) => customer.id === customerId)
-    )
+  const selectedCustomer = useMemo(() => {
+    return customers.find((customer) => customer.id === customerId)
   }, [customerId])
 
-  useEffect(() => {
-    setSelectedTask(tasks.find((task) => task.id === taskId))
+  const selectedTask = useMemo(() => {
+    return tasks.find((task) => task.id === taskId)
   }, [taskId])
 
-  useEffect(() => {
-    const mount = orderLines?.reduce((pre, cur) => {
-      if (cur.quantity && cur.unitPrice)
-        return pre + cur.quantity * cur.unitPrice
-      else return pre
-    }, 0)
-    setTotalAmount(mount || 0)
-  })
+  const totalAmount = orderLines?.reduce((pre, cur) => {
+    if (cur.quantity && cur.unitPrice) return pre + cur.quantity * cur.unitPrice
+    else return pre
+  }, 0)
 
   const handleAddOrderLine = () => {
     setValue('order_lines', [
@@ -189,7 +147,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
     ])
   }
 
-  const handleDelteOrderLine = (index: number) => {
+  const handleDeleteOrderLine = (index: number) => {
     setValue(
       'order_lines',
       (orderLines || []).filter((_, i) => index !== i)
@@ -243,9 +201,9 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
                     fullWidth
                     error={!!errors.customer_id}
                   >
-                    {customers?.map(({ id, name }) => (
+                    {customers?.map(({ id, company_name }) => (
                       <MenuItem key={id} value={id}>
-                        {name}
+                        {company_name}
                       </MenuItem>
                     ))}
                   </Select>
@@ -268,11 +226,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
                 label="Customer contact *"
                 style={{ margin: '1px' }}
                 disabled
-                value={
-                  selectedCustomer
-                    ? `${selectedCustomer.first_name} ${selectedCustomer.last_name}`
-                    : ''
-                }
+                value={selectedCustomer?.name_contact_person || ''}
                 fullWidth
               />
             </Grid>
@@ -281,7 +235,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
                 label="Customer email *"
                 style={{ margin: '1px' }}
                 disabled
-                value={selectedCustomer ? selectedCustomer.email : ''}
+                value={selectedCustomer?.email_contact_person || ''}
                 fullWidth
               />
             </Grid>
@@ -482,7 +436,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox disabled />}
+                control={<Checkbox />}
                 label="Invoice with VAT"
               />
               <div
@@ -590,7 +544,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
                             color="error"
                             variant="contained"
                             size="small"
-                            onClick={() => handleDelteOrderLine(index)}
+                            onClick={() => handleDeleteOrderLine(index)}
                             sx={{ minWidth: '40px' }}
                           >
                             <DeleteIcon
