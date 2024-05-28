@@ -14,4 +14,5 @@ export default interface Customer {
   payment_due_days: number
   company_id: string
   ean: number
+  deleted: boolean
 }
