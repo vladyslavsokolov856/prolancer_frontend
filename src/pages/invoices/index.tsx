@@ -31,7 +31,7 @@ const InvoiceIndex = () => {
   const { invoices } = useInvoices()
   const { customers } = useCustomers()
   const { orderLines } = useOrderLines()
-  // const { currencyRates } = useCurrencyRates()
+  const { currencyRates } = useCurrencyRates()
   const { deleteInvoiceMutation } = useDeleteInvoice()
 
   const [open, setOpen] = useState<boolean>(false)
@@ -143,7 +143,8 @@ const InvoiceIndex = () => {
           : customer.company_name),
       _invoice_date: date && new Date(date).toLocaleDateString(),
     }
-    totalAmount += amount
+    const convertedAmount = amount / (currencyRates[currency] || 1)
+    totalAmount += convertedAmount
     totalHours += +invoice.hours_worked || 0
     return newInvoice
   })
