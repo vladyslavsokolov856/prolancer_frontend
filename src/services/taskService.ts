@@ -4,7 +4,9 @@ import axiosInstance from './axios'
 
 export const fetchTasks = async (): Promise<Task[]> => {
   const response: AxiosResponse<Task[]> = await axiosInstance.get(`/api/tasks`)
-  return response.data
+  return response.data.sort(
+    ({ id: id1 }, { id: id2 }) => (id1 as number) - (id2 as number)
+  )
 }
 
 export const fetchTask = async (id: number): Promise<Task> => {

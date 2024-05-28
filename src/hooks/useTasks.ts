@@ -80,7 +80,7 @@ export const useEditTask = (id: number) => {
   } = useMutation({
     mutationFn: (taskData: Task) => editTask(id, taskData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['tasks', id] })
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
     },
   })
 
