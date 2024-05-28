@@ -80,6 +80,7 @@ interface IProTable extends ISorterFilters {
   columns: ColumnType[]
   data: RecordType[]
   beforeTable?: ReactNode
+  BeforeTableComponent?: React.FC
 }
 
 interface IFilterOptions {
@@ -91,6 +92,7 @@ const ProTable: React.FC<IProTable> = ({
   data,
   filters,
   beforeTable,
+  BeforeTableComponent,
 }) => {
   const [showFilterList, setShowFilterList] = useState<boolean>(false)
   const [filterOptions, setFilterOptions] = useState<IFilterOptions>({})
@@ -321,7 +323,8 @@ const ProTable: React.FC<IProTable> = ({
         )}
       </Box>
 
-      {beforeTable}
+      {/* {beforeTable} */}
+      <BeforeTableComponent list={filteredData} />
       <TableContainer
         component={Paper}
         sx={{

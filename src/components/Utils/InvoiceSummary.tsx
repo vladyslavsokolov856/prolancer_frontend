@@ -1,3 +1,5 @@
+import { useCurrencyRates } from '@/hooks/useCurrencyRates'
+import Invoice from '@/types/invoices'
 import { Card, Grid, Typography } from '@mui/material'
 import { styled } from '@mui/system'
 
@@ -16,15 +18,30 @@ const Label = styled(Typography)({
 const Value = styled(Typography)({})
 
 type InvoiceSummaryProps = {
-  totalInvoices: number
-  totalHours: number
-  totalAmount: number
+  // totalInvoices: number
+  // totalHours: number
+  // totalAmount: number
+  list: Invoice[]
 }
 const InvoiceSummary = ({
-  totalInvoices,
-  totalHours,
-  totalAmount,
+  // totalInvoices,
+  // totalHours,
+  // totalAmount,
+  list: invoices,
 }: InvoiceSummaryProps) => {
+  // const { currencyRates } = useCurrencyRates()
+  const { currencyRates } = { currencyRates: {} }
+  console.log('invoices', invoices)
+  const totalInvoices = invoices.length
+  let totalHours = 0
+  let totalAmount = 0
+  invoices.forEach((invoice) => {
+    const amount = invoice.amount
+    const currency = invoice.currency || 'DKK'
+    const convertedAmount = amount / (currencyRates[currency] || 1)
+    totalAmount += convertedAmount
+    totalHours += +invoice.hours_worked || 0
+  })
   return (
     <StyledCard>
       <div style={{ padding: 16 }}>

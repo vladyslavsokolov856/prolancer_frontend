@@ -278,6 +278,7 @@ const InvoiceIndex = () => {
             totalAmount={totalAmount}
           />
         }
+        BeforeTableComponent={InvoiceSummary}
       />
 
       <ConfirmDialog
