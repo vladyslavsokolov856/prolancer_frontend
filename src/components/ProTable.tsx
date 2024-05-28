@@ -54,7 +54,7 @@ type FilterFunctionType = (itemValue: string, filterValue: string) => boolean
 interface IFilterItem {
   key: string | number
   name: string
-  items: IItem[]
+  items?: IItem[]
   type?: string
   filterFunction?: FilterFunctionType
 }

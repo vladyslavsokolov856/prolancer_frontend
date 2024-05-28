@@ -68,7 +68,6 @@ const statusFilter = {
     },
     { key: 'none', name: 'None' },
   ],
-  columnSize: 3,
 }
 
 const InvoiceIndex = () => {
@@ -100,19 +99,17 @@ const InvoiceIndex = () => {
             ? customer.name_contact_person
             : customer.company_name),
       })),
-      columnSize: 3,
     },
     {
       name: 'Invoice date',
       type: 'date',
       key: '_invoice_date',
-      columnSize: 3,
     },
     {
       name: 'Invoice date before',
       type: 'date',
       key: '_invoice_date_before',
-      columnSize: 3,
+
       filterFunction: (itemValue: string, filterValue: string) => {
         return dayjs(itemValue) < dayjs(filterValue)
       },
