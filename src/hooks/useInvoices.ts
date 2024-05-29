@@ -8,6 +8,8 @@ import {
   fetchInvoices,
   deleteInvoice,
   createInvoice,
+  fetchInvoice,
+  updateInvoice,
 } from '@/services/invoiceService'
 import Invoice from '@/types/invoices'
 
@@ -50,6 +52,24 @@ export const useCreateInvoice = () => {
 
   return useMutation({
     mutationFn: createInvoice,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['invoices'] })
+    },
+  })
+}
+
+export const useInvoice = (id: number | string) => {
+  return useQuery({
+    queryFn: () => fetchInvoice(id),
+    queryKey: ['invoices', id],
+  })
+}
+
+export const useUpdateInvoice = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: updateInvoice,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] })
     },

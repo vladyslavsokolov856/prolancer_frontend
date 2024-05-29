@@ -64,7 +64,7 @@ const invoiceRoutes: RouteConfig[] = [
     label: 'New Invoice',
   },
   {
-    path: '/invoices/:id/edit',
+    path: '/invoices/:invoiceId/edit',
     element: <EditInvoice />,
     label: 'Edit Invoice',
   },

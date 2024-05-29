@@ -19,3 +19,22 @@ export const createInvoice = async (data: InvoiceInputs) => {
 
   return response.data
 }
+
+export const fetchInvoice = async (invoiceId: number | string) => {
+  const response = await axiosInstance.get<Invoice>(
+    `/api/invoices/${invoiceId}`
+  )
+
+  return response.data
+}
+
+export const updateInvoice = async (
+  data: InvoiceInputs & { id: number | string }
+) => {
+  const response = await axiosInstance.put<Invoice>(
+    `/api/invoices/${data.id}`,
+    data
+  )
+
+  return response.data
+}

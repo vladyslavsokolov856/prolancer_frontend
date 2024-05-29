@@ -24,7 +24,7 @@ import {
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useJobTypes } from '@/hooks/useJobTypes'
 import dayjs, { Dayjs } from 'dayjs'
@@ -46,7 +46,7 @@ export type InvoiceInputs = {
   customer_id: number
   send_invoice_copy_to: string
   task_id: number
-  invoice_date: Dayjs | null
+  invoice_date: Dayjs | string | null
   currency: string
   payment_days: string
   terms_accepted?: boolean
@@ -98,18 +98,23 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title }) => {
 interface InvoiceFormProps {
   onSubmit: SubmitHandler<InvoiceInputs>
   type?: 'create' | 'update'
+  initialValues?: Partial<InvoiceInputs>
 }
 
-const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
+const InvoiceForm: React.FC<InvoiceFormProps> = ({
+  onSubmit,
+  type,
+  initialValues,
+}) => {
   const {
     register,
     watch,
     getValues,
     setValue,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<InvoiceInputs>()
-
   const taskHookForm = useForm<TaskFormInputs>()
   const customerHookForm = useForm<CustomerFormInputs>()
 
@@ -128,13 +133,22 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
   const [showDialog, setShowDialog] = useState<boolean>(false)
   const [formType, setFormType] = useState<'Customer' | 'Task'>('Customer')
 
+  useEffect(() => {
+    reset(initialValues)
+  }, [initialValues])
+
   const selectedCustomer = useMemo(() => {
-    return customers.find((customer) => customer.id === customerId)
-  }, [customerId])
+    return customers.find(
+      (customer) =>
+        customer.id === customerId || customer.id === initialValues?.customer_id
+    )
+  }, [customerId, initialValues, customers])
 
   const selectedTask = useMemo(() => {
-    return tasks.find((task) => task.id === taskId)
-  }, [taskId])
+    return tasks.find(
+      (task) => task.id === taskId || task.id === initialValues?.task_id
+    )
+  }, [taskId, initialValues, tasks])
 
   const totalAmount = orderLines?.reduce((pre, cur) => {
     if (cur.quantity && cur.unit_price)
@@ -196,7 +210,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
                     labelId="customer-label"
                     id="customer"
                     label="Customer *"
-                    defaultValue=""
+                    defaultValue={initialValues?.customer_id}
                     {...register('customer_id', {
                       required: 'Customer is a required field',
                     })}
@@ -262,7 +276,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
                     labelId="task-label"
                     id="task"
                     label="Task *"
-                    defaultValue=""
+                    defaultValue={initialValues?.task_id}
                     {...register('task_id', {
                       required: 'Task is a required field',
                     })}
@@ -296,7 +310,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
             </Grid>
             <Grid item xs={12} md={6}>
               <DatePicker
-                defaultValue={getValues('invoice_date') || null}
+                defaultValue={initialValues?.invoice_date as Dayjs}
                 {...register('invoice_date', {
                   required: 'Invoice date is required field',
                 })}
@@ -351,6 +365,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
                   labelId="job-type-label"
                   id="job_type_id"
                   label="Job type"
+                  defaultValue={selectedTask?.job_type_id || ''}
                   value={selectedTask ? selectedTask.job_type_id : ''}
                   fullWidth
                   disabled
@@ -504,7 +519,9 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
                             label="Quantity"
                             type="number"
                             error={!!errors.order_lines?.[index]?.quantity}
-                            {...register(`order_lines.${index}.quantity`)}
+                            {...register(`order_lines.${index}.quantity`, {
+                              valueAsNumber: true,
+                            })}
                             helperText={
                               <Typography
                                 component="span"
@@ -525,7 +542,9 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ onSubmit, type }) => {
                             label="Unit Price"
                             type="number"
                             error={!!errors.order_lines?.[index]?.unit_price}
-                            {...register(`order_lines.${index}.unit_price`)}
+                            {...register(`order_lines.${index}.unit_price`, {
+                              valueAsNumber: true,
+                            })}
                             helperText={
                               <Typography
                                 component="span"
