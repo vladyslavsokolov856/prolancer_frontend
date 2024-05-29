@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Divider,
   FormControl,
   FormControlLabel,
@@ -121,6 +122,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
 
   const { customers } = useCustomers()
   const { tasks } = useTasks()
+  const { data: jobTypes } = useJobTypes()
+  const formLoaded = useMemo(() => {
+    return customers && tasks && jobTypes
+  }, [customers, tasks, jobTypes])
 
   const customerId = watch('customer_id')
   const taskId = watch('task_id')
@@ -129,8 +134,6 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   const orderLines = watch('order_lines', [
     { description: '', quantity: null, unit_price: null },
   ])
-
-  const { data: jobTypes } = useJobTypes()
 
   const [showDialog, setShowDialog] = useState<boolean>(false)
   const [formType, setFormType] = useState<'Customer' | 'Task'>('Customer')
@@ -190,6 +193,19 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   const onTaskFormSubmit: SubmitHandler<TaskFormInputs> = async () => {
     setShowDialog(false)
     taskHookForm.reset()
+  }
+
+  if (!formLoaded) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ height: 'calc(100vh - 100px)' }}
+      >
+        <CircularProgress />
+      </Box>
+    )
   }
 
   return (
