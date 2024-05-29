@@ -53,6 +53,7 @@ export type InvoiceInputs = {
   hours_worked: number
   order_lines: IOrderLine[]
   status: string
+  vat_percentage: number
 }
 
 const currencies = CurrencyList.getAll('en_US')
@@ -114,7 +115,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<InvoiceInputs>()
+  } = useForm<InvoiceInputs>({ defaultValues: { vat_percentage: 0 } })
   const taskHookForm = useForm<TaskFormInputs>()
   const customerHookForm = useForm<CustomerFormInputs>()
 
@@ -124,6 +125,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   const customerId = watch('customer_id')
   const taskId = watch('task_id')
   const currency = watch('currency', 'DKK')
+  const vatPercentage = watch('vat_percentage')
   const orderLines = watch('order_lines', [
     { description: '', quantity: null, unit_price: null },
   ])
@@ -453,7 +455,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox />}
+                control={
+                  <Checkbox
+                    checked={vatPercentage > 0}
+                    onChange={(_, checked) => {
+                      setValue('vat_percentage', checked ? 25 : 0)
+                    }}
+                  />
+                }
                 label="Invoice with VAT"
               />
               <div
@@ -603,15 +612,23 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                       </StyledTableCell>
                     </TableRow>
                     <TableRow>
-                      <StyledTableCell align="right">VAT 25%</StyledTableCell>
+                      <StyledTableCell align="right">
+                        VAT {vatPercentage}%
+                      </StyledTableCell>
                       <StyledTableCell align="right" sx={{ fontWeight: 600 }}>
-                        {`${currency} ${(totalAmount / 4).toFixed(2)}`}
+                        {`${currency} ${(
+                          (totalAmount * vatPercentage) /
+                          100
+                        ).toFixed(2)}`}
                       </StyledTableCell>
                     </TableRow>
                     <TableRow>
                       <StyledTableCell align="right">In total</StyledTableCell>
                       <StyledTableCell align="right" sx={{ fontWeight: 600 }}>
-                        {`${currency} ${(totalAmount * 1.25).toFixed(2)}`}
+                        {`${currency} ${(
+                          totalAmount *
+                          (1 + vatPercentage / 100)
+                        ).toFixed(2)}`}
                       </StyledTableCell>
                     </TableRow>
                   </TableBody>
