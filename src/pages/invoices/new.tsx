@@ -1,8 +1,10 @@
 import { Box } from '@mui/material'
 import InvoiceForm from '@/components/Form/InvoiceForm'
 import { styled } from '@mui/material/styles'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { Inputs } from '@/components/Form/InvoiceForm'
+import type { SubmitHandler } from 'react-hook-form'
+import { InvoiceInputs } from '@/components/Form/InvoiceForm'
+import { useCreateInvoice } from '@/hooks/useInvoices'
+import { useNavigate } from 'react-router-dom'
 
 const Title = styled('span')({
   fontWeight: 700,
@@ -11,18 +13,25 @@ const Title = styled('span')({
 })
 
 const CreateInvoice = () => {
-  const form = useForm<Inputs>()
+  const navigate = useNavigate()
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const { mutate: createInvoice } = useCreateInvoice()
+
+  const onSubmit: SubmitHandler<InvoiceInputs> = async ({
+    terms_accepted,
+    ...data
+  }) => {
     console.log(data)
-    form.reset()
+    createInvoice(data, {
+      onSuccess: () => navigate('/invoices'),
+    })
   }
 
   return (
     <Box display="flex" justifyContent="left" flexDirection="column">
       <Title>Create invoice</Title>
 
-      <InvoiceForm form={form} onSubmit={onSubmit} />
+      <InvoiceForm type="create" onSubmit={onSubmit} />
     </Box>
   )
 }

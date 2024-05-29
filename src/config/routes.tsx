@@ -11,6 +11,7 @@ import NewTaskPage from '@/pages/tasks/new'
 import EditTaskPage from '@/pages/tasks/edit'
 
 import NewInvoicePage from '@/pages/invoices/new'
+import EditInvoice from '@/pages/invoices/edit'
 
 export interface RouteConfig {
   path: string
@@ -61,6 +62,11 @@ const invoiceRoutes: RouteConfig[] = [
     path: '/invoices/new',
     element: <NewInvoicePage />,
     label: 'New Invoice',
+  },
+  {
+    path: '/invoices/:invoiceId/edit',
+    element: <EditInvoice />,
+    label: 'Edit Invoice',
   },
 ]
 

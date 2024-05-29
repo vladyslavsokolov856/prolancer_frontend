@@ -3,10 +3,10 @@ import Customer from './customers'
 export default interface Invoice {
   id: number
   status: string
-  created_date: Date
-  updated_date: Date
-  invoice_date: Date
-  customer_payment_date: Date
+  created_date: string
+  updated_date: string
+  invoice_date: string
+  customer_payment_date: string
   note: string
   currency: string
   hours_worked: number
