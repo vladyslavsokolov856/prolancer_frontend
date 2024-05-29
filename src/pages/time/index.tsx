@@ -52,6 +52,7 @@ export interface IListItem {
   task_id?: number
   notes: string
   editable?: boolean
+  status?: string
 }
 
 type IListItemKey = keyof IListItem

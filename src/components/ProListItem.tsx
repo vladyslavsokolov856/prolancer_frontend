@@ -132,6 +132,22 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
           status: 'sent',
         },
       })
+
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          selectedId === item.id
+            ? {
+                ...item,
+                duration_minutes: duration,
+                start_time: dayjs(startTime).format('M/D/YYYY, h:mm:ss A'),
+                notes,
+                status: 'sent',
+                task_id: task,
+                editable: false,
+              }
+            : item
+        )
+      )
     }
   }
 
@@ -172,7 +188,7 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
                 color: 'white',
               }}
             >
-              draft
+              {item.status}
             </Box>
             <Button
               variant="contained"
