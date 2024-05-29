@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Divider,
   FormControl,
   FormControlLabel,
@@ -24,8 +25,8 @@ import {
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
-import React, { useEffect, useState } from 'react'
-import { SubmitHandler, UseFormReturn, useForm } from 'react-hook-form'
+import React, { useEffect, useMemo, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { useJobTypes } from '@/hooks/useJobTypes'
 import dayjs, { Dayjs } from 'dayjs'
 import { DatePicker } from '@mui/x-date-pickers'
@@ -33,67 +34,32 @@ import CurrencyList from 'currency-list'
 import FormDialog from '../FormDialog'
 import TaskForm, { Inputs as TaskFormInputs } from './TaskForm'
 import CustomerForm, { Inputs as CustomerFormInputs } from './CustomerForm'
+import { useCustomers } from '@/hooks/useCustomers'
+import { useTasks } from '@/hooks/useTasks'
 
 interface IOrderLine {
   description: string
   quantity: number | null
-  unitPrice: number | null
+  unit_price: number | null
 }
 
-export type Inputs = {
+export type InvoiceInputs = {
   customer_id: number
   send_invoice_copy_to: string
   task_id: number
-  invoice_date: Dayjs | null
+  invoice_date: Dayjs | string | null
   currency: string
   payment_days: string
-  terms_accepted: boolean
+  terms_accepted?: boolean
   hours_worked: number
   order_lines: IOrderLine[]
+  status: string
+  vat_percentage: number
 }
-
-const customers = [
-  {
-    id: 1,
-    name: 'customer 1',
-    email: 'customer1@gmail.com',
-    first_name: 'C1',
-    last_name: 'Customer 1',
-  },
-  {
-    id: 2,
-    name: 'customer 2',
-    email: 'customer1@gmai2.com',
-    first_name: 'C2',
-    last_name: 'Customer 2',
-  },
-]
-
-const tasks = [
-  {
-    id: 1,
-    title: 'Task 1',
-    start_date: Date.now(),
-    end_date: Date.now(),
-    reference: 'reference 1',
-    job_type_id: 1,
-    minutes_spent: 20,
-  },
-  {
-    id: 2,
-    title: 'Task 2',
-    start_date: Date.now(),
-    end_date: Date.now(),
-    reference: 'reference 2',
-    job_type_id: 2,
-    minutes_spent: 10,
-  },
-]
 
 const currencies = CurrencyList.getAll('en_US')
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  margin: theme.spacing(1),
   padding: theme.spacing(2),
 }))
 
@@ -132,65 +98,77 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title }) => {
 }
 
 interface InvoiceFormProps {
-  form: UseFormReturn<Inputs, any, any>
-  onSubmit: SubmitHandler<Inputs>
+  onSubmit: SubmitHandler<InvoiceInputs>
+  type?: 'create' | 'update'
+  initialValues?: Partial<InvoiceInputs>
 }
 
-const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
+const InvoiceForm: React.FC<InvoiceFormProps> = ({
+  onSubmit,
+  type,
+  initialValues,
+}) => {
   const {
     register,
     watch,
     getValues,
     setValue,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = form
-
+  } = useForm<InvoiceInputs>({ defaultValues: { vat_percentage: 0 } })
   const taskHookForm = useForm<TaskFormInputs>()
   const customerHookForm = useForm<CustomerFormInputs>()
+
+  const { customers } = useCustomers()
+  const { tasks } = useTasks()
+  const { data: jobTypes } = useJobTypes()
+  const formLoaded = useMemo(() => {
+    return customers && tasks && jobTypes
+  }, [customers, tasks, jobTypes])
 
   const customerId = watch('customer_id')
   const taskId = watch('task_id')
   const currency = watch('currency', 'DKK')
+  const vatPercentage = watch('vat_percentage')
   const orderLines = watch('order_lines', [
-    { description: '', quantity: null, unitPrice: null },
+    { description: '', quantity: null, unit_price: null },
   ])
 
-  const { data: jobTypes } = useJobTypes()
-
-  const [selectedCustomer, setSelectedCustomer] = useState<any>(null)
-  const [selectedTask, setSelectedTask] = useState<any>(null)
   const [showDialog, setShowDialog] = useState<boolean>(false)
   const [formType, setFormType] = useState<'Customer' | 'Task'>('Customer')
-  const [totalAmount, setTotalAmount] = useState(0)
 
   useEffect(() => {
-    setSelectedCustomer(
-      customers.find((customer) => customer.id === customerId)
+    reset(initialValues)
+  }, [initialValues])
+
+  const selectedCustomer = useMemo(() => {
+    return customers.find(
+      (customer) =>
+        customer.id === customerId || customer.id === initialValues?.customer_id
     )
-  }, [customerId])
+  }, [customerId, initialValues, customers])
 
-  useEffect(() => {
-    setSelectedTask(tasks.find((task) => task.id === taskId))
-  }, [taskId])
+  const selectedTask = useMemo(() => {
+    return tasks.find(
+      (task) => task.id === taskId || task.id === initialValues?.task_id
+    )
+  }, [taskId, initialValues, tasks])
 
-  useEffect(() => {
-    const mount = orderLines?.reduce((pre, cur) => {
-      if (cur.quantity && cur.unitPrice)
-        return pre + cur.quantity * cur.unitPrice
-      else return pre
-    }, 0)
-    setTotalAmount(mount || 0)
-  })
+  const totalAmount = orderLines?.reduce((pre, cur) => {
+    if (cur.quantity && cur.unit_price)
+      return pre + cur.quantity * cur.unit_price
+    else return pre
+  }, 0)
 
   const handleAddOrderLine = () => {
     setValue('order_lines', [
       ...(orderLines || []),
-      { description: '', quantity: null, unitPrice: null },
+      { description: '', quantity: null, unit_price: null },
     ])
   }
 
-  const handleDeelteOrderLine = (index: number) => {
+  const handleDeleteOrderLine = (index: number) => {
     setValue(
       'order_lines',
       (orderLines || []).filter((_, i) => index !== i)
@@ -217,6 +195,19 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
     taskHookForm.reset()
   }
 
+  if (!formLoaded) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ height: 'calc(100vh - 100px)' }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
+
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -237,16 +228,16 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                     labelId="customer-label"
                     id="customer"
                     label="Customer *"
-                    defaultValue=""
+                    defaultValue={initialValues?.customer_id}
                     {...register('customer_id', {
                       required: 'Customer is a required field',
                     })}
                     fullWidth
                     error={!!errors.customer_id}
                   >
-                    {customers?.map(({ id, name }) => (
+                    {customers?.map(({ id, company_name }) => (
                       <MenuItem key={id} value={id}>
-                        {name}
+                        {company_name}
                       </MenuItem>
                     ))}
                   </Select>
@@ -269,11 +260,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                 label="Customer contact *"
                 style={{ margin: '1px' }}
                 disabled
-                value={
-                  selectedCustomer
-                    ? `${selectedCustomer.first_name} ${selectedCustomer.last_name}`
-                    : ''
-                }
+                value={selectedCustomer?.name_contact_person || ''}
                 fullWidth
               />
             </Grid>
@@ -282,7 +269,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                 label="Customer email *"
                 style={{ margin: '1px' }}
                 disabled
-                value={selectedCustomer ? selectedCustomer.email : ''}
+                value={selectedCustomer?.email_contact_person || ''}
                 fullWidth
               />
             </Grid>
@@ -307,7 +294,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                     labelId="task-label"
                     id="task"
                     label="Task *"
-                    defaultValue=""
+                    defaultValue={initialValues?.task_id}
                     {...register('task_id', {
                       required: 'Task is a required field',
                     })}
@@ -341,7 +328,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
             </Grid>
             <Grid item xs={12} md={6}>
               <DatePicker
-                defaultValue={getValues('invoice_date') || null}
+                defaultValue={initialValues?.invoice_date as Dayjs}
                 {...register('invoice_date', {
                   required: 'Invoice date is required field',
                 })}
@@ -396,6 +383,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                   labelId="job-type-label"
                   id="job_type_id"
                   label="Job type"
+                  defaultValue={selectedTask?.job_type_id || ''}
                   value={selectedTask ? selectedTask.job_type_id : ''}
                   fullWidth
                   disabled
@@ -483,7 +471,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox disabled />}
+                control={
+                  <Checkbox
+                    checked={vatPercentage > 0}
+                    onChange={(_, checked) => {
+                      setValue('vat_percentage', checked ? 25 : 0)
+                    }}
+                  />
+                }
                 label="Invoice with VAT"
               />
               <div
@@ -517,7 +512,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {orderLines?.map(({ quantity, unitPrice }, index) => (
+                    {orderLines?.map(({ quantity, unit_price }, index) => (
                       <TableRow
                         key={index}
                         sx={{
@@ -549,7 +544,9 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                             label="Quantity"
                             type="number"
                             error={!!errors.order_lines?.[index]?.quantity}
-                            {...register(`order_lines.${index}.quantity`)}
+                            {...register(`order_lines.${index}.quantity`, {
+                              valueAsNumber: true,
+                            })}
                             helperText={
                               <Typography
                                 component="span"
@@ -569,8 +566,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                           <TextField
                             label="Unit Price"
                             type="number"
-                            error={!!errors.order_lines?.[index]?.unitPrice}
-                            {...register(`order_lines.${index}.unitPrice`)}
+                            error={!!errors.order_lines?.[index]?.unit_price}
+                            {...register(`order_lines.${index}.unit_price`, {
+                              valueAsNumber: true,
+                            })}
                             helperText={
                               <Typography
                                 component="span"
@@ -591,7 +590,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                             color="error"
                             variant="contained"
                             size="small"
-                            onClick={() => handleDeelteOrderLine(index)}
+                            onClick={() => handleDeleteOrderLine(index)}
                             sx={{ minWidth: '40px' }}
                           >
                             <DeleteIcon
@@ -600,8 +599,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                           </Button>
                           <span style={{ fontWeight: 600, marginLeft: '10px' }}>
                             {`${currency} ${
-                              quantity && unitPrice
-                                ? Number(quantity * unitPrice).toFixed(2)
+                              quantity && unit_price
+                                ? Number(quantity * unit_price).toFixed(2)
                                 : '0.00'
                             }`}
                           </span>
@@ -629,15 +628,23 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                       </StyledTableCell>
                     </TableRow>
                     <TableRow>
-                      <StyledTableCell align="right">VAT 25%</StyledTableCell>
+                      <StyledTableCell align="right">
+                        VAT {vatPercentage}%
+                      </StyledTableCell>
                       <StyledTableCell align="right" sx={{ fontWeight: 600 }}>
-                        {`${currency} ${(totalAmount / 4).toFixed(2)}`}
+                        {`${currency} ${(
+                          (totalAmount * vatPercentage) /
+                          100
+                        ).toFixed(2)}`}
                       </StyledTableCell>
                     </TableRow>
                     <TableRow>
                       <StyledTableCell align="right">In total</StyledTableCell>
                       <StyledTableCell align="right" sx={{ fontWeight: 600 }}>
-                        {`${currency} ${(totalAmount * 1.25).toFixed(2)}`}
+                        {`${currency} ${(
+                          totalAmount *
+                          (1 + vatPercentage / 100)
+                        ).toFixed(2)}`}
                       </StyledTableCell>
                     </TableRow>
                   </TableBody>
@@ -666,10 +673,20 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
           <Divider />
 
           <Box display="flex" sx={{ gap: '10px', marginTop: '10px' }}>
-            <Button color="primary" variant="contained">
-              Save as draft
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              onClick={() => setValue('status', 'draft')}
+            >
+              {type === 'create' ? 'Save as draft' : 'Update invoice'}
             </Button>
-            <Button color="primary" variant="contained">
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              onClick={() => setValue('status', 'sent')}
+            >
               Submit invoice
             </Button>
           </Box>

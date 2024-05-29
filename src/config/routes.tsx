@@ -1,7 +1,7 @@
 import Index from '@/pages/index'
 import Settings from '@/pages/settings'
-
-import Cusomters from '@/pages/customers'
+import Invoices from '@/pages/invoices'
+import Customers from '@/pages/customers'
 import New from '@/pages/customers/new'
 import TimeRegistration from '@/pages/time'
 import UserIndexPage from '@/pages/users'
@@ -11,6 +11,7 @@ import NewTaskPage from '@/pages/tasks/new'
 import EditTaskPage from '@/pages/tasks/edit'
 
 import NewInvoicePage from '@/pages/invoices/new'
+import EditInvoice from '@/pages/invoices/edit'
 
 export interface RouteConfig {
   path: string
@@ -22,16 +23,12 @@ export interface RouteConfig {
 const customerRoutes: RouteConfig[] = [
   {
     path: '/customers',
-    element: <Cusomters />,
+    element: <Customers />,
   },
   {
     path: '/customers/new',
     element: <New />,
     label: 'New Customer',
-  },
-  {
-    path: '/customers',
-    element: <Cusomters />,
   },
 ]
 
@@ -58,9 +55,18 @@ const taskRoutes: RouteConfig[] = [
 
 const invoiceRoutes: RouteConfig[] = [
   {
+    path: '/invoices',
+    element: <Invoices />,
+  },
+  {
     path: '/invoices/new',
     element: <NewInvoicePage />,
     label: 'New Invoice',
+  },
+  {
+    path: '/invoices/:invoiceId/edit',
+    element: <EditInvoice />,
+    label: 'Edit Invoice',
   },
 ]
 

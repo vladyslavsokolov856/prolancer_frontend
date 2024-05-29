@@ -10,7 +10,7 @@ import Box from '@mui/material/Box'
 import InputBase from '@mui/material/InputBase'
 import SearchIcon from '@mui/icons-material/Search'
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactNode } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Grid from '@mui/material/Grid'
 import MenuItem from '@mui/material/MenuItem'
@@ -19,6 +19,8 @@ import Select from '@mui/material/Select'
 import { TablePagination } from '@mui/material'
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import dayjs from 'dayjs'
 
 const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.head}`]: {
@@ -45,13 +47,16 @@ const StyledTableRow = styled(TableRow)(() => ({
 
 interface IItem {
   key: string | number
-  name: String
+  name: string
 }
 
+type FilterFunctionType = (itemValue: string, filterValue: string) => boolean
 interface IFilterItem {
   key: string | number
   name: string
-  items: IItem[]
+  items?: IItem[]
+  type?: string
+  filterFunction?: FilterFunctionType
 }
 
 interface ISorterFilters {
@@ -65,21 +70,28 @@ export interface RecordType {
 
 export interface ColumnType {
   key: string
-  name?: String
+  name?: string
   align?: 'inherit' | 'left' | 'center' | 'right' | 'justify'
   render?: (value: any, record: RecordType, index: number) => React.ReactNode
+  initialSort?: 'asc' | 'desc'
 }
 
 interface IProTable extends ISorterFilters {
   columns: ColumnType[]
   data: RecordType[]
+  BeforeTableComponent?: React.FC<{ list: any[] }>
 }
 
 interface IFilterOptions {
   [key: string]: string
 }
 
-const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
+const ProTable: React.FC<IProTable> = ({
+  columns,
+  data,
+  filters,
+  BeforeTableComponent,
+}) => {
   const [showFilterList, setShowFilterList] = useState<boolean>(false)
   const [filterOptions, setFilterOptions] = useState<IFilterOptions>({})
   const [rowsPerPage, setRowsPerPage] = useState<number>(100)
@@ -93,7 +105,7 @@ const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
     setShowFilterList((prev) => !prev)
   }
 
-  const onHeaderClick = (key: string, name: String | undefined) => {
+  const onHeaderClick = (key: string, name: string | undefined) => {
     if (name) {
       if (sortField && sortField === key) {
         setSortDirection((prev) => !prev)
@@ -103,6 +115,14 @@ const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
       }
     }
   }
+
+  useEffect(() => {
+    const column = columns.find((column) => column.initialSort)
+    if (column) {
+      setSortDirection(column.initialSort === 'asc')
+      setSortField(column.key)
+    }
+  }, [])
 
   useEffect(() => {
     const startIndex = page * rowsPerPage
@@ -115,9 +135,23 @@ const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
       )
     )
 
+    const filterFunctions = {} as Record<string, FilterFunctionType>
+    filters?.forEach((filter) => {
+      if (filter.filterFunction) {
+        filterFunctions[filter.key] = filter.filterFunction
+      }
+    })
+
     const filteredItems = filteredData
       .filter((item) => {
         return Object.keys(filterOptions).every((key) => {
+          const filterFunction = filterFunctions[key]
+          if (filterFunction) {
+            return (
+              item.hasOwnProperty(key) &&
+              filterFunction(item[key], filterOptions[key])
+            )
+          }
           return item.hasOwnProperty(key) && item[key] === filterOptions[key]
         })
       })
@@ -132,7 +166,16 @@ const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
       : filteredItems
 
     setFilteredData(sortedItems)
-  }, [data, filterOptions, page, rowsPerPage, sortField, sortDirection, search])
+  }, [
+    data,
+    filterOptions,
+    page,
+    rowsPerPage,
+    sortField,
+    sortDirection,
+    search,
+    filters,
+  ])
 
   const handleFilterOptions = (key: string | number, value: string) => {
     setFilterOptions((prev) => ({ ...prev, [key]: value }))
@@ -200,28 +243,45 @@ const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
                     <Grid item xs={12} md={4} key={filter.key}>
                       <Box display="flex" flexDirection="column">
                         <span>{filter.name}</span>
-                        <Box display="flex" sx={{ width: '100%' }}>
-                          <FormControl
-                            fullWidth
-                            sx={{ backgroundColor: 'white' }}
-                          >
-                            <Select
-                              size="small"
-                              onChange={(e) =>
+                        {filter.type === 'date' ? (
+                          <Box>
+                            <DatePicker
+                              slotProps={{
+                                textField: { size: 'small', fullWidth: true },
+                              }}
+                              onChange={(date) =>
                                 handleFilterOptions(
                                   filter.key,
-                                  e.target.value as string
+                                  dayjs(date).format('M/D/YYYY')
                                 )
                               }
+                              sx={{ backgroundColor: 'white' }}
+                            />
+                          </Box>
+                        ) : (
+                          <Box display="flex" sx={{ width: '100%' }}>
+                            <FormControl
+                              fullWidth
+                              sx={{ backgroundColor: 'white' }}
                             >
-                              {filter.items.map(({ key, name }) => (
-                                <MenuItem value={key} key={key}>
-                                  {name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </Box>
+                              <Select
+                                size="small"
+                                onChange={(e) =>
+                                  handleFilterOptions(
+                                    filter.key,
+                                    e.target.value as string
+                                  )
+                                }
+                              >
+                                {filter.items.map(({ key, name }) => (
+                                  <MenuItem value={key} key={key}>
+                                    {name}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          </Box>
+                        )}
                       </Box>
                     </Grid>
                   ))}
@@ -261,6 +321,7 @@ const ProTable: React.FC<IProTable> = ({ columns, data, filters }) => {
         )}
       </Box>
 
+      {BeforeTableComponent && <BeforeTableComponent list={filteredData} />}
       <TableContainer
         component={Paper}
         sx={{
