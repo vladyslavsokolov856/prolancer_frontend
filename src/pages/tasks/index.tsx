@@ -15,6 +15,8 @@ import { Menu, MenuItem } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { useTasks } from '@/hooks/useTasks'
 import { useCustomers } from '@/hooks/userCustomers'
+import { TaskWorkLogPdf } from '@/components/Pdf/TaskWorkLogPdf'
+import { PDFDownloadLink, pdf } from '@react-pdf/renderer'
 
 const taskStatus = [
   { key: 'approved', name: 'Approved' },
@@ -84,7 +86,7 @@ const TaskIndex = () => {
         name: 'Retainer',
         render: (value, record) => (
           <Box>
-            {!!value ? (
+            {value ? (
               <Box
                 display="flex"
                 alignItems="center"
@@ -177,9 +179,29 @@ const TaskIndex = () => {
                 horizontal: 'right',
               }}
             >
-              <MenuItem onClick={handleClose}>
+              <MenuItem
+                onClick={async () => {
+                  const blob = await pdf(<TaskWorkLogPdf />).toBlob()
+                  const url = URL.createObjectURL(blob)
+
+                  const a = document.createElement('a')
+                  a.href = url
+                  a.download = 'example.pdf'
+                  a.click()
+
+                  URL.revokeObjectURL(url)
+                  handleClose()
+                }}
+              >
                 <Box display="flex" alignItems="center" sx={{ gap: '10px' }}>
                   <TextSnippetOutlinedIcon />
+                  {/* <PDFDownloadLink document={<TaskWorkLogPdf />}>
+                    {({ blob, url, loading, error }) =>
+                      loading
+                        ? 'Loading document...'
+                        : 'Download time registration'
+                    }
+                  </PDFDownloadLink> */}
                   Download time registration
                 </Box>
               </MenuItem>
@@ -217,6 +239,12 @@ const TaskIndex = () => {
           Create Task
         </Button>
       </Box>
+
+      {/* <PDFDownloadLink document={<TaskWorkLogPdf />}>
+        {({ blob, url, loading, error }) =>
+          loading ? 'Loading document...' : 'Download time registration'
+        }
+      </PDFDownloadLink> */}
 
       <ProTable
         columns={columns}
