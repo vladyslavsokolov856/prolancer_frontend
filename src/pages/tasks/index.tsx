@@ -16,7 +16,7 @@ import { useMemo, useState } from 'react'
 import { useTasks } from '@/hooks/useTasks'
 import { useCustomers } from '@/hooks/userCustomers'
 import { TaskWorkLogPdf } from '@/components/Pdf/TaskWorkLogPdf'
-import { PDFDownloadLink, pdf } from '@react-pdf/renderer'
+import { pdf } from '@react-pdf/renderer'
 
 const taskStatus = [
   { key: 'approved', name: 'Approved' },
@@ -195,13 +195,6 @@ const TaskIndex = () => {
               >
                 <Box display="flex" alignItems="center" sx={{ gap: '10px' }}>
                   <TextSnippetOutlinedIcon />
-                  {/* <PDFDownloadLink document={<TaskWorkLogPdf />}>
-                    {({ blob, url, loading, error }) =>
-                      loading
-                        ? 'Loading document...'
-                        : 'Download time registration'
-                    }
-                  </PDFDownloadLink> */}
                   Download time registration
                 </Box>
               </MenuItem>
@@ -239,12 +232,6 @@ const TaskIndex = () => {
           Create Task
         </Button>
       </Box>
-
-      {/* <PDFDownloadLink document={<TaskWorkLogPdf />}>
-        {({ blob, url, loading, error }) =>
-          loading ? 'Loading document...' : 'Download time registration'
-        }
-      </PDFDownloadLink> */}
 
       <ProTable
         columns={columns}
