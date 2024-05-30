@@ -46,6 +46,9 @@ const styles = StyleSheet.create({
   flex3: {
     flex: 3,
   },
+  textAlignRight: {
+    textAlign: 'right',
+  },
 })
 
 export const TaskWorkLogPdf = () => (
@@ -54,7 +57,7 @@ export const TaskWorkLogPdf = () => (
       <View style={styles.section}>
         <View style={styles.row}>
           <Text style={styles.col}>Time registration</Text>
-          <Text style={[styles.col, { textAlign: 'right' }]}>factofly</Text>
+          <Text style={[styles.col, styles.textAlignRight]}>factofly</Text>
         </View>
         <View style={styles.row}>
           <View style={styles.col}>
@@ -72,19 +75,19 @@ export const TaskWorkLogPdf = () => (
             <Text style={styles.bold}>Task Information</Text>
             <View style={styles.row}>
               <Text style={styles.col}>Start date</Text>
-              <Text style={[styles.col, { textAlign: 'right' }]}>value</Text>
+              <Text style={[styles.col, styles.textAlignRight]}>value</Text>
             </View>
             <View style={styles.row}>
               <Text style={styles.col}>End date</Text>
-              <Text style={[styles.col, { textAlign: 'right' }]}>value</Text>
+              <Text style={[styles.col, styles.textAlignRight]}>value</Text>
             </View>
             <View style={styles.row}>
               <Text style={styles.col}>Number of hours</Text>
-              <Text style={[styles.col, { textAlign: 'right' }]}>value</Text>
+              <Text style={[styles.col, styles.textAlignRight]}>value</Text>
             </View>
             <View style={styles.row}>
               <Text style={styles.col}>Job type</Text>
-              <Text style={[styles.col, { textAlign: 'right' }]}>value</Text>
+              <Text style={[styles.col, styles.textAlignRight]}>value</Text>
             </View>
           </View>
           <View style={styles.col}>
