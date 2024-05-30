@@ -21,7 +21,7 @@ import dayjs from 'dayjs'
 
 type SelectedInvoiceType = Invoice | null | undefined
 
-const statusColors: Record<string, string> = {
+const statusColors: { [key: string]: any } = {
   cancelled: 'default',
   draft: 'secondary',
   sent: 'primary',
@@ -139,7 +139,7 @@ const InvoiceIndex = () => {
       {
         key: 'status',
         name: 'Status',
-        render: (status) => {
+        render: (status: keyof typeof statusColors) => {
           const color = statusColors[status]
           return status ? (
             <Chip

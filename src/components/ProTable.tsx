@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react'
 import { styled } from '@mui/material/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -10,7 +11,6 @@ import Box from '@mui/material/Box'
 import InputBase from '@mui/material/InputBase'
 import SearchIcon from '@mui/icons-material/Search'
 import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined'
-import React, { useState, useEffect, ReactNode } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Grid from '@mui/material/Grid'
 import MenuItem from '@mui/material/MenuItem'
@@ -273,7 +273,7 @@ const ProTable: React.FC<IProTable> = ({
                                   )
                                 }
                               >
-                                {filter.items.map(({ key, name }) => (
+                                {(filter?.items || []).map(({ key, name }) => (
                                   <MenuItem value={key} key={key}>
                                     {name}
                                   </MenuItem>

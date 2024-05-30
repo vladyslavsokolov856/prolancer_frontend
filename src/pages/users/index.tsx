@@ -31,7 +31,7 @@ const UserIndex = () => {
       {
         key: 'display_name',
         name: 'Name',
-        render: (value, record) => `${record.first_name} ${record.last_name}`,
+        render: (_, record) => `${record.first_name} ${record.last_name}`,
       },
       { key: 'email', name: 'Email' },
       { key: 'phone_number', name: 'Phone' },
