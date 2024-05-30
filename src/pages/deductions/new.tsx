@@ -1,5 +1,4 @@
-import ProInput from "@/components/ProInput";
-import ProSelect from "@/components/ProSelect";
+import DeductionForm from "@/components/Form/DeductionForm";
 import { Box, styled } from "@mui/material";
 
 const Title = styled('span')({
@@ -13,8 +12,7 @@ const CreateDeduction = () => {
         <Box display="flex" justifyContent="left" flexDirection="column">
             <Title>Create invoice</Title>
 
-            <ProInput label="Description" />
-            <ProSelect label="Task" />
+            <DeductionForm />
         </Box>
     )
 };

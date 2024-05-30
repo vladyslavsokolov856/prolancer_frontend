@@ -7,7 +7,7 @@ type ProSelectProps = {
 
 const ProSelect: React.FC<ProSelectProps> = ({ label, required, helperText, sx, ...selectProps }) => {
     return (
-        <Stack marginY={1} sx={sx}>
+        <Stack marginY={0.5} sx={sx}>
             <InputLabel sx={{ my: 0.5 }}>{label} {required && <span style={{ color: 'red' }}>*</span>}</InputLabel>
             <Select {...selectProps} size="small">
                 {selectProps.children}

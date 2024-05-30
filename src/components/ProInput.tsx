@@ -5,9 +5,9 @@ type ProInputProps = {
     helperText?: ReactNode
 } & OutlinedInputProps
 
-const ProInput: React.FC<ProInputProps> = ({ label, required, helperText, ...inputProps }) => {
+const ProInput: React.FC<ProInputProps> = ({ label, required, helperText, sx, ...inputProps }) => {
     return (
-        <Stack>
+        <Stack marginY={0.5} sx={sx}>
             <InputLabel sx={{ my: 0.5 }}>{label} {required && <span style={{ color: 'red' }}>*</span>}</InputLabel>
             <OutlinedInput size="small" {...inputProps} />
             {inputProps.error ? helperText : null}
