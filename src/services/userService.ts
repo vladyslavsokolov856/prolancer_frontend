@@ -7,6 +7,29 @@ export const fetchUsers = async (): Promise<User[]> => {
   return response.data
 }
 
+export const fetchUser = async (id: number): Promise<User> => {
+  const response: AxiosResponse<User> = await axiosInstance.get(
+    `/api/users/${id}`
+  )
+  return response.data
+}
+
+export const createUser = async (userData: User): Promise<User> => {
+  const response: AxiosResponse<User> = await axiosInstance.post(
+    `/api/users`,
+    userData
+  )
+  return response.data
+}
+
+export const editUser = async (id: number, userData: User): Promise<User> => {
+  const response: AxiosResponse<User> = await axiosInstance.put(
+    `/api/users/${id}`,
+    userData
+  )
+  return response.data
+}
+
 export const deleteUser = async (
   userId: number | string | undefined
 ): Promise<User> => {

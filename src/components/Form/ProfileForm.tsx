@@ -1,4 +1,4 @@
-import { SubmitHandler, UseFormReturn } from 'react-hook-form'
+import { Controller, SubmitHandler, UseFormReturn } from 'react-hook-form'
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
 import InputLabel from '@mui/material/InputLabel'
@@ -21,6 +21,9 @@ import FormControlLabel, {
 import { styled } from '@mui/material/styles'
 import { countries } from 'countries-list'
 import { useJobTypes } from '@/hooks/useJobTypes'
+import User from '@/types/users'
+import { useEffect, useMemo } from 'react'
+import { CircularProgress } from '@mui/material'
 
 export type Inputs = {
   job_type_id: string
@@ -33,7 +36,7 @@ export type Inputs = {
   city: string
   postal_code: string
   country: string
-  email_preferences: string
+  email_preferences?: string
   bank_information: {
     name: string
     registration_number: string
@@ -90,19 +93,48 @@ const StyledFormControlLabel = styled(FormControlLabel)<FormControlLabelProps>(
   })
 )
 
-interface TaskFormProps {
+interface UserFormProps {
   form: UseFormReturn<Inputs, any, any>
   onSubmit: SubmitHandler<Inputs>
+  submitButtonDisabled?: boolean
+  initialValues?: User | null
 }
 
-const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
+const ProfileForm: React.FC<UserFormProps> = ({
+  form,
+  onSubmit,
+  submitButtonDisabled = false,
+  initialValues,
+}) => {
   const {
     register,
     handleSubmit,
+    control,
+    reset,
     formState: { errors },
   } = form
 
   const { data: jobTypes } = useJobTypes()
+  const formLoaded = useMemo(() => {
+    return jobTypes
+  }, [jobTypes])
+
+  useEffect(() => {
+    reset(initialValues || undefined)
+  }, [initialValues])
+
+  if (!formLoaded) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ height: 'calc(100vh - 100px)' }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -116,9 +148,9 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
               <InputLabel id="job-type-label">Job Type</InputLabel>
               <Select
                 labelId="job-type-label"
-                id="job-type"
+                id="job_type_id"
                 label="Job Type"
-                defaultValue=""
+                defaultValue={initialValues?.job_type_id || ''}
                 {...register('job_type_id', {
                   required: 'Job Type is a required field',
                 })}
@@ -141,9 +173,9 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
               <InputLabel id="language-label">Language</InputLabel>
               <Select
                 labelId="language-label"
-                id="language"
+                id="user_language"
                 label="Language"
-                defaultValue=""
+                defaultValue={initialValues?.user_language || ''}
                 {...register('user_language', {
                   required: 'Language is a required field',
                 })}
@@ -318,9 +350,9 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
               <InputLabel id="country-select-label">Country *</InputLabel>
               <Select
                 labelId="country-select-label"
-                id="country-select"
+                id="country"
                 label="Country *"
-                defaultValue=""
+                defaultValue={initialValues?.country || ''}
                 {...register('country', {
                   required: 'Country is a required field',
                 })}
@@ -350,81 +382,82 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             <FormControl
               sx={{ width: '100%', marginTop: '20px', marginBottom: '6px' }}
             >
-              <RadioGroup
-                row
+              <Controller
+                name="email_preferences"
                 defaultValue="instantly"
-                aria-labelledby="customer-type-radio-group-label"
-                {...register('email_preferences', {
-                  required: 'Customer type is a required field',
-                })}
-              >
-                <Grid
-                  container
-                  rowSpacing={1}
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                >
-                  <Grid item xs={12} md={4}>
-                    <StyledFormControlLabel
-                      value="instantly"
-                      control={<Radio />}
-                      label={
-                        <>
-                          <span>Instantly</span>
-                          <br />
-                          <span
-                            style={{
-                              color: 'rgb(195, 195, 195)',
-                              fontSize: '0.8rem',
-                            }}
-                          >
-                            For Every action in your account
-                          </span>
-                        </>
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <StyledFormControlLabel
-                      value="daily"
-                      control={<Radio />}
-                      label={
-                        <>
-                          <span>Daily</span>
-                          <br />
-                          <span
-                            style={{
-                              color: 'rgb(195, 195, 195)',
-                              fontSize: '0.8rem',
-                            }}
-                          >
-                            Sends a summary every day at 5pm
-                          </span>
-                        </>
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <StyledFormControlLabel
-                      value="weekly"
-                      control={<Radio />}
-                      label={
-                        <>
-                          <span>Weekly</span>
-                          <br />
-                          <span
-                            style={{
-                              color: 'rgb(195, 195, 195)',
-                              fontSize: '0.8rem',
-                            }}
-                          >
-                            Sends a summary every friday at 5pm
-                          </span>
-                        </>
-                      }
-                    />
-                  </Grid>
-                </Grid>
-              </RadioGroup>
+                control={control}
+                rules={{ required: 'Customer type is a required field' }}
+                render={({ field }) => (
+                  <RadioGroup row {...field}>
+                    <Grid
+                      container
+                      rowSpacing={1}
+                      columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                    >
+                      <Grid item xs={12} md={4}>
+                        <StyledFormControlLabel
+                          value="instantly"
+                          control={<Radio />}
+                          label={
+                            <>
+                              <span>Instantly</span>
+                              <br />
+                              <span
+                                style={{
+                                  color: 'rgb(195, 195, 195)',
+                                  fontSize: '0.8rem',
+                                }}
+                              >
+                                For Every action in your account
+                              </span>
+                            </>
+                          }
+                        />
+                      </Grid>
+                      <Grid item xs={12} md={4}>
+                        <StyledFormControlLabel
+                          value="daily"
+                          control={<Radio />}
+                          label={
+                            <>
+                              <span>Daily</span>
+                              <br />
+                              <span
+                                style={{
+                                  color: 'rgb(195, 195, 195)',
+                                  fontSize: '0.8rem',
+                                }}
+                              >
+                                Sends a summary every day at 5pm
+                              </span>
+                            </>
+                          }
+                        />
+                      </Grid>
+                      <Grid item xs={12} md={4}>
+                        <StyledFormControlLabel
+                          value="weekly"
+                          control={<Radio />}
+                          label={
+                            <>
+                              <span>Weekly</span>
+                              <br />
+                              <span
+                                style={{
+                                  color: 'rgb(195, 195, 195)',
+                                  fontSize: '0.8rem',
+                                }}
+                              >
+                                Sends a summary every friday at 5pm
+                              </span>
+                            </>
+                          }
+                        />
+                      </Grid>
+                    </Grid>
+                  </RadioGroup>
+                )}
+              />
             </FormControl>
             <p
               style={{
@@ -541,9 +574,9 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
               <InputLabel id="tax-card-label">Tax card</InputLabel>
               <Select
                 labelId="tax-card-label"
-                id="tax-card"
+                id="tax_card"
                 label="Tax card"
-                defaultValue=""
+                defaultValue={initialValues?.tax_card || ''}
                 {...register('tax_card', {
                   required: 'Tax card is a required field',
                 })}
@@ -588,9 +621,11 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
               </InputLabel>
               <Select
                 labelId="requested-salary-payment-label"
-                id="requested-salary-payment"
+                id="salary_payment_type_requested"
                 label="Requested salary payment type *"
-                defaultValue="none"
+                defaultValue={
+                  initialValues?.salary_payment_type_requested || ''
+                }
                 {...register('salary_payment_type_requested', {
                   required: 'Requested salary payment type is a required field',
                 })}
@@ -634,7 +669,11 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
           </Grid>
         </Grid>
         <Divider sx={{ marginTop: '15px', marginBottom: '15px' }} />
-        <Button type="submit" variant="contained">
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={submitButtonDisabled}
+        >
           Save Changes
         </Button>
       </StyledPaper>
