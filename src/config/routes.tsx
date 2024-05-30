@@ -13,6 +13,8 @@ import EditTaskPage from '@/pages/tasks/edit'
 import NewInvoicePage from '@/pages/invoices/new'
 import EditInvoice from '@/pages/invoices/edit'
 
+import DeductionIndexPage from '@/pages/deductions'
+
 export interface RouteConfig {
   path: string
   element: JSX.Element
@@ -70,6 +72,13 @@ const invoiceRoutes: RouteConfig[] = [
   },
 ]
 
+const deductionRoutes: RouteConfig[] = [
+  {
+    path: '/deductions',
+    element: <DeductionIndexPage />,
+  },
+]
+
 const routesConfig: RouteConfig[] = [
   {
     path: '/',
@@ -79,6 +88,7 @@ const routesConfig: RouteConfig[] = [
   ...timeRoutes,
   ...taskRoutes,
   ...invoiceRoutes,
+  ...deductionRoutes,
   {
     path: '/admin/users',
     element: <UserIndexPage />,

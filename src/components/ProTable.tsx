@@ -266,6 +266,7 @@ const ProTable: React.FC<IProTable> = ({
                             >
                               <Select
                                 size="small"
+                                defaultValue=""
                                 onChange={(e) =>
                                   handleFilterOptions(
                                     filter.key,
