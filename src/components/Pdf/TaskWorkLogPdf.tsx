@@ -52,8 +52,11 @@ const styles = StyleSheet.create({
   },
 })
 
-export const TaskWorkLogPdf = ({ task }: { task: Task }) => {
-  const authUserName = 'John Doe'
+export const TaskWorkLogPdf = ({
+  task,
+}: {
+  task: Task & { user_name?: string }
+}) => {
   return (
     <Document>
       <Page style={styles.page}>
@@ -65,7 +68,7 @@ export const TaskWorkLogPdf = ({ task }: { task: Task }) => {
           <View style={styles.row}>
             <View style={styles.col}>
               <Text style={styles.bold}>User</Text>
-              <Text>{authUserName}</Text>
+              <Text>{task.user_name}</Text>
             </View>
             <View style={styles.col}>
               <Text style={styles.bold}>Customer</Text>
