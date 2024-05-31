@@ -4,7 +4,6 @@ import Invoices from '@/pages/invoices'
 import Customers from '@/pages/customers'
 import New from '@/pages/customers/new'
 import TimeRegistration from '@/pages/time'
-import UserIndexPage from '@/pages/users'
 
 import TaskIndexPage from '@/pages/tasks'
 import NewTaskPage from '@/pages/tasks/new'
@@ -14,6 +13,9 @@ import NewInvoicePage from '@/pages/invoices/new'
 import EditInvoice from '@/pages/invoices/edit'
 
 import DeductionIndexPage from '@/pages/deductions'
+import UserIndexPage from '@/pages/users'
+import EditUserPage from '@/pages/users/edit'
+import NewUserpage from '@/pages/users/new'
 
 export interface RouteConfig {
   path: string
@@ -79,6 +81,20 @@ const deductionRoutes: RouteConfig[] = [
   },
 ]
 
+const userRoutes: RouteConfig[] = [
+  { path: '/admin/users', element: <UserIndexPage /> },
+  {
+    path: '/admin/users/:userId/edit',
+    element: <EditUserPage />,
+    label: 'Edit Task',
+  },
+  {
+    path: '/admin/users/new',
+    element: <NewUserpage />,
+    label: 'New Task',
+  },
+]
+
 const routesConfig: RouteConfig[] = [
   {
     path: '/',
@@ -93,6 +109,7 @@ const routesConfig: RouteConfig[] = [
     path: '/admin/users',
     element: <UserIndexPage />,
   },
+  ...userRoutes,
   {
     path: '/settings',
     element: <Settings />,
