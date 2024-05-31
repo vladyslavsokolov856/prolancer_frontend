@@ -106,6 +106,7 @@ const DeductionIndex = () => {
               component={RouterLink}
               to={`/deductions/${value}/edit`}
               color="secondary"
+              sx={{ minWidth: '40px' }}
             >
               <EditIcon />
             </Button>
@@ -114,6 +115,7 @@ const DeductionIndex = () => {
               size="small"
               onClick={() => handleDeleteClick(value)}
               color="error"
+              sx={{ minWidth: '40px' }}
             >
               <DeleteIcon />
             </Button>
