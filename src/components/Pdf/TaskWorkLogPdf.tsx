@@ -17,6 +17,7 @@ const styles = StyleSheet.create({
   },
   col: {
     flex: 1,
+    border: '1px solid #000',
   },
   bold: {
     fontWeight: 'bold',
@@ -44,9 +45,18 @@ const styles = StyleSheet.create({
   },
   flex2: {
     flex: 2,
+    border: '1px solid #000',
   },
   flex3: {
     flex: 3,
+  },
+  flex5: {
+    flex: 5,
+    border: '1px solid #000',
+  },
+  flex7: {
+    flex: 7,
+    border: '1px solid #000',
   },
   textAlignRight: {
     textAlign: 'right',
@@ -91,26 +101,26 @@ export const TaskWorkLogPdf = ({
             <View style={styles.col}>
               <Text style={styles.bold}>Task Information</Text>
               <View style={styles.row}>
-                <Text style={styles.col}>Start date</Text>
-                <Text style={[styles.col, styles.textAlignRight]}>
+                <Text style={styles.flex5}>Start date</Text>
+                <Text style={[styles.flex7, styles.textAlignRight]}>
                   {dayjs(task.start_date).format('D.M.YYYY')}
                 </Text>
               </View>
               <View style={styles.row}>
-                <Text style={styles.col}>End date</Text>
-                <Text style={[styles.col, styles.textAlignRight]}>
+                <Text style={styles.flex5}>End date</Text>
+                <Text style={[styles.flex7, styles.textAlignRight]}>
                   {dayjs(task.end_date).format('D.M.YYYY')}
                 </Text>
               </View>
               <View style={styles.row}>
-                <Text style={styles.col}>Number of minutes</Text>
-                <Text style={[styles.col, styles.textAlignRight]}>
+                <Text style={styles.flex5}>Number of minutes</Text>
+                <Text style={[styles.flex7, styles.textAlignRight]}>
                   {task.expected_minutes}
                 </Text>
               </View>
               <View style={styles.row}>
-                <Text style={styles.col}>Job type</Text>
-                <Text style={[styles.col, styles.textAlignRight]}>
+                <Text style={styles.flex5}>Job type</Text>
+                <Text style={[styles.flex7, styles.textAlignRight]}>
                   {task.job_type_name}
                 </Text>
               </View>
