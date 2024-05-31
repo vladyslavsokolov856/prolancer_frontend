@@ -1,20 +1,20 @@
-import DeductionForm from "@/components/Form/DeductionForm";
-import { Box, styled } from "@mui/material";
+import DeductionForm from '@/components/Form/DeductionForm'
+import { Box, styled } from '@mui/material'
 
 const Title = styled('span')({
-    fontWeight: 700,
-    fontSize: '2rem',
-    color: 'rgb(108, 117, 125)',
+  fontWeight: 700,
+  fontSize: '2rem',
+  color: 'rgb(108, 117, 125)',
 })
 
 const CreateDeduction = () => {
-    return (
-        <Box display="flex" justifyContent="left" flexDirection="column">
-            <Title>Create invoice</Title>
+  return (
+    <Box display="flex" justifyContent="left" flexDirection="column">
+      <Title>Create deduction</Title>
 
-            <DeductionForm />
-        </Box>
-    )
-};
+      <DeductionForm />
+    </Box>
+  )
+}
 
 export default CreateDeduction

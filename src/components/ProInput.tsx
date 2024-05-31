@@ -1,18 +1,27 @@
-import { InputLabel, OutlinedInput, OutlinedInputProps, Stack } from "@mui/material";
-import React, { ReactNode } from "react";
+import {
+  InputLabel,
+  OutlinedInput,
+  OutlinedInputProps,
+  Stack,
+} from '@mui/material'
+import { ReactNode, forwardRef } from 'react'
 
 type ProInputProps = {
-    helperText?: ReactNode
+  helperText?: ReactNode
 } & OutlinedInputProps
 
-const ProInput: React.FC<ProInputProps> = ({ label, required, helperText, sx, ...inputProps }) => {
+const ProInput = forwardRef<unknown, ProInputProps>(
+  ({ label, required, helperText, sx, ...inputProps }, ref) => {
     return (
-        <Stack marginY={0.5} sx={sx}>
-            <InputLabel sx={{ my: 0.5 }}>{label} {required && <span style={{ color: 'red' }}>*</span>}</InputLabel>
-            <OutlinedInput size="small" {...inputProps} />
-            {inputProps.error ? helperText : null}
-        </Stack>
+      <Stack marginY={0.5} sx={sx}>
+        <InputLabel sx={{ my: 0.5 }}>
+          {label} {required && <span style={{ color: 'red' }}>*</span>}
+        </InputLabel>
+        <OutlinedInput size="small" {...inputProps} ref={ref} />
+        {inputProps.error ? helperText : null}
+      </Stack>
     )
-};
+  }
+)
 
 export default ProInput
