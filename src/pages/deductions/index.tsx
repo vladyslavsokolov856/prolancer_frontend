@@ -18,12 +18,11 @@ type SelectedDeductionType = Deduction | null | undefined
 
 const deductionStatus = [
   { key: 'approved', name: 'Approved' },
-  { key: 'canceled', name: 'Canceled' },
-  { key: 'changes_requrested', name: 'Changes requested' },
-  { key: 'pending', name: 'Pending' },
-  { key: 'denied', name: 'Denied' },
+  { key: 'declined', name: 'Declined' },
+  { key: 'deleted_by_user', name: 'Deleted by User' },
   { key: 'draft', name: 'Draft' },
-  { key: 'more_info_added', name: 'More Info needed' },
+  { key: 'sent', name: 'Sent' },
+  { key: '', name: 'None' },
 ]
 
 const DeductionIndex = () => {
