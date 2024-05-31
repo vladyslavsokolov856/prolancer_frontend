@@ -14,8 +14,9 @@ import dayjs from 'dayjs'
 import { Menu, MenuItem } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { useTasks } from '@/hooks/useTasks'
-import { useUsers } from '@/hooks/useUsers'
 import { useCustomers } from '@/hooks/userCustomers'
+import { useUsers } from '@/hooks/useUsers'
+import { useJobTypes } from '@/hooks/useJobTypes'
 import { TaskWorkLogPdf } from '@/components/Pdf/TaskWorkLogPdf'
 import { PDFViewer, pdf } from '@react-pdf/renderer'
 import Task from '@/types/tasks'
@@ -34,6 +35,7 @@ const TaskIndex = () => {
   const { isLoading: isTaskLoading, tasks } = useTasks()
   const { isLoading: isCustomerLoading, customers } = useCustomers()
   const { isLoading: isUserLoading, users } = useUsers()
+  const { isLoading: isJobTypeLoading, data: jobTypes } = useJobTypes()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
@@ -227,9 +229,12 @@ const TaskIndex = () => {
           user_name:
             user &&
             (user.display_name || `${user.first_name} ${user.last_name}`),
+          job_type_name: (jobTypes || []).find(
+            (jobType) => jobType.id === task.job_type_id
+          )?.name,
         }
       }),
-    [isCustomerLoading, isTaskLoading, isUserLoading, tasks]
+    [isCustomerLoading, isTaskLoading, isUserLoading, isJobTypeLoading, tasks]
   )
 
   return (
