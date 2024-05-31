@@ -38,19 +38,15 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // marginBottom: 10,
   },
   col: {
     flex: 1,
-    // border: '1px solid #000',
   },
   bold: {
     fontWeight: 'bold',
   },
   table: {
     width: '100%',
-    // borderTop: '1px solid #ccc',
-    // borderBottom: '1px solid #ccc',
   },
   tableHeader: {
     borderBottom: '2px solid #000',
@@ -58,30 +54,25 @@ const styles = StyleSheet.create({
   tableRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // borderBottom: '1px solid #ccc',
   },
   tableCell: {
     flex: 1,
     paddingVertical: 3,
-    // border: '1px solid #000',
   },
   tableCellFirst: {
     borderLeft: 'none',
   },
   flex2: {
     flex: 2,
-    // border: '1px solid #000',
   },
   flex3: {
     flex: 3,
   },
   flex5: {
     flex: 5,
-    // border: '1px solid #000',
   },
   flex7: {
     flex: 7,
-    // border: '1px solid #000',
   },
   textAlignRight: {
     textAlign: 'right',
