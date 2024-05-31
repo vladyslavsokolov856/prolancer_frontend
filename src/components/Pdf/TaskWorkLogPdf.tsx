@@ -143,22 +143,25 @@ export const TaskWorkLogPdf = ({
             </Text>
             <Text style={[styles.tableCell, styles.flex3]}>Notes</Text>
           </View>
-          {workLogs.map((workLog) => (
-            <View style={styles.tableRow} key={workLog.id}>
-              <Text style={[styles.tableCell, styles.flex2]}>
-                {workLog.start_time}
-              </Text>
-              <Text style={[styles.tableCell, styles.flex2]}>
-                {workLog.start_time}
-              </Text>
-              <Text style={[styles.tableCell, styles.flex2]}>
-                {workLog.duration_minutes}
-              </Text>
-              <Text style={[styles.tableCell, styles.flex3]}>
-                {workLog.notes}
-              </Text>
-            </View>
-          ))}
+          {workLogs.map((workLog) => {
+            const date = dayjs(workLog.start_time)
+            return (
+              <View style={styles.tableRow} key={workLog.id}>
+                <Text style={[styles.tableCell, styles.flex2]}>
+                  {date.format('M/D/YYYY')}
+                </Text>
+                <Text style={[styles.tableCell, styles.flex2]}>
+                  {date.format('h:mm:ss A')}
+                </Text>
+                <Text style={[styles.tableCell, styles.flex2]}>
+                  {workLog.duration_minutes}
+                </Text>
+                <Text style={[styles.tableCell, styles.flex3]}>
+                  {workLog.notes}
+                </Text>
+              </View>
+            )
+          })}
         </View>
       </Page>
     </Document>
