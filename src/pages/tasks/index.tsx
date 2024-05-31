@@ -14,6 +14,7 @@ import dayjs from 'dayjs'
 import { Menu, MenuItem } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { useTasks } from '@/hooks/useTasks'
+import { useUsers } from '@/hooks/useUsers'
 import { useCustomers } from '@/hooks/userCustomers'
 import { TaskWorkLogPdf } from '@/components/Pdf/TaskWorkLogPdf'
 import { PDFViewer, pdf } from '@react-pdf/renderer'
@@ -32,6 +33,7 @@ const taskStatus = [
 const TaskIndex = () => {
   const { isLoading: isTaskLoading, tasks } = useTasks()
   const { isLoading: isCustomerLoading, customers } = useCustomers()
+  const { isLoading: isUserLoading, users } = useUsers()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
@@ -211,13 +213,25 @@ const TaskIndex = () => {
 
   const taskData = useMemo(
     () =>
-      tasks.map((task) => ({
-        ...task,
-        customer_name: customers.find(
-          (customer) => customer.id === task.customer_id
-        )?.name_contact_person,
-      })),
-    [isCustomerLoading, isTaskLoading, tasks]
+      tasks.map((task) => {
+        const user = users.find((user) => user.id === task.user_id)
+        let userName
+        if (user) {
+          if (user.display_name) {
+            userName = user.display_name
+          } else if (user.first_name || user.last_name) {
+            userName = `${user.first_name} ${user.last_name}`
+          }
+        }
+        return {
+          ...task,
+          customer_name: customers.find(
+            (customer) => customer.id === task.customer_id
+          )?.name_contact_person,
+          user_name: userName,
+        }
+      }),
+    [isCustomerLoading, isTaskLoading, isUserLoading, tasks]
   )
 
   return (
