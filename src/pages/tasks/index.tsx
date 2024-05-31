@@ -204,7 +204,7 @@ const TaskIndex = () => {
 
                   const a = document.createElement('a')
                   a.href = url
-                  a.download = 'example.pdf'
+                  a.download = `task-work-log-${selectedRow!.id}.pdf`
                   a.click()
 
                   URL.revokeObjectURL(url)
