@@ -1,12 +1,35 @@
 import Task from '@/types/tasks'
 import WorkLog from '@/types/workLogs'
-import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer'
+import {
+  Font,
+  Page,
+  Text,
+  View,
+  Document,
+  StyleSheet,
+} from '@react-pdf/renderer'
 import dayjs from 'dayjs'
+import Roboto from '@/assets/fonts/Roboto/Roboto-Regular.ttf'
+import RobotoBold from '@/assets/fonts/Roboto/Roboto-Bold.ttf'
+
+Font.register({
+  family: 'Roboto',
+  fonts: [
+    {
+      src: Roboto,
+    },
+    {
+      src: RobotoBold,
+      fontWeight: 'bold',
+    },
+  ],
+})
 
 const styles = StyleSheet.create({
   page: {
     padding: 20,
     fontSize: 10,
+    fontFamily: 'Roboto',
   },
   section: {
     marginBottom: 20,
