@@ -1,3 +1,4 @@
+import Task from '@/types/tasks'
 import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer'
 
 const styles = StyleSheet.create({
@@ -51,7 +52,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export const TaskWorkLogPdf = () => {
+export const TaskWorkLogPdf = ({ task }: { task: Task }) => {
   const authUserName = 'John Doe'
   return (
     <Document>
@@ -94,7 +95,7 @@ export const TaskWorkLogPdf = () => {
             </View>
             <View style={styles.col}>
               <Text style={styles.bold}>Title</Text>
-              <Text>Title Name</Text>
+              <Text>{task.title}</Text>
             </View>
           </View>
         </View>

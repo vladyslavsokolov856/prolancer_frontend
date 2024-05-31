@@ -17,6 +17,7 @@ import { useTasks } from '@/hooks/useTasks'
 import { useCustomers } from '@/hooks/userCustomers'
 import { TaskWorkLogPdf } from '@/components/Pdf/TaskWorkLogPdf'
 import { PDFViewer, pdf } from '@react-pdf/renderer'
+import Task from '@/types/tasks'
 
 const taskStatus = [
   { key: 'approved', name: 'Approved' },
@@ -181,7 +182,9 @@ const TaskIndex = () => {
             >
               <MenuItem
                 onClick={async () => {
-                  const blob = await pdf(<TaskWorkLogPdf />).toBlob()
+                  const blob = await pdf(
+                    <TaskWorkLogPdf task={record as Task} />
+                  ).toBlob()
                   const url = URL.createObjectURL(blob)
 
                   const a = document.createElement('a')
@@ -220,7 +223,7 @@ const TaskIndex = () => {
   return (
     <Box>
       <PDFViewer style={{ width: '100%', height: '100vh' }}>
-        <TaskWorkLogPdf />
+        <TaskWorkLogPdf task={taskData[0] || {}} />
       </PDFViewer>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h4">Tasks </Typography>
