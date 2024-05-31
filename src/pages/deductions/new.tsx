@@ -1,18 +1,31 @@
-import DeductionForm from '@/components/Form/DeductionForm'
-import { Box, styled } from '@mui/material'
-
-const Title = styled('span')({
-  fontWeight: 700,
-  fontSize: '2rem',
-  color: 'rgb(108, 117, 125)',
-})
+import { Box, Typography } from '@mui/material'
+import { useSnackbar } from 'notistack'
+import { useNavigate } from 'react-router-dom'
+import DeductionForm, { DeductionInputs } from '@/components/Form/DeductionForm'
+import { useCreateDeduction } from '@/hooks/useDeductions'
 
 const CreateDeduction = () => {
+  const navigate = useNavigate()
+  const { enqueueSnackbar } = useSnackbar()
+
+  const { mutate: createDeduction } = useCreateDeduction()
+
+  const handleSubmit = (values: DeductionInputs) => {
+    createDeduction(values, {
+      onSuccess: () => {
+        enqueueSnackbar('Deduction Created!', { variant: 'success' })
+        navigate(-1)
+      },
+    })
+  }
+
   return (
     <Box display="flex" justifyContent="left" flexDirection="column">
-      <Title>Create deduction</Title>
+      <Typography variant="h4" marginBottom={2}>
+        Create deduction{' '}
+      </Typography>
 
-      <DeductionForm />
+      <DeductionForm onSubmit={handleSubmit} />
     </Box>
   )
 }

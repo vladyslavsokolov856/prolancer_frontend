@@ -1,5 +1,5 @@
 import { InputLabel, Select, SelectProps, Stack } from '@mui/material'
-import React, { ReactNode, forwardRef } from 'react'
+import { ReactNode, forwardRef } from 'react'
 
 type ProSelectProps = {
   helperText?: ReactNode

@@ -8,7 +8,7 @@ import {
   Paper,
   Typography,
 } from '@mui/material'
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import CurrencyList from 'currency-list'
 
 import { useTasks } from '@/hooks/useTasks'
@@ -16,26 +16,30 @@ import ProSelect from '../ProSelect'
 import ProInput from '../ProInput'
 import ProFileField from '../ProFileInput'
 
-export type DeducitonInputs = {
+export type DeductionInputs = {
   task_id: string
   description: string
   currency: string
   amount: string
-  includeVat: boolean
+  include_vat: boolean
   attachment: File
+}
+
+type DeductionFormProps = {
+  onSubmit: SubmitHandler<DeductionInputs>
 }
 
 const currencies = CurrencyList.getAll('en_US')
 
-const DeductionForm = () => {
-  const { register, setValue, watch } = useForm<DeducitonInputs>()
+const DeductionForm: React.FC<DeductionFormProps> = ({ onSubmit }) => {
+  const { register, setValue, watch, handleSubmit } = useForm<DeductionInputs>()
 
   const { tasks } = useTasks()
 
   const attachment = watch('attachment')
 
   return (
-    <form>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Paper sx={{ padding: 2 }}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={12}>
@@ -87,7 +91,7 @@ const DeductionForm = () => {
           <Grid item md={6} xs={12} />
           <Grid item md={6} xs={12}>
             <FormControlLabel
-              control={<Checkbox {...register('includeVat')} />}
+              control={<Checkbox {...register('include_vat')} />}
               label="Include VAT"
             />
           </Grid>
@@ -107,7 +111,12 @@ const DeductionForm = () => {
 
         <Divider sx={{ marginTop: 4 }} />
 
-        <Button variant="contained" color="primary" sx={{ marginTop: 2 }}>
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          sx={{ marginTop: 2 }}
+        >
           Submit deduction
         </Button>
       </Paper>
