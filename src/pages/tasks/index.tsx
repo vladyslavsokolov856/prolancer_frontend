@@ -39,14 +39,18 @@ const TaskIndex = () => {
   const { isLoading: isJobTypeLoading, data: jobTypes } = useJobTypes()
   const { isLoading: isWorkLogLoading, workLogs } = useWorkLogs()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [selectedRow, setSelectedRow] = useState<Task | null>(null)
   const open = Boolean(anchorEl)
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
+  const handleClick =
+    (record: Task) => (event: React.MouseEvent<HTMLButtonElement>) => {
+      setAnchorEl(event.currentTarget)
+      setSelectedRow(record)
+    }
 
   const handleClose = () => {
     setAnchorEl(null)
+    setSelectedRow(null)
   }
 
   const columns: ColumnType[] = useMemo(
@@ -162,7 +166,7 @@ const TaskIndex = () => {
               aria-controls={open ? 'action-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
-              onClick={handleClick}
+              onClick={handleClick(record as Task)}
               variant="outlined"
               size="small"
               sx={{ minWidth: '50px' }}
@@ -190,9 +194,9 @@ const TaskIndex = () => {
                 onClick={async () => {
                   const blob = await pdf(
                     <TaskWorkLogPdf
-                      task={record as Task}
+                      task={selectedRow!}
                       workLogs={workLogs.filter(
-                        (workLog) => workLog.task_id === (record as Task).id
+                        (workLog) => workLog.task_id === selectedRow!.id
                       )}
                     />
                   ).toBlob()
@@ -217,7 +221,7 @@ const TaskIndex = () => {
         ),
       },
     ],
-    [open, anchorEl, handleClick, handleClose, isWorkLogLoading]
+    [open, anchorEl, handleClick, handleClose, isWorkLogLoading, selectedRow]
   )
 
   const taskData = useMemo(
