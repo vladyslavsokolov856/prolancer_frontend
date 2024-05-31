@@ -1,4 +1,5 @@
 import axiosInstance from './axios'
+import Deduction from '@/types/deductions'
 import { DeductionInputs } from '@/components/Form/DeductionForm'
 
 export const createDeduction = async (deduction: DeductionInputs) => {
@@ -22,4 +23,16 @@ export const createDeduction = async (deduction: DeductionInputs) => {
   } catch (e) {
     throw e
   }
+}
+
+export const fetchDeductions = async () => {
+  const response = await axiosInstance.get<Deduction[]>(`/api/deductions`)
+  return response.data
+}
+
+export const deleteDeduction = async (
+  deductionId: number | string | undefined
+) => {
+  const response = await axiosInstance.delete(`/api/deductions/${deductionId}`)
+  return response.data
 }
