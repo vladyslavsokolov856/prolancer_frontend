@@ -20,6 +20,7 @@ import { useJobTypes } from '@/hooks/useJobTypes'
 import { TaskWorkLogPdf } from '@/components/Pdf/TaskWorkLogPdf'
 import { PDFViewer, pdf } from '@react-pdf/renderer'
 import Task from '@/types/tasks'
+import { useWorkLogs } from '@/hooks/useWorkLogs'
 
 const taskStatus = [
   { key: 'approved', name: 'Approved' },
@@ -36,6 +37,7 @@ const TaskIndex = () => {
   const { isLoading: isCustomerLoading, customers } = useCustomers()
   const { isLoading: isUserLoading, users } = useUsers()
   const { isLoading: isJobTypeLoading, data: jobTypes } = useJobTypes()
+  const { isLoading: isWorkLogLoading, workLogs } = useWorkLogs()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const open = Boolean(anchorEl)
 
@@ -187,7 +189,12 @@ const TaskIndex = () => {
               <MenuItem
                 onClick={async () => {
                   const blob = await pdf(
-                    <TaskWorkLogPdf task={record as Task} />
+                    <TaskWorkLogPdf
+                      task={record as Task}
+                      workLogs={workLogs.filter(
+                        (workLog) => workLog.task_id === (record as Task).id
+                      )}
+                    />
                   ).toBlob()
                   const url = URL.createObjectURL(blob)
 
@@ -210,7 +217,7 @@ const TaskIndex = () => {
         ),
       },
     ],
-    [open, anchorEl, handleClick, handleClose]
+    [open, anchorEl, handleClick, handleClose, isWorkLogLoading]
   )
 
   const taskData = useMemo(
@@ -240,7 +247,12 @@ const TaskIndex = () => {
   return (
     <Box>
       <PDFViewer style={{ width: '100%', height: '100vh' }}>
-        <TaskWorkLogPdf task={taskData[0] || {}} />
+        <TaskWorkLogPdf
+          task={taskData[0] || {}}
+          workLogs={workLogs.filter(
+            (workLog) => workLog.task_id === taskData[0].id
+          )}
+        />
       </PDFViewer>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h4">Tasks </Typography>

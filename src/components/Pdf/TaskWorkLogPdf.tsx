@@ -1,4 +1,5 @@
 import Task from '@/types/tasks'
+import WorkLog from '@/types/workLogs'
 import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer'
 import dayjs from 'dayjs'
 
@@ -65,6 +66,7 @@ const styles = StyleSheet.create({
 
 export const TaskWorkLogPdf = ({
   task,
+  workLogs,
 }: {
   task: Task & {
     user_name?: string
@@ -74,6 +76,7 @@ export const TaskWorkLogPdf = ({
     customer_postal_code?: string
     job_type_name?: string
   }
+  workLogs: WorkLog[]
 }) => {
   return (
     <Document>
@@ -140,12 +143,22 @@ export const TaskWorkLogPdf = ({
             </Text>
             <Text style={[styles.tableCell, styles.flex3]}>Notes</Text>
           </View>
-          <View style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.flex2]}>value</Text>
-            <Text style={[styles.tableCell, styles.flex2]}>value</Text>
-            <Text style={[styles.tableCell, styles.flex2]}>value</Text>
-            <Text style={[styles.tableCell, styles.flex3]}>Notes</Text>
-          </View>
+          {workLogs.map((workLog) => (
+            <View style={styles.tableRow} key={workLog.id}>
+              <Text style={[styles.tableCell, styles.flex2]}>
+                {workLog.start_time}
+              </Text>
+              <Text style={[styles.tableCell, styles.flex2]}>
+                {workLog.start_time}
+              </Text>
+              <Text style={[styles.tableCell, styles.flex2]}>
+                {workLog.duration_minutes}
+              </Text>
+              <Text style={[styles.tableCell, styles.flex3]}>
+                {workLog.notes}
+              </Text>
+            </View>
+          ))}
         </View>
       </Page>
     </Document>
