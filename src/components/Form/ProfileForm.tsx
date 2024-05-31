@@ -111,6 +111,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
     handleSubmit,
     control,
     reset,
+    watch,
     formState: { errors },
   } = form
 
@@ -118,6 +119,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
   const formLoaded = useMemo(() => {
     return jobTypes
   }, [jobTypes])
+  const email = watch('email')
 
   useEffect(() => {
     reset(initialValues || undefined)
@@ -377,7 +379,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
           <Grid item xs={12}>
             <p style={{ color: '#6c757d', fontSize: '0.9rem' }}>
               Personalise how you receive emails with your activity. All
-              notifications are sent to <b>guesmiaabdelmadjid6@gmail.com</b>.
+              notifications are sent to <b>{email}</b>.
             </p>
             <FormControl
               sx={{ width: '100%', marginTop: '20px', marginBottom: '6px' }}

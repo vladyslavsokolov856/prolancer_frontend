@@ -33,7 +33,7 @@ const CreateUser = () => {
 
   return (
     <Box display="flex" justifyContent="left" flexDirection="column">
-      <Title>Create task</Title>
+      <Title>Create user</Title>
 
       <ProfileForm
         form={form}
