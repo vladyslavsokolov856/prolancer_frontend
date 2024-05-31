@@ -24,6 +24,9 @@ import { useJobTypes } from '@/hooks/useJobTypes'
 import User from '@/types/users'
 import { useEffect, useMemo } from 'react'
 import { CircularProgress } from '@mui/material'
+import ProInput from '../ProInput'
+import ProSelect from '../ProSelect'
+import ProRadioGroup from '../ProRadioGroup'
 
 export type Inputs = {
   job_type_id: string
@@ -146,58 +149,46 @@ const ProfileForm: React.FC<UserFormProps> = ({
             <SectionHeader title="Settings" />
           </Grid>
           <Grid item md={6} xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="job-type-label">Job Type</InputLabel>
-              <Select
-                labelId="job-type-label"
-                id="job_type_id"
-                label="Job Type"
-                defaultValue={initialValues?.job_type_id || ''}
-                {...register('job_type_id', {
-                  required: 'Job Type is a required field',
-                })}
-                fullWidth
-                error={!!errors.job_type_id}
-              >
-                {jobTypes?.map(({ id, name }) => (
-                  <MenuItem key={id} value={id}>
-                    {name}
-                  </MenuItem>
-                ))}
-              </Select>
-              <FormHelperText error>
-                {errors.job_type_id && (errors.job_type_id?.message || '')}
-              </FormHelperText>
-            </FormControl>
+            <ProSelect
+              labelId="job-type-label"
+              id="job_type_id"
+              label="Job Type"
+              defaultValue={initialValues?.job_type_id || ''}
+              {...register('job_type_id', {
+                required: 'Job Type is a required field',
+              })}
+              fullWidth
+              error={!!errors.job_type_id}
+            >
+              {jobTypes?.map(({ id, name }) => (
+                <MenuItem key={id} value={id}>
+                  {name}
+                </MenuItem>
+              ))}
+            </ProSelect>
           </Grid>
           <Grid item md={6} xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="language-label">Language</InputLabel>
-              <Select
-                labelId="language-label"
-                id="user_language"
-                label="Language"
-                defaultValue={initialValues?.user_language || ''}
-                {...register('user_language', {
-                  required: 'Language is a required field',
-                })}
-                fullWidth
-                error={!!errors.user_language}
-              >
-                <MenuItem value="danish">Danish</MenuItem>
-                <MenuItem value="english">English</MenuItem>
-              </Select>
-            </FormControl>
-            <FormHelperText error>
-              {errors.user_language && (errors.user_language?.message || '')}
-            </FormHelperText>
+            <ProSelect
+              labelId="language-label"
+              id="user_language"
+              label="Language"
+              defaultValue={initialValues?.user_language || ''}
+              {...register('user_language', {
+                required: 'Language is a required field',
+              })}
+              fullWidth
+              error={!!errors.user_language}
+            >
+              <MenuItem value="danish">Danish</MenuItem>
+              <MenuItem value="english">English</MenuItem>
+            </ProSelect>
           </Grid>
 
           <Grid item xs={12}>
             <SectionHeader title="Contact" />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
+            <ProInput
               label="First name *"
               style={{ margin: '1px' }}
               {...register('first_name', {
@@ -218,7 +209,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
+            <ProInput
               label="Last name *"
               style={{ margin: '1px' }}
               {...register('last_name', {
@@ -239,7 +230,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
+            <ProInput
               label="Email *"
               style={{ margin: '1px' }}
               {...register('email', {
@@ -260,7 +251,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
+            <ProInput
               label="Phone number *"
               style={{ margin: '1px' }}
               {...register('phone_number', {
@@ -285,7 +276,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
             <SectionHeader title="Address information" />
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <ProInput
               label="Address *"
               style={{ margin: '1px' }}
               {...register('address', {
@@ -306,7 +297,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
+            <ProInput
               label="City *"
               style={{ margin: '1px' }}
               {...register('city', {
@@ -327,7 +318,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
+            <ProInput
               label="Postal code *"
               style={{ margin: '1px' }}
               {...register('postal_code', {
@@ -348,29 +339,23 @@ const ProfileForm: React.FC<UserFormProps> = ({
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="country-select-label">Country *</InputLabel>
-              <Select
-                labelId="country-select-label"
-                id="country"
-                label="Country *"
-                defaultValue={initialValues?.country || ''}
-                {...register('country', {
-                  required: 'Country is a required field',
-                })}
-                fullWidth
-                error={!!errors.country}
-              >
-                {Object.entries(countries).map(([countryCode, countryData]) => (
-                  <MenuItem key={countryCode} value={countryCode}>
-                    {countryData.name}
-                  </MenuItem>
-                ))}
-              </Select>
-              <FormHelperText error>
-                {errors.country && (errors.country?.message || '')}
-              </FormHelperText>
-            </FormControl>
+            <ProSelect
+              labelId="country-select-label"
+              id="country"
+              label="Country *"
+              defaultValue={initialValues?.country || ''}
+              {...register('country', {
+                required: 'Country is a required field',
+              })}
+              fullWidth
+              error={!!errors.country}
+            >
+              {Object.entries(countries).map(([countryCode, countryData]) => (
+                <MenuItem key={countryCode} value={countryCode}>
+                  {countryData.name}
+                </MenuItem>
+              ))}
+            </ProSelect>
           </Grid>
 
           <Grid item xs={12}>
@@ -381,91 +366,33 @@ const ProfileForm: React.FC<UserFormProps> = ({
               Personalise how you receive emails with your activity. All
               notifications are sent to <b>{email}</b>.
             </p>
-            <FormControl
-              sx={{ width: '100%', marginTop: '20px', marginBottom: '6px' }}
-            >
-              <Controller
-                name="email_preferences"
-                defaultValue="instantly"
-                control={control}
-                rules={{ required: 'Customer type is a required field' }}
-                render={({ field }) => (
-                  <RadioGroup row {...field}>
-                    <Grid
-                      container
-                      rowSpacing={1}
-                      columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                    >
-                      <Grid item xs={12} md={4}>
-                        <StyledFormControlLabel
-                          value="instantly"
-                          control={<Radio />}
-                          label={
-                            <>
-                              <span>Instantly</span>
-                              <br />
-                              <span
-                                style={{
-                                  color: 'rgb(195, 195, 195)',
-                                  fontSize: '0.8rem',
-                                }}
-                              >
-                                For Every action in your account
-                              </span>
-                            </>
-                          }
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={4}>
-                        <StyledFormControlLabel
-                          value="daily"
-                          control={<Radio />}
-                          label={
-                            <>
-                              <span>Daily</span>
-                              <br />
-                              <span
-                                style={{
-                                  color: 'rgb(195, 195, 195)',
-                                  fontSize: '0.8rem',
-                                }}
-                              >
-                                Sends a summary every day at 5pm
-                              </span>
-                            </>
-                          }
-                        />
-                      </Grid>
-                      <Grid item xs={12} md={4}>
-                        <StyledFormControlLabel
-                          value="weekly"
-                          control={<Radio />}
-                          label={
-                            <>
-                              <span>Weekly</span>
-                              <br />
-                              <span
-                                style={{
-                                  color: 'rgb(195, 195, 195)',
-                                  fontSize: '0.8rem',
-                                }}
-                              >
-                                Sends a summary every friday at 5pm
-                              </span>
-                            </>
-                          }
-                        />
-                      </Grid>
-                    </Grid>
-                  </RadioGroup>
-                )}
-              />
-            </FormControl>
+            <ProRadioGroup
+              {...register('email_preferences')}
+              options={[
+                {
+                  value: 'instantly',
+                  label: 'Instantly',
+                  description: 'For Every action in your account',
+                },
+                {
+                  value: 'daily',
+                  label: 'Daily',
+                  description: 'Sends a summary every day at 5pm',
+                },
+                {
+                  value: 'weekly',
+                  label: 'Weekly',
+                  description: 'Sends a summary every friday at 5pm',
+                },
+              ]}
+            />
+
             <p
               style={{
                 color: '#6c757d',
                 fontSize: '0.9rem',
                 marginBottom: '16px',
+                marginTop: '8px',
               }}
             >
               <b>NOTE</b>: You'll always get <b>instant</b> notifications for
@@ -478,7 +405,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
             <SectionHeader title="Payment details" />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
+            <ProInput
               label="Bank name *"
               style={{ margin: '1px' }}
               {...register('bank_information.name', {
@@ -501,7 +428,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
           </Grid>
           <Grid item md={6} xs={12}></Grid>
           <Grid item md={6} xs={12}>
-            <TextField
+            <ProInput
               label="Bank registration number *"
               style={{ margin: '1px' }}
               {...register('bank_information.registration_number', {
@@ -524,7 +451,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
+            <ProInput
               label="Bank account number *"
               style={{ margin: '1px' }}
               {...register('bank_information.account_number', {
@@ -550,7 +477,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
             <SectionHeader title="Tax information" />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
+            <ProInput
               label="CPR *"
               style={{ margin: '1px' }}
               {...register('tax_person_id', {
@@ -572,22 +499,19 @@ const ProfileForm: React.FC<UserFormProps> = ({
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="tax-card-label">Tax card</InputLabel>
-              <Select
-                labelId="tax-card-label"
-                id="tax_card"
-                label="Tax card"
-                defaultValue={initialValues?.tax_card || ''}
-                {...register('tax_card', {
-                  required: 'Tax card is a required field',
-                })}
-                fullWidth
-              >
-                <MenuItem value="main">Main Tax Card</MenuItem>
-                <MenuItem value="secondary">Secondary Tax Card</MenuItem>
-              </Select>
-            </FormControl>
+            <ProSelect
+              labelId="tax-card-label"
+              id="tax_card"
+              label="Tax card"
+              defaultValue={initialValues?.tax_card || ''}
+              {...register('tax_card', {
+                required: 'Tax card is a required field',
+              })}
+              fullWidth
+            >
+              <MenuItem value="main">Main Tax Card</MenuItem>
+              <MenuItem value="secondary">Secondary Tax Card</MenuItem>
+            </ProSelect>
           </Grid>
 
           <Grid item xs={12}>
@@ -617,31 +541,20 @@ const ProfileForm: React.FC<UserFormProps> = ({
             </Alert>
           </Grid>
           <Grid item md={6} xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="requested-salary-payment-label">
-                Requested salary payment type *
-              </InputLabel>
-              <Select
-                labelId="requested-salary-payment-label"
-                id="salary_payment_type_requested"
-                label="Requested salary payment type *"
-                defaultValue={
-                  initialValues?.salary_payment_type_requested || ''
-                }
-                {...register('salary_payment_type_requested', {
-                  required: 'Requested salary payment type is a required field',
-                })}
-                fullWidth
-              >
-                <MenuItem value="first">First of Month</MenuItem>
-                <MenuItem value="last">Last of Month</MenuItem>
-                <MenuItem value="none">None selected</MenuItem>
-              </Select>
-              <FormHelperText error>
-                {errors.salary_payment_type_requested &&
-                  (errors.salary_payment_type_requested?.message || '')}
-              </FormHelperText>
-            </FormControl>
+            <ProSelect
+              labelId="requested-salary-payment-label"
+              id="salary_payment_type_requested"
+              label="Requested salary payment type *"
+              defaultValue={initialValues?.salary_payment_type_requested || ''}
+              {...register('salary_payment_type_requested', {
+                required: 'Requested salary payment type is a required field',
+              })}
+              fullWidth
+            >
+              <MenuItem value="first">First of Month</MenuItem>
+              <MenuItem value="last">Last of Month</MenuItem>
+              <MenuItem value="none">None selected</MenuItem>
+            </ProSelect>
           </Grid>
           <Grid item md={6} xs={12}></Grid>
           <Grid item md={6} xs={12}>

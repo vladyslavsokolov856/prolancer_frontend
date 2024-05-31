@@ -45,7 +45,7 @@ const ProRadioGroup = forwardRef<unknown, ProRadioGroupProps>(
                 label={
                   description ? (
                     <Stack mt={1}>
-                      {label}
+                      <Typography fontWeight={600}>{label}</Typography>
                       <Typography color="GrayText" fontSize="0.8rem" my={0.5}>
                         {description}
                       </Typography>
@@ -55,6 +55,7 @@ const ProRadioGroup = forwardRef<unknown, ProRadioGroupProps>(
                   )
                 }
                 key={value}
+                sx={{ alignItems: 'start' }}
               />
             </Stack>
           ))}
