@@ -4,6 +4,9 @@ export const light = createTheme({
   shape: {
     borderRadius: 4,
   },
+  typography: {
+    htmlFontSize: 18
+  },
   palette: {
     mode: 'light',
     primary: {
@@ -33,9 +36,18 @@ export const light = createTheme({
     MuiInputLabel: {
       styleOverrides: {
         root: {
-          backgroundColor: 'white',
+          fontWeight: 'bolder'
         },
       },
     },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          borderWidth: 1,
+          ':hover': {
+          }
+        }
+      }
+    }
   },
 })
