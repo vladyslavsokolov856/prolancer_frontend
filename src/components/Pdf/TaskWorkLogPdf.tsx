@@ -1,5 +1,6 @@
 import Task from '@/types/tasks'
 import { Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer'
+import dayjs from 'dayjs'
 
 const styles = StyleSheet.create({
   page: {
@@ -92,13 +93,13 @@ export const TaskWorkLogPdf = ({
               <View style={styles.row}>
                 <Text style={styles.col}>Start date</Text>
                 <Text style={[styles.col, styles.textAlignRight]}>
-                  {task.start_date?.toString()}
+                  {dayjs(task.start_date).format('D.M.YYYY')}
                 </Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.col}>End date</Text>
                 <Text style={[styles.col, styles.textAlignRight]}>
-                  {task.end_date?.toString()}
+                  {dayjs(task.end_date).format('D.M.YYYY')}
                 </Text>
               </View>
               <View style={styles.row}>
