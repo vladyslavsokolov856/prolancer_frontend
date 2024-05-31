@@ -215,20 +215,14 @@ const TaskIndex = () => {
     () =>
       tasks.map((task) => {
         const user = users.find((user) => user.id === task.user_id)
-        let userName
-        if (user) {
-          if (user.display_name) {
-            userName = user.display_name
-          } else if (user.first_name || user.last_name) {
-            userName = `${user.first_name} ${user.last_name}`
-          }
-        }
         return {
           ...task,
           customer_name: customers.find(
             (customer) => customer.id === task.customer_id
           )?.name_contact_person,
-          user_name: userName,
+          user_name:
+            user &&
+            (user.display_name || `${user.first_name} ${user.last_name}`),
         }
       }),
     [isCustomerLoading, isTaskLoading, isUserLoading, tasks]
