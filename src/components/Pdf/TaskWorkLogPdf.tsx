@@ -27,8 +27,9 @@ Font.register({
 
 const styles = StyleSheet.create({
   page: {
-    padding: 20,
-    fontSize: 10,
+    paddingHorizontal: 40,
+    paddingVertical: 30,
+    fontSize: 9,
     fontFamily: 'Roboto',
   },
   section: {
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
   },
   col: {
     flex: 1,
-    border: '1px solid #000',
+    // border: '1px solid #000',
   },
   bold: {
     fontWeight: 'bold',
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
     // borderBottom: '1px solid #ccc',
   },
   tableHeader: {
-    borderBottom: '1px solid #ccc',
+    borderBottom: '2px solid #000',
   },
   tableRow: {
     flexDirection: 'row',
@@ -61,29 +62,35 @@ const styles = StyleSheet.create({
   },
   tableCell: {
     flex: 1,
-    padding: 5,
-    border: '1px solid #000',
+    paddingVertical: 3,
+    // border: '1px solid #000',
   },
   tableCellFirst: {
     borderLeft: 'none',
   },
   flex2: {
     flex: 2,
-    border: '1px solid #000',
+    // border: '1px solid #000',
   },
   flex3: {
     flex: 3,
   },
   flex5: {
     flex: 5,
-    border: '1px solid #000',
+    // border: '1px solid #000',
   },
   flex7: {
     flex: 7,
-    border: '1px solid #000',
+    // border: '1px solid #000',
   },
   textAlignRight: {
     textAlign: 'right',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    textAlign: 'center',
+    width: '100vw',
   },
 })
 
@@ -105,11 +112,20 @@ export const TaskWorkLogPdf = ({
     <Document>
       <Page style={styles.page}>
         <View style={styles.section}>
-          <View style={styles.row}>
-            <Text style={styles.col}>Time registration</Text>
-            <Text style={[styles.col, styles.textAlignRight]}>factofly</Text>
+          <View style={[styles.row]}>
+            <Text
+              style={[
+                styles.col,
+                { alignSelf: 'center', fontSize: 20, fontWeight: 'bold' },
+              ]}
+            >
+              Time registration
+            </Text>
+            <Text style={[styles.col, styles.textAlignRight, { fontSize: 48 }]}>
+              factofly
+            </Text>
           </View>
-          <View style={styles.row}>
+          <View style={[styles.row, { gap: 20, marginBottom: 20 }]}>
             <View style={styles.col}>
               <Text style={styles.bold}>User</Text>
               <Text>{task.user_name}</Text>
@@ -123,7 +139,7 @@ export const TaskWorkLogPdf = ({
               </Text>
             </View>
           </View>
-          <View style={styles.row}>
+          <View style={[styles.row, { gap: 20 }]}>
             <View style={styles.col}>
               <Text style={styles.bold}>Task Information</Text>
               <View style={styles.row}>
@@ -158,7 +174,7 @@ export const TaskWorkLogPdf = ({
           </View>
         </View>
         <View style={styles.table}>
-          <View style={[styles.tableRow, styles.tableHeader]}>
+          <View style={[styles.tableRow, styles.tableHeader]} fixed>
             <Text style={[styles.tableCell, styles.flex2]}>Start date</Text>
             <Text style={[styles.tableCell, styles.flex2]}>Start time</Text>
             <Text style={[styles.tableCell, styles.flex2]}>
@@ -166,10 +182,14 @@ export const TaskWorkLogPdf = ({
             </Text>
             <Text style={[styles.tableCell, styles.flex3]}>Notes</Text>
           </View>
-          {workLogs.map((workLog) => {
+          {workLogs.map((workLog, index) => {
             const date = dayjs(workLog.start_time)
             return (
-              <View style={styles.tableRow} key={workLog.id}>
+              <View
+                style={[styles.tableRow, { borderTop: '1px solid #ccc' }]}
+                key={workLog.id}
+                {...(index % 40 == 30 && { break: true })}
+              >
                 <Text style={[styles.tableCell, styles.flex2]}>
                   {date.format('M/D/YYYY')}
                 </Text>
@@ -185,6 +205,22 @@ export const TaskWorkLogPdf = ({
               </View>
             )
           })}
+        </View>
+        <View fixed style={styles.footer}>
+          <View
+            style={{
+              borderTop: '1px solid black',
+              paddingBottom: 25,
+              paddingTop: 20,
+              marginHorizontal: 40,
+            }}
+          >
+            <Text>
+              {
+                'Factofy - Danneskiold-Samsøes Allé 41 - 1434 København K - CVR-nr.: 39781689\nTlf.: +45 71 96 00 54 - E-mail: kontakt@factofy.com - Hjemmeside: www.factofy.com\nBank: Sydbank - Kontonr.:7701 / 0002863064 - IBAN-nr.: DK5477010002863064 - SWIFT-kode: SYBKDK22'
+              }
+            </Text>
+          </View>
         </View>
       </Page>
     </Document>
