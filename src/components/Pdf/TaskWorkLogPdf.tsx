@@ -55,7 +55,13 @@ const styles = StyleSheet.create({
 export const TaskWorkLogPdf = ({
   task,
 }: {
-  task: Task & { user_name?: string }
+  task: Task & {
+    user_name?: string
+    customer_name?: string
+    customer_address?: string
+    customer_city?: string
+    customer_postal_code?: string
+  }
 }) => {
   return (
     <Document>
@@ -72,8 +78,11 @@ export const TaskWorkLogPdf = ({
             </View>
             <View style={styles.col}>
               <Text style={styles.bold}>Customer</Text>
-              <Text>Customer Name</Text>
-              <Text>Customer Address</Text>
+              <Text>{task.customer_name}</Text>
+              <Text>{task.customer_address}</Text>
+              <Text>
+                {task.customer_city} {task.customer_postal_code}
+              </Text>
             </View>
           </View>
           <View style={styles.row}>

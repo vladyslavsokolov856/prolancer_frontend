@@ -215,11 +215,15 @@ const TaskIndex = () => {
     () =>
       tasks.map((task) => {
         const user = users.find((user) => user.id === task.user_id)
+        const customer = customers.find(
+          (customer) => customer.id === task.customer_id
+        )
         return {
           ...task,
-          customer_name: customers.find(
-            (customer) => customer.id === task.customer_id
-          )?.name_contact_person,
+          customer_name: customer?.name_contact_person,
+          customer_address: customer?.address,
+          customer_city: customer?.city,
+          customer_postal_code: customer?.postal_code,
           user_name:
             user &&
             (user.display_name || `${user.first_name} ${user.last_name}`),
