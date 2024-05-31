@@ -61,6 +61,7 @@ export const TaskWorkLogPdf = ({
     customer_address?: string
     customer_city?: string
     customer_postal_code?: string
+    job_type_name?: string
   }
 }) => {
   return (
@@ -90,19 +91,27 @@ export const TaskWorkLogPdf = ({
               <Text style={styles.bold}>Task Information</Text>
               <View style={styles.row}>
                 <Text style={styles.col}>Start date</Text>
-                <Text style={[styles.col, styles.textAlignRight]}>value</Text>
+                <Text style={[styles.col, styles.textAlignRight]}>
+                  {task.start_date?.toString()}
+                </Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.col}>End date</Text>
-                <Text style={[styles.col, styles.textAlignRight]}>value</Text>
+                <Text style={[styles.col, styles.textAlignRight]}>
+                  {task.end_date?.toString()}
+                </Text>
               </View>
               <View style={styles.row}>
-                <Text style={styles.col}>Number of hours</Text>
-                <Text style={[styles.col, styles.textAlignRight]}>value</Text>
+                <Text style={styles.col}>Number of minutes</Text>
+                <Text style={[styles.col, styles.textAlignRight]}>
+                  {task.expected_minutes}
+                </Text>
               </View>
               <View style={styles.row}>
                 <Text style={styles.col}>Job type</Text>
-                <Text style={[styles.col, styles.textAlignRight]}>value</Text>
+                <Text style={[styles.col, styles.textAlignRight]}>
+                  {task.job_type_name}
+                </Text>
               </View>
             </View>
             <View style={styles.col}>
