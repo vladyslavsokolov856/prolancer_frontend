@@ -51,7 +51,7 @@ const ProRadioGroup = forwardRef<unknown, ProRadioGroupProps>(
                       </Typography>
                     </Stack>
                   ) : (
-                    label
+                    <Typography mt={1}>{label}</Typography>
                   )
                 }
                 key={value}

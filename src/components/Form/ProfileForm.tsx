@@ -1,16 +1,10 @@
-import { Controller, SubmitHandler, UseFormReturn } from 'react-hook-form'
+import { SubmitHandler, UseFormReturn } from 'react-hook-form'
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
-import InputLabel from '@mui/material/InputLabel'
-import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
-import RadioGroup from '@mui/material/RadioGroup'
-import FormHelperText from '@mui/material/FormHelperText'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Alert from '@mui/material/Alert'
-import Radio from '@mui/material/Radio'
 import Checkbox from '@mui/material/Checkbox'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -77,25 +71,6 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title }) => {
   )
 }
 
-const StyledFormControlLabel = styled(FormControlLabel)<FormControlLabelProps>(
-  () => ({
-    width: '100%',
-    border: '1px solid rgb(79, 153, 79)',
-    color: '#6c757d',
-    borderRadius: '3px',
-    padding: '7px',
-    cursor: 'pointer',
-    margin: 0,
-    '& .MuiSlider-thumb': {
-      '&:hover, &.Mui-focusVisible': {},
-      '&.Mui-active': {},
-    },
-    '&..MuiFormControlLabel-root': {
-      backgroundColor: 'rgb(242, 255, 235)',
-    },
-  })
-)
-
 interface UserFormProps {
   form: UseFormReturn<Inputs, any, any>
   onSubmit: SubmitHandler<Inputs>
@@ -112,7 +87,6 @@ const ProfileForm: React.FC<UserFormProps> = ({
   const {
     register,
     handleSubmit,
-    control,
     reset,
     watch,
     formState: { errors },

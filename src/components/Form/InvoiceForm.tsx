@@ -4,11 +4,9 @@ import {
   Checkbox,
   CircularProgress,
   Divider,
-  FormControl,
   FormControlLabel,
   FormHelperText,
   Grid,
-  InputLabel,
   MenuItem,
   Paper,
   Stack,
@@ -28,7 +26,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useJobTypes } from '@/hooks/useJobTypes'
 import dayjs, { Dayjs } from 'dayjs'
-import { DatePicker } from '@mui/x-date-pickers'
 import CurrencyList from 'currency-list'
 import FormDialog from '../FormDialog'
 import TaskForm, { Inputs as TaskFormInputs } from './TaskForm'
