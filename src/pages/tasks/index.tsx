@@ -16,7 +16,7 @@ import { useMemo, useState } from 'react'
 import { useTasks } from '@/hooks/useTasks'
 import { useCustomers } from '@/hooks/userCustomers'
 import { TaskWorkLogPdf } from '@/components/Pdf/TaskWorkLogPdf'
-import { pdf } from '@react-pdf/renderer'
+import { PDFViewer, pdf } from '@react-pdf/renderer'
 
 const taskStatus = [
   { key: 'approved', name: 'Approved' },
@@ -219,6 +219,9 @@ const TaskIndex = () => {
 
   return (
     <Box>
+      <PDFViewer style={{ width: '100%', height: '100vh' }}>
+        <TaskWorkLogPdf />
+      </PDFViewer>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h4">Tasks </Typography>
 
