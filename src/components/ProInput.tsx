@@ -17,7 +17,12 @@ const ProInput = forwardRef<unknown, ProInputProps>(
         <InputLabel sx={{ my: 0.5 }}>
           {label} {required && <span style={{ color: 'red' }}>*</span>}
         </InputLabel>
-        <OutlinedInput size="small" {...inputProps} ref={ref} />
+        <OutlinedInput
+          sx={{ height: '40px' }}
+          size="small"
+          {...inputProps}
+          ref={ref}
+        />
         {inputProps.error ? helperText : null}
       </Stack>
     )

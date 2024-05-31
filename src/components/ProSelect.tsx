@@ -12,7 +12,7 @@ const ProSelect = forwardRef<unknown, ProSelectProps>(
         <InputLabel sx={{ my: 0.5 }}>
           {label} {required && <span style={{ color: 'red' }}>*</span>}
         </InputLabel>
-        <Select {...selectProps} size="small" ref={ref}>
+        <Select {...selectProps} size="small" ref={ref} sx={{ height: '40px' }}>
           {selectProps.children}
         </Select>
         {selectProps.error ? helperText : null}
