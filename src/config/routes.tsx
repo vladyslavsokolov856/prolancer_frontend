@@ -12,6 +12,7 @@ import EditTaskPage from '@/pages/tasks/edit'
 import NewInvoicePage from '@/pages/invoices/new'
 import EditInvoice from '@/pages/invoices/edit'
 
+import DeductionIndexPage from '@/pages/deductions'
 import UserIndexPage from '@/pages/users'
 import EditUserPage from '@/pages/users/edit'
 import NewUserpage from '@/pages/users/new'
@@ -73,6 +74,13 @@ const invoiceRoutes: RouteConfig[] = [
   },
 ]
 
+const deductionRoutes: RouteConfig[] = [
+  {
+    path: '/deductions',
+    element: <DeductionIndexPage />,
+  },
+]
+
 const userRoutes: RouteConfig[] = [
   { path: '/admin/users', element: <UserIndexPage /> },
   {
@@ -96,6 +104,11 @@ const routesConfig: RouteConfig[] = [
   ...timeRoutes,
   ...taskRoutes,
   ...invoiceRoutes,
+  ...deductionRoutes,
+  {
+    path: '/admin/users',
+    element: <UserIndexPage />,
+  },
   ...userRoutes,
   {
     path: '/settings',

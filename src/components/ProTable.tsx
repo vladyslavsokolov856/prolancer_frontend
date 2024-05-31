@@ -145,6 +145,7 @@ const ProTable: React.FC<IProTable> = ({
     const filteredItems = filteredData
       .filter((item) => {
         return Object.keys(filterOptions).every((key) => {
+          if (filterOptions[key] === '') return true
           const filterFunction = filterFunctions[key]
           if (filterFunction) {
             return (
@@ -266,6 +267,8 @@ const ProTable: React.FC<IProTable> = ({
                             >
                               <Select
                                 size="small"
+                                defaultValue=""
+                                displayEmpty
                                 onChange={(e) =>
                                   handleFilterOptions(
                                     filter.key,
