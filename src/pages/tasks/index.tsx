@@ -15,6 +15,12 @@ import { Menu, MenuItem } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { useTasks } from '@/hooks/useTasks'
 import { useCustomers } from '@/hooks/userCustomers'
+import { useUsers } from '@/hooks/useUsers'
+import { useJobTypes } from '@/hooks/useJobTypes'
+import { TaskWorkLogPdf } from '@/components/Pdf/TaskWorkLogPdf'
+import { pdf } from '@react-pdf/renderer'
+import Task from '@/types/tasks'
+import { useWorkLogs } from '@/hooks/useWorkLogs'
 
 const taskStatus = [
   { key: 'approved', name: 'Approved' },
@@ -29,15 +35,22 @@ const taskStatus = [
 const TaskIndex = () => {
   const { isLoading: isTaskLoading, tasks } = useTasks()
   const { isLoading: isCustomerLoading, customers } = useCustomers()
+  const { isLoading: isUserLoading, users } = useUsers()
+  const { isLoading: isJobTypeLoading, data: jobTypes } = useJobTypes()
+  const { isLoading: isWorkLogLoading, workLogs } = useWorkLogs()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [selectedRow, setSelectedRow] = useState<Task | null>(null)
   const open = Boolean(anchorEl)
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
+  const handleClick =
+    (record: Task) => (event: React.MouseEvent<HTMLButtonElement>) => {
+      setAnchorEl(event.currentTarget)
+      setSelectedRow(record)
+    }
 
   const handleClose = () => {
     setAnchorEl(null)
+    setSelectedRow(null)
   }
 
   const columns: ColumnType[] = useMemo(
@@ -84,7 +97,7 @@ const TaskIndex = () => {
         name: 'Retainer',
         render: (value, record) => (
           <Box>
-            {!!value ? (
+            {value ? (
               <Box
                 display="flex"
                 alignItems="center"
@@ -153,7 +166,7 @@ const TaskIndex = () => {
               aria-controls={open ? 'action-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
-              onClick={handleClick}
+              onClick={handleClick(record as Task)}
               variant="outlined"
               size="small"
               sx={{ minWidth: '50px' }}
@@ -177,7 +190,27 @@ const TaskIndex = () => {
                 horizontal: 'right',
               }}
             >
-              <MenuItem onClick={handleClose}>
+              <MenuItem
+                onClick={async () => {
+                  const blob = await pdf(
+                    <TaskWorkLogPdf
+                      task={selectedRow!}
+                      workLogs={workLogs.filter(
+                        (workLog) => workLog.task_id === selectedRow!.id
+                      )}
+                    />
+                  ).toBlob()
+                  const url = URL.createObjectURL(blob)
+
+                  const a = document.createElement('a')
+                  a.href = url
+                  a.download = `task-work-log-${selectedRow!.id}.pdf`
+                  a.click()
+
+                  URL.revokeObjectURL(url)
+                  handleClose()
+                }}
+              >
                 <Box display="flex" alignItems="center" sx={{ gap: '10px' }}>
                   <TextSnippetOutlinedIcon />
                   Download time registration
@@ -188,18 +221,31 @@ const TaskIndex = () => {
         ),
       },
     ],
-    [open, anchorEl, handleClick, handleClose]
+    [open, anchorEl, handleClick, handleClose, isWorkLogLoading, selectedRow]
   )
 
   const taskData = useMemo(
     () =>
-      tasks.map((task) => ({
-        ...task,
-        customer_name: customers.find(
+      tasks.map((task) => {
+        const user = users.find((user) => user.id === task.user_id)
+        const customer = customers.find(
           (customer) => customer.id === task.customer_id
-        )?.name_contact_person,
-      })),
-    [isCustomerLoading, isTaskLoading, tasks]
+        )
+        return {
+          ...task,
+          customer_name: customer?.name_contact_person,
+          customer_address: customer?.address,
+          customer_city: customer?.city,
+          customer_postal_code: customer?.postal_code,
+          user_name:
+            user &&
+            (user.display_name || `${user.first_name} ${user.last_name}`),
+          job_type_name: (jobTypes || []).find(
+            (jobType) => jobType.id === task.job_type_id
+          )?.name,
+        }
+      }),
+    [isCustomerLoading, isTaskLoading, isUserLoading, isJobTypeLoading, tasks]
   )
 
   return (
