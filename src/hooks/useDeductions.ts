@@ -1,4 +1,4 @@
-import { createDeduction } from '@/services/deductionService'
+import { createDeduction, fetchDeduction } from '@/services/deductionService'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 export const useCreateDeduction = () => {
@@ -34,16 +34,27 @@ export const useDeductions = () => {
 
 export const useDeleteDeduction = () => {
   const queryClient = useQueryClient()
-  const { mutate: deleteDeductionMutation, isPending: isDeleting } =
-    useMutation({
-      mutationFn: deleteDeduction,
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['deductions'] })
-      },
-    })
+  const {
+    mutate: deleteDeductionMutation,
+    isPending: isDeleting,
+    isSuccess: isDeleted,
+  } = useMutation({
+    mutationFn: deleteDeduction,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['deductions'] })
+    },
+  })
 
   return {
     deleteDeductionMutation,
     isDeleting,
+    isDeleted,
   }
+}
+
+export const useDeduction = (id: number | string) => {
+  return useQuery({
+    queryFn: () => fetchDeduction(id),
+    queryKey: ['deductions', id],
+  })
 }

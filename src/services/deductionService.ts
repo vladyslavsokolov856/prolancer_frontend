@@ -30,6 +30,14 @@ export const fetchDeductions = async () => {
   return response.data
 }
 
+export const fetchDeduction = async (deductionId: number | string) => {
+  const response = await axiosInstance.get<Deduction>(
+    `/api/deductions/${deductionId}`
+  )
+
+  return response.data
+}
+
 export const deleteDeduction = async (
   deductionId: number | string | undefined
 ) => {
