@@ -4,7 +4,7 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query'
-import { fetchUsers, deleteUser } from '@/services/userService'
+import { fetchUsers, deleteUser, fetchUser } from '@/services/userService'
 import User from '@/types/users'
 
 export const useUsers = () => {
@@ -20,6 +20,25 @@ export const useUsers = () => {
 
   return {
     users: users || [],
+    isLoading,
+    isError,
+    error,
+  }
+}
+
+export const useUser = (id: number | undefined) => {
+  const {
+    data: user,
+    isLoading,
+    isError,
+    error,
+  }: UseQueryResult<User, Error> = useQuery({
+    queryKey: ['user'],
+    queryFn: () => fetchUser(id),
+  })
+
+  return {
+    user,
     isLoading,
     isError,
     error,

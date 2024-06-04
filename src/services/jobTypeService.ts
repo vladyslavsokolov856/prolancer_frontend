@@ -7,3 +7,13 @@ export const fetchJobTypes = async (): Promise<JobType[]> => {
 
   return response.data.sort(({ id: id1 }, { id: id2 }) => id1 - id2)
 }
+
+export const fetchJobType = async (
+  jobTypeId: number | undefined
+): Promise<JobType> => {
+  const response = await axiosInstance.get<JobType>(
+    `/api/job-types/${jobTypeId}`
+  )
+
+  return response.data
+}
