@@ -7,9 +7,9 @@ import {
 import {
   fetchInvoices,
   deleteInvoice,
-  editInvoice,
   createInvoice,
   fetchInvoice,
+  updateInvoice,
 } from '@/services/invoiceService'
 import Invoice from '@/types/invoices'
 
@@ -29,40 +29,6 @@ export const useInvoices = () => {
     isLoading,
     isError,
     error,
-  }
-}
-
-export const useInvoice = (id: number | string | undefined) => {
-  const {
-    data: invoice,
-    isLoading,
-    isError,
-    error,
-  }: UseQueryResult<Invoice, Error> = useQuery({
-    queryKey: ['invoice', id],
-    queryFn: () => fetchInvoice(id),
-  })
-
-  return {
-    invoice,
-    isLoading,
-    isError,
-    error,
-  }
-}
-
-export const useEditInvoice = (id: number | undefined) => {
-  const queryClient = useQueryClient()
-  const { mutate: editInvoiceMutation, isPending: isEditing } = useMutation({
-    mutationFn: (invoiceData: Invoice) => editInvoice(id, invoiceData),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['invoices'] })
-    },
-  })
-
-  return {
-    editInvoiceMutation,
-    isEditing,
   }
 }
 
@@ -86,6 +52,24 @@ export const useCreateInvoice = () => {
 
   return useMutation({
     mutationFn: createInvoice,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['invoices'] })
+    },
+  })
+}
+
+export const useInvoice = (id: number | string) => {
+  return useQuery({
+    queryFn: () => fetchInvoice(id),
+    queryKey: ['invoices', id],
+  })
+}
+
+export const useUpdateInvoice = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: updateInvoice,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['invoices'] })
     },

@@ -1,7 +1,6 @@
 import Invoice from '@/types/invoices'
 import axiosInstance from './axios'
 import { InvoiceInputs } from '@/components/Form/InvoiceForm'
-import { AxiosResponse } from 'axios'
 
 export const fetchInvoices = async () => {
   const response = await axiosInstance.get<Invoice[]>(`/api/invoices`)
@@ -9,38 +8,33 @@ export const fetchInvoices = async () => {
   return response.data
 }
 
-export const fetchInvoice = async (
-  invoiceId: number | string | undefined
-): Promise<Invoice> => {
-  const response: AxiosResponse<Invoice> = await axiosInstance.get(
-    `/api/invoices/${invoiceId}`
-  )
-  return response.data
-}
-
-export const editInvoice = async (
-  invoiceId: number | undefined,
-  invoiceData: Invoice
-): Promise<Invoice> => {
-  const response: AxiosResponse<Invoice> = await axiosInstance.put(
-    `/api/invoices/${invoiceId}`,
-    invoiceData
-  )
-  return response.data
-}
-
-export const deleteInvoice = async (
-  invoiceId: number | string | undefined
-): Promise<Invoice> => {
-  const response: AxiosResponse<Invoice> = await axiosInstance.delete(
-    `/api/invoices/${invoiceId}`
-  )
+export const deleteInvoice = async (invoiceId: number | string | undefined) => {
+  const response = await axiosInstance.delete(`/api/invoices/${invoiceId}`)
 
   return response.data
 }
 
 export const createInvoice = async (data: InvoiceInputs) => {
   const response = await axiosInstance.post<Invoice>('/api/invoices', data)
+
+  return response.data
+}
+
+export const fetchInvoice = async (invoiceId: number | string) => {
+  const response = await axiosInstance.get<Invoice>(
+    `/api/invoices/${invoiceId}`
+  )
+
+  return response.data
+}
+
+export const updateInvoice = async (
+  data: Partial<InvoiceInputs> & { id: number | string }
+) => {
+  const response = await axiosInstance.put<Invoice>(
+    `/api/invoices/${data.id}`,
+    data
+  )
 
   return response.data
 }

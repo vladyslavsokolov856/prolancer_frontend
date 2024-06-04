@@ -1,7 +1,7 @@
 import {
   useDeleteInvoice,
-  useEditInvoice,
   useInvoice,
+  useUpdateInvoice,
 } from '@/hooks/useInvoices'
 import {
   Box,
@@ -43,20 +43,20 @@ const steps = [
   'Salary paid',
 ]
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
+const StyledTableCell = styled(TableCell)(() => ({
   borderBottom: 'none',
 }))
 
 const ShowInvoice = () => {
-  let { invoiceId } = useParams()
+  let { invoiceId = '' } = useParams()
 
-  const { invoice, isLoading } = useInvoice(parseInt(invoiceId || ''))
+  const { data: invoice, isLoading } = useInvoice(parseInt(invoiceId || ''))
   const { user } = useUser(invoice?.user_id)
   const { customer } = useCustomer(invoice?.customer_id)
   const { task } = useTask(invoice?.task_id)
   const { data: job_type } = useJobType(task?.job_type_id)
   const { orderLines } = useOrderLines()
-  const orderLineByInvoiceId = orderLines.find(
+  const orderLineByInvoiceId = orderLines.filter(
     ({ invoice_id }) => invoice_id === invoice?.id
   )
 
@@ -73,12 +73,12 @@ const ShowInvoice = () => {
     })
   }
 
-  const { editInvoiceMutation, isEditing } = useEditInvoice(invoice?.id)
+  const { mutate: updateInvoice, isPending: isEditing } = useUpdateInvoice()
 
   const [step, setStep] = useState(0)
   const handleSend = () => {
-    editInvoiceMutation(
-      { ...invoice!, status: 'sent' },
+    updateInvoice(
+      { status: 'draft', id: invoiceId },
       {
         onSuccess: () => {
           setStep(1)
@@ -87,14 +87,21 @@ const ShowInvoice = () => {
     )
   }
   const handleUnsend = () =>
-    editInvoiceMutation(
-      { ...invoice!, status: 'draft' },
+    updateInvoice(
+      { status: 'draft', id: invoiceId },
       {
         onSuccess: () => {
           setStep(0)
         },
       }
     )
+
+  const totalAmount =
+    orderLines?.reduce((pre, cur) => {
+      if (cur.quantity && cur.unit_price)
+        return pre + cur.quantity * cur.unit_price
+      else return pre
+    }, 0) || 0
 
   if (isLoading) {
     return (
@@ -439,52 +446,45 @@ const ShowInvoice = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
-              <StyledTableCell>
-                {orderLineByInvoiceId?.description}
-              </StyledTableCell>
-              <StyledTableCell>
-                {orderLineByInvoiceId?.quantity}
-              </StyledTableCell>
-              <StyledTableCell>
-                {orderLineByInvoiceId?.unit_price}
-              </StyledTableCell>
-              <StyledTableCell>
-                {`${invoice?.currency} ${
-                  orderLineByInvoiceId?.unit_price *
-                  orderLineByInvoiceId?.quantity
-                }`}
-              </StyledTableCell>
-            </TableRow>
+            {orderLineByInvoiceId.map(
+              ({ description, quantity, unit_price }) => (
+                <TableRow>
+                  <StyledTableCell>{description}</StyledTableCell>
+                  <StyledTableCell>{quantity}</StyledTableCell>
+                  <StyledTableCell>{unit_price}</StyledTableCell>
+                  <StyledTableCell>
+                    {`${invoice?.currency} ${unit_price * quantity}`}
+                  </StyledTableCell>
+                </TableRow>
+              )
+            )}
+
             <TableRow>
               <StyledTableCell colSpan={2}></StyledTableCell>
               <StyledTableCell align="right">Subtotal</StyledTableCell>
-              <StyledTableCell>{`${invoice?.currency} ${
-                orderLineByInvoiceId?.unit_price *
-                orderLineByInvoiceId?.quantity
-              }`}</StyledTableCell>
+              <StyledTableCell>
+                {`${invoice?.currency} ${totalAmount.toFixed(2)}`}
+              </StyledTableCell>
             </TableRow>
             <TableRow>
               <StyledTableCell colSpan={2}></StyledTableCell>
               <StyledTableCell align="right">VAT 25%</StyledTableCell>
-              <StyledTableCell>{`${invoice?.currency} ${
-                (orderLineByInvoiceId?.unit_price *
-                  orderLineByInvoiceId?.quantity *
-                  invoice?.vat_percentage) /
-                100
-              }`}</StyledTableCell>
+              <StyledTableCell>
+                {`${invoice?.currency} ${(
+                  (totalAmount * (invoice?.vat_percentage || 0)) /
+                  100
+                ).toFixed(2)}`}
+              </StyledTableCell>
             </TableRow>
             <TableRow>
               <StyledTableCell colSpan={2}></StyledTableCell>
               <StyledTableCell align="right">In total</StyledTableCell>
-              <StyledTableCell>{`${invoice?.currency} ${
-                orderLineByInvoiceId?.unit_price *
-                  orderLineByInvoiceId?.quantity +
-                (orderLineByInvoiceId?.unit_price *
-                  orderLineByInvoiceId?.quantity *
-                  invoice?.vat_percentage) /
-                  100
-              }`}</StyledTableCell>
+              <StyledTableCell>
+                {`${invoice?.currency} ${(
+                  totalAmount *
+                  (1 + (invoice?.vat_percentage || 0) / 100)
+                ).toFixed(2)}`}
+              </StyledTableCell>
             </TableRow>
           </TableBody>
         </Table>
