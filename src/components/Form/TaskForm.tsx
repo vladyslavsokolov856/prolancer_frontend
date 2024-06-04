@@ -9,33 +9,32 @@ import {
   Divider,
   FormControl,
   FormControlLabel,
-  FormControlLabelProps,
   FormHelperText,
   FormLabel,
   Grid,
   IconButton,
-  InputLabel,
   MenuItem,
   Paper,
-  Radio,
-  RadioGroup,
-  Select,
+  Stack,
   TextField,
   Typography,
 } from '@mui/material'
 import { styled } from '@mui/material/styles'
-import { UseFormReturn, SubmitHandler, Controller } from 'react-hook-form'
+import { UseFormReturn, SubmitHandler } from 'react-hook-form'
 import { Link as RouterLink } from 'react-router-dom'
 import AddIcon from '@mui/icons-material/Add'
 import CloseIcon from '@mui/icons-material/Close'
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
-import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import CurrencyList from 'currency-list'
 import dayjs, { Dayjs } from 'dayjs'
 import React, { useEffect, useState } from 'react'
 import { useJobTypes } from '@/hooks/useJobTypes'
 import { useCustomers } from '@/hooks/userCustomers'
 import Task from '@/types/tasks'
+import ProInput from '../ProInput'
+import ProSelect from '../ProSelect'
+import ProRadioGroup from '../ProRadioGroup'
+import ProDatePicker from '../ProDatePicker'
 
 export type Inputs = {
   customer_id: number
@@ -90,25 +89,6 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title }) => {
     </Box>
   )
 }
-
-const StyledFormControlLabel = styled(FormControlLabel)<FormControlLabelProps>(
-  () => ({
-    width: '100%',
-    border: '1px solid rgb(79, 153, 79)',
-    color: '#6c757d',
-    borderRadius: '3px',
-    padding: '7px',
-    cursor: 'pointer',
-    margin: 0,
-    '& .MuiSlider-thumb': {
-      '&:hover, &.Mui-focusVisible': {},
-      '&.Mui-active': {},
-    },
-    '&..MuiFormControlLabel-root': {
-      backgroundColor: 'rgb(242, 255, 235)',
-    },
-  })
-)
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -279,7 +259,6 @@ const TaskForm: React.FC<TaskFormProps> = ({
     getValues,
     reset,
     watch,
-    control,
     formState: { errors, isValid },
   } = form
 
@@ -345,49 +324,40 @@ const TaskForm: React.FC<TaskFormProps> = ({
               <SectionHeader title="Customer" />
             </Grid>
             <Grid item xs={12}>
-              <Box
-                display="flex"
-                alignItems="flex-start"
-                sx={{ width: '100%', gap: '10px' }}
-              >
-                <FormControl fullWidth sx={{ flexGrow: 1 }}>
-                  <InputLabel id="customer-label">Customer *</InputLabel>
-                  <Select
-                    labelId="customer-label"
-                    id="customer_id"
-                    label="Customer"
-                    defaultValue={getValues('customer_id') || ''}
-                    {...register('customer_id', {
-                      required: 'Customer is a required field',
-                    })}
-                    error={!!errors.customer_id}
-                    fullWidth
-                  >
-                    {customers.map(({ id, name_contact_person }) => (
-                      <MenuItem key={id} value={id}>
-                        {name_contact_person}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText error>
-                    {errors.customer_id && (errors.customer_id?.message || '')}
-                  </FormHelperText>
-                </FormControl>
+              <Stack direction="row" alignItems="end" sx={{ gap: '20px' }}>
+                <ProSelect
+                  labelId="customer-label"
+                  id="customer_id"
+                  label="Customer"
+                  defaultValue={getValues('customer_id') || ''}
+                  {...register('customer_id', {
+                    required: 'Customer is a required field',
+                  })}
+                  required
+                  error={!!errors.customer_id}
+                  fullWidth
+                >
+                  {customers.map(({ id, name_contact_person }) => (
+                    <MenuItem key={id} value={id}>
+                      {name_contact_person}
+                    </MenuItem>
+                  ))}
+                </ProSelect>
 
                 <Button
                   variant="contained"
                   startIcon={<AddIcon />}
                   component={RouterLink}
                   to="/customers/new"
-                  sx={{ width: '200px', minHeight: '55px' }}
+                  sx={{ width: '200px', mb: 1 }}
                 >
                   Create Customer
                 </Button>
-              </Box>
+              </Stack>
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
-                label="Customer contact *"
+              <ProInput
+                label="Customer contact"
                 value={
                   selectedCustomer
                     ? `${selectedCustomer?.name_contact_person}`
@@ -398,8 +368,8 @@ const TaskForm: React.FC<TaskFormProps> = ({
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
-                label="Customer email *"
+              <ProInput
+                label="Customer email"
                 type="email"
                 value={
                   selectedCustomer
@@ -415,38 +385,34 @@ const TaskForm: React.FC<TaskFormProps> = ({
               <SectionHeader title="Payment" />
             </Grid>
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel id="payment-term-label">Payment Term *</InputLabel>
-                <Select
-                  labelId="payment-term-label"
-                  id="payment-term"
-                  label="Payment Term"
-                  defaultValue={getValues('payment_term') || ''}
-                  {...register('payment_term', {
-                    required: 'Payment term is a required field',
-                  })}
-                  fullWidth
-                  error={!!errors.payment_term}
-                >
-                  {paymentTerms.map(({ key, name }) => (
-                    <MenuItem key={key} value={key}>
-                      {name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText error>
-                  {errors.payment_term && (errors.payment_term?.message || '')}
-                </FormHelperText>
-              </FormControl>
+              <ProSelect
+                labelId="payment-term-label"
+                id="payment-term"
+                label="Payment Term"
+                defaultValue={getValues('payment_term') || ''}
+                {...register('payment_term', {
+                  required: 'Payment term is a required field',
+                })}
+                required
+                fullWidth
+                error={!!errors.payment_term}
+              >
+                {paymentTerms.map(({ key, name }) => (
+                  <MenuItem key={key} value={key}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </ProSelect>
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
-                label="Payment days *"
+              <ProInput
+                label="Payment days"
                 type="number"
                 error={!!errors.payment_term_days}
                 {...register('payment_term_days', {
                   required: 'Payment days is a reuqired field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -466,12 +432,13 @@ const TaskForm: React.FC<TaskFormProps> = ({
               <SectionHeader title="Task information" />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                label="Title *"
+              <ProInput
+                label="Title"
                 error={!!errors.title}
                 {...register('title', {
                   required: 'Title is a reuqired field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -486,7 +453,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
+              <ProInput
                 label="Customer reference"
                 error={!!errors.reference}
                 {...register('reference')}
@@ -504,7 +471,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
+              <ProInput
                 label="PO Number"
                 error={!!errors.purchase_order_number}
                 {...register('purchase_order_number')}
@@ -523,38 +490,34 @@ const TaskForm: React.FC<TaskFormProps> = ({
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel id="job-type-label">Job type *</InputLabel>
-                <Select
-                  labelId="job-type-label"
-                  id="job_type_id"
-                  label="Job type"
-                  defaultValue={getValues('job_type_id') || ''}
-                  {...register('job_type_id', {
-                    required: 'Payment term is a required field',
-                  })}
-                  fullWidth
-                  error={!!errors.job_type_id}
-                >
-                  {jobTypes?.map(({ id, name }) => (
-                    <MenuItem key={id} value={id}>
-                      {name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText error>
-                  {errors.job_type_id && (errors.job_type_id?.message || '')}
-                </FormHelperText>
-              </FormControl>
+              <ProSelect
+                labelId="job-type-label"
+                id="job_type_id"
+                label="Job type"
+                defaultValue={getValues('job_type_id') || ''}
+                {...register('job_type_id', {
+                  required: 'Payment term is a required field',
+                })}
+                required
+                fullWidth
+                error={!!errors.job_type_id}
+              >
+                {jobTypes?.map(({ id, name }) => (
+                  <MenuItem key={id} value={id}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </ProSelect>
             </Grid>
             <Grid item xs={12} md={6}></Grid>
             <Grid item xs={12}>
               <TextField
-                label="Task description *"
+                label="Task description"
                 error={!!errors.description}
                 {...register('description', {
                   required: 'Task description is a reuqired field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -571,58 +534,34 @@ const TaskForm: React.FC<TaskFormProps> = ({
               />
             </Grid>
             <Grid item xs={12}>
-              <FormControl sx={{ width: '100%', marginBottom: '20px' }}>
-                <FormLabel
-                  id="pyament-type-group-label"
-                  sx={{ marginBottom: '10px', marginTop: '10px' }}
-                >
-                  Payment type
-                </FormLabel>
-                <Controller
-                  name="payment_type"
-                  control={control}
-                  defaultValue=""
-                  render={({ field }) => (
-                    <RadioGroup row {...field}>
-                      <Grid
-                        container
-                        rowSpacing={1}
-                        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                      >
-                        <Grid item xs={12} md={4}>
-                          <StyledFormControlLabel
-                            value="per_day"
-                            control={<Radio />}
-                            label="Per day"
-                          />
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                          <StyledFormControlLabel
-                            value="per_hour"
-                            control={<Radio />}
-                            label="Per hour"
-                          />
-                        </Grid>
-                        <Grid item xs={12} md={4}>
-                          <StyledFormControlLabel
-                            value="project_price"
-                            control={<Radio />}
-                            label="Project price"
-                          />
-                        </Grid>
-                      </Grid>
-                    </RadioGroup>
-                  )}
-                />
-              </FormControl>
+              <FormLabel
+                id="pyament-type-group-label"
+                sx={{
+                  marginBottom: '10px',
+                  marginTop: '10px',
+                  fontWeight: 600,
+                }}
+              >
+                Payment type
+              </FormLabel>
+
+              <ProRadioGroup
+                {...register('payment_type')}
+                options={[
+                  { label: 'Per day', value: 'per_day' },
+                  { label: 'Per hour', value: 'per_hour' },
+                  { label: 'Project price', value: 'project_price' },
+                ]}
+              />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
-                label="Payment amount *"
+              <ProInput
+                label="Payment amount"
                 error={!!errors.payment_amount}
                 {...register('payment_amount', {
                   required: 'Payment amount is a reuqired field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -638,29 +577,24 @@ const TaskForm: React.FC<TaskFormProps> = ({
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel id="currency-label">Currency *</InputLabel>
-                <Select
-                  labelId="currency-label"
-                  id="currency"
-                  label="Currency"
-                  defaultValue={getValues('currency') || ''}
-                  {...register('currency', {
-                    required: 'Currency is a required field',
-                  })}
-                  fullWidth
-                  error={!!errors.currency}
-                >
-                  {Object.keys(currencies).map((code) => (
-                    <MenuItem key={code} value={code}>
-                      {`${code} - ${currencies[code]['name']}`}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText error>
-                  {errors.currency && (errors.currency?.message || '')}
-                </FormHelperText>
-              </FormControl>
+              <ProSelect
+                labelId="currency-label"
+                id="currency"
+                label="Currency"
+                defaultValue={getValues('currency') || ''}
+                {...register('currency', {
+                  required: 'Currency is a required field',
+                })}
+                required
+                fullWidth
+                error={!!errors.currency}
+              >
+                {Object.keys(currencies).map((code) => (
+                  <MenuItem key={code} value={code}>
+                    {`${code} - ${currencies[code]['name']}`}
+                  </MenuItem>
+                ))}
+              </ProSelect>
             </Grid>
             <Grid item xs={12}>
               <FormControl sx={{ width: '100%', marginBottom: '20px' }}>
@@ -727,13 +661,14 @@ const TaskForm: React.FC<TaskFormProps> = ({
               <SectionHeader title="Execution" />
             </Grid>
             <Grid item xs={12} md={4}>
-              <DatePicker
+              <ProDatePicker
                 defaultValue={getValues('start_date') || null}
                 {...register('start_date', {
                   required: 'Start date is required field',
                 })}
+                required
                 onChange={(value) => setValue('start_date', value)}
-                label="Start Date *"
+                label="Start Date"
                 sx={{
                   width: '100%',
                   borderRadius: '4px',
@@ -749,13 +684,14 @@ const TaskForm: React.FC<TaskFormProps> = ({
               />
             </Grid>
             <Grid item xs={12} md={4}>
-              <DatePicker
+              <ProDatePicker
                 defaultValue={getValues('end_date') || null}
                 {...register('end_date', {
                   required: 'End date is required field',
                 })}
+                required
                 onChange={(value) => setValue('end_date', value)}
-                label="End Date *"
+                label="End Date"
                 sx={{
                   width: '100%',
                   borderRadius: '4px',
@@ -771,12 +707,13 @@ const TaskForm: React.FC<TaskFormProps> = ({
               />
             </Grid>
             <Grid item xs={12} md={4}>
-              <TextField
-                label="Number of minutes *"
+              <ProInput
+                label="Number of minutes"
                 error={!!errors.expected_minutes}
                 {...register('expected_minutes', {
                   required: 'Number of minutes is required field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -796,12 +733,13 @@ const TaskForm: React.FC<TaskFormProps> = ({
               <SectionHeader title="Email" />
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                label="Message *"
+              <ProInput
+                label="Message"
                 error={!!errors.customer_message}
                 {...register('customer_message', {
                   required: 'Message is required field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -894,6 +832,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                     {...register('terms_accepted', {
                       required: 'Terms accepted is required field',
                     })}
+                    required
                     defaultChecked={getValues('terms_accepted') || false}
                   />
                 }

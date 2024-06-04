@@ -33,7 +33,7 @@ const DeductionIndex = () => {
     useState<SelectedDeductionType>(null)
 
   const handleDeleteClick = (id: number) => {
-    setSelectedDeduction(deductions.find((item) => item.id === id))
+    setSelectedDeduction(deductions?.find((item) => item.id === id))
     setOpen(true)
   }
 

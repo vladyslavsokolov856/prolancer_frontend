@@ -1,4 +1,8 @@
-import { createDeduction } from '@/services/deductionService'
+import {
+  fetchDeductions,
+  deleteDeduction,
+  createDeduction,
+} from '@/services/deductionService'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
 export const useCreateDeduction = () => {
@@ -11,7 +15,6 @@ export const useCreateDeduction = () => {
     },
   })
 }
-import { fetchDeductions, deleteDeduction } from '@/services/deductionService'
 
 export const useDeductions = () => {
   const {
