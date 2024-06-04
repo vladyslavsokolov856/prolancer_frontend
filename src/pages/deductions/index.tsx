@@ -164,6 +164,7 @@ const DeductionIndex = () => {
             items: deductionStatus,
           },
         ]}
+        tableName="deductions"
       />
 
       <ConfirmDialog

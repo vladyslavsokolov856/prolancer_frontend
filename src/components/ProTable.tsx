@@ -21,6 +21,7 @@ import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs'
+import { useNavigate } from 'react-router'
 
 const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.head}`]: {
@@ -80,6 +81,7 @@ interface IProTable extends ISorterFilters {
   columns: ColumnType[]
   data: RecordType[]
   BeforeTableComponent?: React.FC<{ list: any[] }>
+  tableName?: string
 }
 
 interface IFilterOptions {
@@ -91,7 +93,9 @@ const ProTable: React.FC<IProTable> = ({
   data,
   filters,
   BeforeTableComponent,
+  tableName,
 }) => {
+  const navigate = useNavigate()
   const [showFilterList, setShowFilterList] = useState<boolean>(false)
   const [filterOptions, setFilterOptions] = useState<IFilterOptions>({})
   const [rowsPerPage, setRowsPerPage] = useState<number>(100)
@@ -369,13 +373,22 @@ const ProTable: React.FC<IProTable> = ({
           <TableBody>
             {filteredData.map((row, index) => {
               return (
-                <StyledTableRow key={`row-${index}`}>
+                <StyledTableRow
+                  key={`row-${index}`}
+                  onClick={() => {
+                    tableName && navigate(`/${tableName}/${row.id}`)
+                  }}
+                >
                   {columns.map((column, rowIndex) => {
                     if (column.render)
                       return (
                         <StyledTableCell
                           align={column.align || 'left'}
                           key={`cell-${column.key}-${rowIndex}`}
+                          onClick={(e) => {
+                            if (column.key === 'id' || column.name === '')
+                              e.stopPropagation()
+                          }}
                         >
                           {column.render(row[column.key], row, rowIndex)}
                         </StyledTableCell>

@@ -198,10 +198,12 @@ const DeductionDetails = () => {
 
       <Card sx={{ marginTop: '30px' }}>
         <CardContent>
-          <iframe
-            src={`${VITE_BACKEND_URL}${deductionData?.image_url}`}
-            style={{ width: '100%', height: '500px' }}
-          />
+          {deductionData?.image_url && (
+            <iframe
+              src={`${VITE_BACKEND_URL}${deductionData?.image_url}`}
+              style={{ width: '100%', height: '500px' }}
+            />
+          )}
         </CardContent>
       </Card>
 
