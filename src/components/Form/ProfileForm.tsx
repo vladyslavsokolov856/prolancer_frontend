@@ -131,6 +131,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
               {...register('job_type_id', {
                 required: 'Job Type is a required field',
               })}
+              required
               fullWidth
               error={!!errors.job_type_id}
             >
@@ -150,6 +151,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
               {...register('user_language', {
                 required: 'Language is a required field',
               })}
+              required
               fullWidth
               error={!!errors.user_language}
             >
@@ -163,11 +165,12 @@ const ProfileForm: React.FC<UserFormProps> = ({
           </Grid>
           <Grid item md={6} xs={12}>
             <ProInput
-              label="First name *"
+              label="First name"
               style={{ margin: '1px' }}
               {...register('first_name', {
                 required: 'First name is a required field',
               })}
+              required
               error={!!errors.first_name}
               helperText={
                 <Typography
@@ -184,11 +187,12 @@ const ProfileForm: React.FC<UserFormProps> = ({
           </Grid>
           <Grid item md={6} xs={12}>
             <ProInput
-              label="Last name *"
+              label="Last name"
               style={{ margin: '1px' }}
               {...register('last_name', {
                 required: 'Last name is a required field',
               })}
+              required
               error={!!errors.last_name}
               helperText={
                 <Typography
@@ -205,11 +209,12 @@ const ProfileForm: React.FC<UserFormProps> = ({
           </Grid>
           <Grid item md={6} xs={12}>
             <ProInput
-              label="Email *"
+              label="Email"
               style={{ margin: '1px' }}
               {...register('email', {
                 required: 'Email is a required field',
               })}
+              required
               error={!!errors.email}
               helperText={
                 <Typography
@@ -226,11 +231,12 @@ const ProfileForm: React.FC<UserFormProps> = ({
           </Grid>
           <Grid item md={6} xs={12}>
             <ProInput
-              label="Phone number *"
+              label="Phone number"
               style={{ margin: '1px' }}
               {...register('phone_number', {
                 required: 'Phone number is a required field',
               })}
+              required
               error={!!errors.phone_number}
               helperText={
                 <Typography
@@ -251,11 +257,12 @@ const ProfileForm: React.FC<UserFormProps> = ({
           </Grid>
           <Grid item xs={12}>
             <ProInput
-              label="Address *"
+              label="Address"
               style={{ margin: '1px' }}
               {...register('address', {
                 required: 'Address is a required field',
               })}
+              required
               error={!!errors.address}
               helperText={
                 <Typography
@@ -272,11 +279,12 @@ const ProfileForm: React.FC<UserFormProps> = ({
           </Grid>
           <Grid item md={6} xs={12}>
             <ProInput
-              label="City *"
+              label="City"
               style={{ margin: '1px' }}
               {...register('city', {
                 required: 'City is a required field',
               })}
+              required
               error={!!errors.city}
               helperText={
                 <Typography
@@ -293,11 +301,12 @@ const ProfileForm: React.FC<UserFormProps> = ({
           </Grid>
           <Grid item md={6} xs={12}>
             <ProInput
-              label="Postal code *"
+              label="Postal code"
               style={{ margin: '1px' }}
               {...register('postal_code', {
                 required: 'Postal code is a required field',
               })}
+              required
               error={!!errors.postal_code}
               helperText={
                 <Typography
@@ -316,11 +325,12 @@ const ProfileForm: React.FC<UserFormProps> = ({
             <ProSelect
               labelId="country-select-label"
               id="country"
-              label="Country *"
+              label="Country"
               defaultValue={initialValues?.country || ''}
               {...register('country', {
                 required: 'Country is a required field',
               })}
+              required
               fullWidth
               error={!!errors.country}
             >
@@ -380,11 +390,12 @@ const ProfileForm: React.FC<UserFormProps> = ({
           </Grid>
           <Grid item md={6} xs={12}>
             <ProInput
-              label="Bank name *"
+              label="Bank name"
               style={{ margin: '1px' }}
               {...register('bank_information.name', {
                 required: 'Bank name is a required field',
               })}
+              required
               error={!!errors.bank_information?.name}
               helperText={
                 <Typography
@@ -403,11 +414,12 @@ const ProfileForm: React.FC<UserFormProps> = ({
           <Grid item md={6} xs={12}></Grid>
           <Grid item md={6} xs={12}>
             <ProInput
-              label="Bank registration number *"
+              label="Bank registration number"
               style={{ margin: '1px' }}
               {...register('bank_information.registration_number', {
                 required: 'Bank registration number is a required field',
               })}
+              required
               error={!!errors.bank_information?.registration_number}
               helperText={
                 <Typography
@@ -426,11 +438,12 @@ const ProfileForm: React.FC<UserFormProps> = ({
           </Grid>
           <Grid item md={6} xs={12}>
             <ProInput
-              label="Bank account number *"
+              label="Bank account number"
               style={{ margin: '1px' }}
               {...register('bank_information.account_number', {
                 required: 'Bank account number is a required field',
               })}
+              required
               error={!!errors.bank_information?.account_number}
               helperText={
                 <Typography
@@ -452,11 +465,12 @@ const ProfileForm: React.FC<UserFormProps> = ({
           </Grid>
           <Grid item md={6} xs={12}>
             <ProInput
-              label="CPR *"
+              label="CPR"
               style={{ margin: '1px' }}
               {...register('tax_person_id', {
                 required: 'CPR is a required field',
               })}
+              required
               error={!!errors.tax_person_id}
               helperText={
                 <Typography
@@ -481,6 +495,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
               {...register('tax_card', {
                 required: 'Tax card is a required field',
               })}
+              required
               fullWidth
             >
               <MenuItem value="main">Main Tax Card</MenuItem>
@@ -518,11 +533,12 @@ const ProfileForm: React.FC<UserFormProps> = ({
             <ProSelect
               labelId="requested-salary-payment-label"
               id="salary_payment_type_requested"
-              label="Requested salary payment type *"
+              label="Requested salary payment type"
               defaultValue={initialValues?.salary_payment_type_requested || ''}
               {...register('salary_payment_type_requested', {
                 required: 'Requested salary payment type is a required field',
               })}
+              required
               fullWidth
             >
               <MenuItem value="first">First of Month</MenuItem>

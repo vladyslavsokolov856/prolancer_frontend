@@ -69,6 +69,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
               {...register('country', {
                 required: 'Country is a required field',
               })}
+              required
               fullWidth
             >
               {Object.entries(countries).map(([countryCode, countryData]) => (
@@ -87,6 +88,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
               {...register('type', {
                 required: 'Customer type is a required field',
               })}
+              required
               options={[
                 { label: 'Private', value: 'private' },
                 { label: 'Business', value: 'business' },
@@ -105,11 +107,12 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
           >
             <Grid item md={6} xs={12}>
               <ProInput
-                label="Company name *"
+                label="Company name"
                 style={{ margin: '1px' }}
                 {...register('company_name', {
                   required: 'Company name is a required field',
                 })}
+                required
                 error={!!errors.company_name}
                 helperText={
                   <Typography
@@ -127,11 +130,12 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
             </Grid>
             <Grid item md={6} xs={12}>
               <ProSelect
-                label="Language *"
+                label="Language"
                 defaultValue="English"
                 {...register('language', {
                   required: 'Language is a required field',
                 })}
+                required
               >
                 {languageOptions}
               </ProSelect>
@@ -160,13 +164,14 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
             </Grid>
             <Grid item md={6} xs={12}>
               <ProInput
-                label="Email *"
+                label="Email"
                 type="email"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.email_contact_person}
                 {...register('email_contact_person', {
                   required: 'Email is a reuqired field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -183,11 +188,12 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
             </Grid>
             <Grid item md={6} xs={12}>
               <ProInput
-                label="Telephone *"
+                label="Telephone"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 {...register('phone_contact_person', {
                   required: 'Telephone is a reuqired field',
                 })}
+                required
                 error={!!errors.phone_contact_person}
                 helperText={
                   <Typography
@@ -238,12 +244,13 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
             </Grid>
             <Grid item md={12} xs={12}>
               <ProInput
-                label="Address *"
+                label="Address"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.address}
                 {...register('address', {
                   required: 'Address is a reuqired field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -262,12 +269,13 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
             </Grid>
             <Grid item md={6} xs={12}>
               <ProInput
-                label="City *"
+                label="City"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.city}
                 {...register('city', {
                   required: 'City is a reuqired field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -283,12 +291,13 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
             </Grid>
             <Grid item md={6} xs={12}>
               <ProInput
-                label="Postal code *"
+                label="Postal code"
                 type="number"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 {...register('postal_code', {
                   required: 'Postal code is a reuqired field',
                 })}
+                required
                 error={!!errors.postal_code}
                 helperText={
                   <Typography

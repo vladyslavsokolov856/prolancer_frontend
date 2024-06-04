@@ -225,11 +225,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 <ProSelect
                   labelId="customer-label"
                   id="customer"
-                  label="Customer *"
+                  label="Customer"
                   defaultValue={initialValues?.customer_id}
                   {...register('customer_id', {
                     required: 'Customer is a required field',
                   })}
+                  required
                   fullWidth
                   error={!!errors.customer_id}
                 >
@@ -251,7 +252,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <ProInput
-                label="Customer contact *"
+                label="Customer contact"
                 style={{ margin: '1px' }}
                 disabled
                 value={selectedCustomer?.name_contact_person || ''}
@@ -260,7 +261,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <ProInput
-                label="Customer email *"
+                label="Customer email"
                 style={{ margin: '1px' }}
                 disabled
                 value={selectedCustomer?.email_contact_person || ''}
@@ -285,11 +286,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 <ProSelect
                   labelId="task-label"
                   id="task"
-                  label="Task *"
+                  label="Task"
                   defaultValue={initialValues?.task_id}
                   {...register('task_id', {
                     required: 'Task is a required field',
                   })}
+                  required
                   fullWidth
                   error={!!errors.task_id}
                 >
@@ -320,8 +322,9 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 {...register('invoice_date', {
                   required: 'Invoice date is required field',
                 })}
+                required
                 onChange={(value) => setValue('invoice_date', value)}
-                label="Invoice Date *"
+                label="Invoice Date"
                 slotProps={{
                   textField: {
                     fullWidth: true,
@@ -342,7 +345,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <ProDatePicker
-                label="Start Date *"
+                label="Start Date"
                 value={selectedTask ? dayjs(selectedTask.start_date) : null}
                 slotProps={{
                   textField: {
@@ -355,7 +358,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <ProDatePicker
-                label="End Date *"
+                label="End Date"
                 value={selectedTask ? dayjs(selectedTask.end_date) : null}
                 slotProps={{
                   textField: {
@@ -384,12 +387,13 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <ProInput
-                label="Hours worked *"
+                label="Hours worked"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.hours_worked}
                 {...register('hours_worked', {
                   required: 'Hours worked is required field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -410,12 +414,13 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <ProInput
-                label="Payment days *"
+                label="Payment days"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.payment_days}
                 {...register('payment_days', {
                   required: 'Payment days is required field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -434,11 +439,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
               <ProSelect
                 labelId="currency-label"
                 id="currency"
-                label="Currency *"
+                label="Currency"
                 value={currency}
                 {...register('currency', {
                   required: 'Currency is a required field',
                 })}
+                required
                 fullWidth
                 error={!!errors.currency}
               >
@@ -638,7 +644,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                     defaultChecked={getValues('terms_accepted') || false}
                   />
                 }
-                label="Terms accpeted *"
+                label="Terms accpeted"
               />
               <FormHelperText error>
                 {errors.terms_accepted &&

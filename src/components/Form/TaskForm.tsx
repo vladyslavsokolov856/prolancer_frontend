@@ -333,6 +333,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                   {...register('customer_id', {
                     required: 'Customer is a required field',
                   })}
+                  required
                   error={!!errors.customer_id}
                   fullWidth
                 >
@@ -356,7 +357,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <ProInput
-                label="Customer contact *"
+                label="Customer contact"
                 value={
                   selectedCustomer
                     ? `${selectedCustomer?.name_contact_person}`
@@ -368,7 +369,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <ProInput
-                label="Customer email *"
+                label="Customer email"
                 type="email"
                 value={
                   selectedCustomer
@@ -392,6 +393,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                 {...register('payment_term', {
                   required: 'Payment term is a required field',
                 })}
+                required
                 fullWidth
                 error={!!errors.payment_term}
               >
@@ -404,12 +406,13 @@ const TaskForm: React.FC<TaskFormProps> = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <ProInput
-                label="Payment days *"
+                label="Payment days"
                 type="number"
                 error={!!errors.payment_term_days}
                 {...register('payment_term_days', {
                   required: 'Payment days is a reuqired field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -430,11 +433,12 @@ const TaskForm: React.FC<TaskFormProps> = ({
             </Grid>
             <Grid item xs={12}>
               <ProInput
-                label="Title *"
+                label="Title"
                 error={!!errors.title}
                 {...register('title', {
                   required: 'Title is a reuqired field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -494,6 +498,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                 {...register('job_type_id', {
                   required: 'Payment term is a required field',
                 })}
+                required
                 fullWidth
                 error={!!errors.job_type_id}
               >
@@ -507,11 +512,12 @@ const TaskForm: React.FC<TaskFormProps> = ({
             <Grid item xs={12} md={6}></Grid>
             <Grid item xs={12}>
               <TextField
-                label="Task description *"
+                label="Task description"
                 error={!!errors.description}
                 {...register('description', {
                   required: 'Task description is a reuqired field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -530,7 +536,11 @@ const TaskForm: React.FC<TaskFormProps> = ({
             <Grid item xs={12}>
               <FormLabel
                 id="pyament-type-group-label"
-                sx={{ marginBottom: '10px', marginTop: '10px' }}
+                sx={{
+                  marginBottom: '10px',
+                  marginTop: '10px',
+                  fontWeight: 600,
+                }}
               >
                 Payment type
               </FormLabel>
@@ -546,11 +556,12 @@ const TaskForm: React.FC<TaskFormProps> = ({
             </Grid>
             <Grid item xs={12} md={6}>
               <ProInput
-                label="Payment amount *"
+                label="Payment amount"
                 error={!!errors.payment_amount}
                 {...register('payment_amount', {
                   required: 'Payment amount is a reuqired field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -574,6 +585,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                 {...register('currency', {
                   required: 'Currency is a required field',
                 })}
+                required
                 fullWidth
                 error={!!errors.currency}
               >
@@ -654,8 +666,9 @@ const TaskForm: React.FC<TaskFormProps> = ({
                 {...register('start_date', {
                   required: 'Start date is required field',
                 })}
+                required
                 onChange={(value) => setValue('start_date', value)}
-                label="Start Date *"
+                label="Start Date"
                 sx={{
                   width: '100%',
                   borderRadius: '4px',
@@ -676,8 +689,9 @@ const TaskForm: React.FC<TaskFormProps> = ({
                 {...register('end_date', {
                   required: 'End date is required field',
                 })}
+                required
                 onChange={(value) => setValue('end_date', value)}
-                label="End Date *"
+                label="End Date"
                 sx={{
                   width: '100%',
                   borderRadius: '4px',
@@ -694,11 +708,12 @@ const TaskForm: React.FC<TaskFormProps> = ({
             </Grid>
             <Grid item xs={12} md={4}>
               <ProInput
-                label="Number of minutes *"
+                label="Number of minutes"
                 error={!!errors.expected_minutes}
                 {...register('expected_minutes', {
                   required: 'Number of minutes is required field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -719,11 +734,12 @@ const TaskForm: React.FC<TaskFormProps> = ({
             </Grid>
             <Grid item xs={12}>
               <ProInput
-                label="Message *"
+                label="Message"
                 error={!!errors.customer_message}
                 {...register('customer_message', {
                   required: 'Message is required field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -816,6 +832,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                     {...register('terms_accepted', {
                       required: 'Terms accepted is required field',
                     })}
+                    required
                     defaultChecked={getValues('terms_accepted') || false}
                   />
                 }
