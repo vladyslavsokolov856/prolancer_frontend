@@ -1,15 +1,8 @@
 import {
   Box,
-  FormControl,
-  InputLabel,
-  Select,
   MenuItem,
   FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
   Paper,
-  TextField,
   Grid,
   Checkbox,
   Typography,
@@ -19,6 +12,9 @@ import {
 import { countries } from 'countries-list'
 import { styled } from '@mui/material/styles'
 import { SubmitHandler, UseFormReturn } from 'react-hook-form'
+import ProInput from '../ProInput'
+import ProSelect from '../ProSelect'
+import ProRadioGroup from '../ProRadioGroup'
 
 export type Inputs = {
   country: string
@@ -63,55 +59,41 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <StyledPaper elevation={4}>
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+        <Grid container columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item md={6} xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="country-select-label">Country</InputLabel>
-              <Select
-                labelId="country-select-label"
-                id="country-select"
-                label="Country"
-                defaultValue=""
-                {...register('country', {
-                  required: 'Country is a required field',
-                })}
-                fullWidth
-              >
-                {Object.entries(countries).map(([countryCode, countryData]) => (
-                  <MenuItem key={countryCode} value={countryCode}>
-                    {countryData.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <ProSelect
+              labelId="country-select-label"
+              id="country-select"
+              label="Country"
+              defaultValue=""
+              {...register('country', {
+                required: 'Country is a required field',
+              })}
+              required
+              fullWidth
+            >
+              {Object.entries(countries).map(([countryCode, countryData]) => (
+                <MenuItem key={countryCode} value={countryCode}>
+                  {countryData.name}
+                </MenuItem>
+              ))}
+            </ProSelect>
           </Grid>
 
           <Grid item md={6} xs={12}>
-            <FormControl>
-              <FormLabel id="customer-type-radio-group-label">
-                Customer type
-              </FormLabel>
-              <RadioGroup
-                row
-                defaultValue="business"
-                aria-labelledby="customer-type-radio-group-label"
-                {...register('type', {
-                  required: 'Customer type is a required field',
-                })}
-                sx={{ gap: '100px' }}
-              >
-                <FormControlLabel
-                  value="business"
-                  control={<Radio />}
-                  label="Business"
-                />
-                <FormControlLabel
-                  value="private"
-                  control={<Radio />}
-                  label="Private"
-                />
-              </RadioGroup>
-            </FormControl>
+            <ProRadioGroup
+              label="Customer Type"
+              defaultValue="business"
+              aria-labelledby="customer-type-radio-group-label"
+              {...register('type', {
+                required: 'Customer type is a required field',
+              })}
+              required
+              options={[
+                { label: 'Private', value: 'private' },
+                { label: 'Business', value: 'business' },
+              ]}
+            ></ProRadioGroup>
           </Grid>
         </Grid>
       </StyledPaper>
@@ -124,12 +106,13 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
             columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           >
             <Grid item md={6} xs={12}>
-              <TextField
-                label="Company name *"
+              <ProInput
+                label="Company name"
                 style={{ margin: '1px' }}
                 {...register('company_name', {
                   required: 'Company name is a required field',
                 })}
+                required
                 error={!!errors.company_name}
                 helperText={
                   <Typography
@@ -146,18 +129,16 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <FormControl fullWidth>
-                <InputLabel id="country-select-label">Language</InputLabel>
-                <Select
-                  label="Language *"
-                  defaultValue="English"
-                  {...register('language', {
-                    required: 'Language is a required field',
-                  })}
-                >
-                  {languageOptions}
-                </Select>
-              </FormControl>
+              <ProSelect
+                label="Language"
+                defaultValue="English"
+                {...register('language', {
+                  required: 'Language is a required field',
+                })}
+                required
+              >
+                {languageOptions}
+              </ProSelect>
             </Grid>
             <Grid item md={12} xs={12}>
               <Box
@@ -174,7 +155,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
               </Box>
             </Grid>
             <Grid item md={12} xs={12}>
-              <TextField
+              <ProInput
                 label="Name"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 {...register('name_contact_person')}
@@ -182,14 +163,15 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                label="Email *"
+              <ProInput
+                label="Email"
                 type="email"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.email_contact_person}
                 {...register('email_contact_person', {
                   required: 'Email is a reuqired field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -205,12 +187,13 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                label="Telephone *"
+              <ProInput
+                label="Telephone"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 {...register('phone_contact_person', {
                   required: 'Telephone is a reuqired field',
                 })}
+                required
                 error={!!errors.phone_contact_person}
                 helperText={
                   <Typography
@@ -260,13 +243,14 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
               </Box>
             </Grid>
             <Grid item md={12} xs={12}>
-              <TextField
-                label="Address *"
+              <ProInput
+                label="Address"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.address}
                 {...register('address', {
                   required: 'Address is a reuqired field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -284,13 +268,14 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
               </span>
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                label="City *"
+              <ProInput
+                label="City"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.city}
                 {...register('city', {
                   required: 'City is a reuqired field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -305,13 +290,14 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
               />
             </Grid>
             <Grid item md={6} xs={12}>
-              <TextField
-                label="Postal code *"
+              <ProInput
+                label="Postal code"
                 type="number"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 {...register('postal_code', {
                   required: 'Postal code is a reuqired field',
                 })}
+                required
                 error={!!errors.postal_code}
                 helperText={
                   <Typography
@@ -341,7 +327,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
               </Box>
             </Grid>
             <Grid item md={4} xs={12}>
-              <TextField
+              <ProInput
                 label="Payment due days"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 type="number"
@@ -354,7 +340,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
               </span>
             </Grid>
             <Grid item md={4} xs={12}>
-              <TextField
+              <ProInput
                 label="Organization or registration number"
                 type="number"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
@@ -364,7 +350,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
               />
             </Grid>
             <Grid item md={4} xs={12}>
-              <TextField
+              <ProInput
                 label="EAN"
                 type="number"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
