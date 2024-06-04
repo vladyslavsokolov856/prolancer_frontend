@@ -11,12 +11,16 @@ import {
   Select,
   TextField,
   Divider,
+  MenuItem,
 } from '@mui/material'
-import { IListItem, mockTaskData, mockTaskOptions } from '.'
+import { IListItem } from '.'
 import AddIcon from '@mui/icons-material/Add'
 import { DateTimePicker } from '@mui/x-date-pickers'
 import dayjs from 'dayjs'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import { useTasks } from '@/hooks/useTasks'
+import { useCreateWorkLog } from '@/hooks/useWorkLogs'
+import { useSnackbar } from 'notistack'
 
 interface ICreateTimeRegistration {
   open: boolean
@@ -33,6 +37,11 @@ const CreateTimeRegistration: React.FC<ICreateTimeRegistration> = ({
   const [duration, setDuration] = useState(0)
   const [task, setTask] = useState<number | undefined | null | ''>('')
   const [notes, setNotes] = useState<string>('')
+  const { createWorkLogMutation, createdWorkLog, isCreated } =
+    useCreateWorkLog()
+  const { enqueueSnackbar } = useSnackbar()
+
+  const { tasks } = useTasks()
 
   const handleChange = (cb: any) => (e: any) => {
     cb(e.target.value)
@@ -44,22 +53,27 @@ const CreateTimeRegistration: React.FC<ICreateTimeRegistration> = ({
 
   const handleSaveDraft = () => {
     if (startTime && duration) {
-      setListItems((prevItems) => {
-        const newItem: IListItem = {
-          id: prevItems.length + 1,
-          start_time: dayjs(startTime).format('M/D/YYYY, h:mm:ss A'),
-          duration,
-          task_id: mockTaskData.find(
-            ({ id }) => id === parseInt(task as string)
-          )?.id,
-          notes,
-        }
+      const newItem = {
+        start_time: dayjs(startTime).format('M/D/YYYY, h:mm:ss A'),
+        duration_minutes: duration,
+        task_id: tasks.find(({ id }) => id === parseInt(task as string))?.id,
+        notes,
+        status: 'draft',
+      }
 
-        return [newItem, ...prevItems]
+      createWorkLogMutation(newItem)
+    }
+  }
+
+  useEffect(() => {
+    if (isCreated && createdWorkLog) {
+      enqueueSnackbar('Time registration created!', { variant: 'success' })
+      setListItems((prevItems) => {
+        return [createdWorkLog, ...prevItems]
       })
       onClose()
     }
-  }
+  }, [isCreated])
 
   return (
     <Dialog
@@ -86,7 +100,11 @@ const CreateTimeRegistration: React.FC<ICreateTimeRegistration> = ({
                     onChange={handleChange(setTask)}
                     fullWidth
                   >
-                    {mockTaskOptions}
+                    {tasks.map(({ id, title }) => (
+                      <MenuItem key={id} value={id}>
+                        {title}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Grid>

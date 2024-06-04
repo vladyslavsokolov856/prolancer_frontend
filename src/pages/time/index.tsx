@@ -18,8 +18,13 @@ import { useEffect, useState } from 'react'
 import ProFilter, { IFilter } from '@/components/ProFilter'
 import ProList from '@/components/ProList'
 import dayjs from 'dayjs'
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import CreateTimeRegistration from './new'
+import { useCreateWorkLog, useWorkLogs } from '@/hooks/useWorkLogs'
+import { useCreateTask, useTasks } from '@/hooks/useTasks'
+import { useSnackbar } from 'notistack'
+import FormDialog from '@/components/FormDialog'
+import TaskForm, { Inputs as TaskFormInputs } from '@/components/Form/TaskForm'
 
 const filters: IFilter[] = [
   {
@@ -43,10 +48,11 @@ const filters: IFilter[] = [
 export interface IListItem {
   id: number
   start_time: string
-  duration: number
+  duration_minutes: number
   task_id?: number
   notes: string
   editable?: boolean
+  status?: string
 }
 
 type IListItemKey = keyof IListItem
@@ -57,41 +63,13 @@ export interface ISortItem {
 }
 
 const sortItems: ISortItem[] = [
-  { name: 'Duration (minutes)', field: 'duration' },
+  { name: 'Duration (minutes)', field: 'duration_minutes' },
   { name: 'Task', field: 'task_id' },
   { name: 'Start time', field: 'start_time' },
   { name: 'Notes', field: 'notes' },
 ]
 
 const searchFields: IListItemKey[] = ['notes']
-
-const mockListItems: IListItem[] = [
-  {
-    id: 1,
-    start_time: '5/22/2024, 8:15:33 PM',
-    duration: 1,
-    task_id: 1,
-    notes: 'note1',
-  },
-  {
-    id: 2,
-    start_time: '5/21/2024, 11:24:25 AM',
-    duration: 5,
-    task_id: 2,
-    notes: 'note2',
-  },
-]
-
-export const mockTaskData = [
-  { id: 1, name: 'task1' },
-  { id: 2, name: 'task2' },
-]
-
-export const mockTaskOptions = mockTaskData.map(({ id, name }) => (
-  <MenuItem key={id} value={id}>
-    {name}
-  </MenuItem>
-))
 
 type Inputs = {
   notes: string
@@ -102,15 +80,49 @@ const TimeRegistration = () => {
   const [isRecording, setIsRecording] = useState<boolean>(false)
   const [listItems, setListItems] = useState<IListItem[]>([])
   const [timer, setTimer] = useState(0)
+  const [showDialog, setShowDialog] = useState<boolean>(false)
+
+  const { workLogs, isLoading: isWorkLogsLoading } = useWorkLogs()
+  const { tasks, isLoading: isTasksLoading } = useTasks()
+  const { createWorkLogMutation, createdWorkLog, isCreated } =
+    useCreateWorkLog()
+  const taskHookForm = useForm<TaskFormInputs>()
+  const { isCreated: isTaskCreated, createTaskMutation } = useCreateTask()
+
+  const onTaskFormSubmit: SubmitHandler<TaskFormInputs> = async (data) => {
+    createTaskMutation({
+      ...data,
+      start_date: data.start_date ? data.start_date.toDate() : null,
+      end_date: data.end_date ? data.end_date.toDate() : null,
+    })
+  }
+
+  const { enqueueSnackbar } = useSnackbar()
 
   const { register, watch } = useForm<Inputs>()
 
   useEffect(() => {
-    setListItems(mockListItems)
-  }, [])
+    if (!isWorkLogsLoading && !isTasksLoading) setListItems(workLogs)
+  }, [isWorkLogsLoading, isTasksLoading])
 
   useEffect(() => {
-    let interval = undefined
+    if (isTaskCreated) {
+      enqueueSnackbar('Task created!', { variant: 'success' })
+      setShowDialog((prev) => !prev)
+    }
+  }, [isTaskCreated])
+
+  useEffect(() => {
+    if (isCreated && createdWorkLog) {
+      enqueueSnackbar('Time registration created!', { variant: 'success' })
+      setListItems((prevItems) => {
+        return [createdWorkLog, ...prevItems]
+      })
+    }
+  }, [isCreated])
+
+  useEffect(() => {
+    let interval: any = undefined
 
     if (isRecording) {
       interval = setInterval(() => {
@@ -133,23 +145,19 @@ const TimeRegistration = () => {
   const handleToggleRecordTime = () => {
     if (isRecording) {
       setTimer(0)
-      setListItems((prevItems) => {
-        const now = dayjs().format('M/D/YYYY, h:mm:ss A')
-        const minutes = Math.floor((timer / 60000) % 60)
-        const hours = Math.floor(timer / 3600000)
+      const now = dayjs().format('M/D/YYYY, h:mm:ss A')
+      const minutes = Math.floor((timer / 60000) % 60)
+      const hours = Math.floor(timer / 3600000)
 
-        const newItem: IListItem = {
-          id: prevItems.length + 1,
-          start_time: now,
-          duration: hours * 60 + minutes + 1,
-          task_id: mockTaskData.find(
-            ({ id }) => id === parseInt(watch('task_id'))
-          )?.id,
-          notes: watch('notes'),
-        }
+      const newItem = {
+        start_time: now,
+        duration_minutes: hours * 60 + minutes + 1,
+        task_id: tasks.find(({ id }) => id === parseInt(watch('task_id')))?.id,
+        notes: watch('notes'),
+        status: 'draft',
+      }
 
-        return [newItem, ...prevItems]
-      })
+      createWorkLogMutation(newItem)
     }
     setIsRecording((prevStatus) => !prevStatus)
   }
@@ -249,7 +257,11 @@ const TimeRegistration = () => {
                     {...register('task_id')}
                     fullWidth
                   >
-                    {mockTaskOptions}
+                    {tasks.map(({ id, title }) => (
+                      <MenuItem key={id} value={id}>
+                        {title}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Grid>
@@ -268,6 +280,7 @@ const TimeRegistration = () => {
                   startIcon={<AddIcon />}
                   sx={{ height: '35px' }}
                   fullWidth
+                  onClick={() => setShowDialog((prev) => !prev)}
                 >
                   Create task
                 </Button>
@@ -281,7 +294,7 @@ const TimeRegistration = () => {
         filters={filters}
         setItems={setListItems}
         searchFields={searchFields}
-        originalListItems={mockListItems}
+        originalListItems={workLogs}
         sortItems={sortItems}
       />
       <ProList items={listItems} setItems={setListItems} />
@@ -293,6 +306,13 @@ const TimeRegistration = () => {
           setListItems={setListItems}
         />
       )}
+
+      <FormDialog
+        open={showDialog}
+        setOpen={setShowDialog}
+        title={'Create Customer'}
+        content={<TaskForm form={taskHookForm} onSubmit={onTaskFormSubmit} />}
+      />
     </Box>
   )
 }

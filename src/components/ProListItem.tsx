@@ -4,6 +4,7 @@ import {
   FormControl,
   Grid,
   InputLabel,
+  MenuItem,
   Paper,
   Select,
   TextField,
@@ -14,10 +15,13 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { DateTimePicker } from '@mui/x-date-pickers'
 import EmailIcon from '@mui/icons-material/EmailOutlined'
 import TimeIcon from '@mui/icons-material/AccessTime'
-import { IListItem, mockTaskData, mockTaskOptions } from '@/pages/time'
+import { IListItem } from '@/pages/time'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
+import { useTasks } from '@/hooks/useTasks'
+import { useDeleteWorkLog, useEditWorkLog } from '@/hooks/useWorkLogs'
+import { useSnackbar } from 'notistack'
 
 dayjs.extend(customParseFormat)
 
@@ -34,12 +38,23 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
   const [task, setTask] = useState<number | undefined | null>(null)
   const [notes, setNotes] = useState<string>('')
 
+  const { tasks } = useTasks()
+  const { updateWorkLogMutation, isEdited, isEditing } = useEditWorkLog()
+  const { deleteWorkLogMutation } = useDeleteWorkLog()
+  const { enqueueSnackbar } = useSnackbar()
+
   useEffect(() => {
-    setStartTime(dayjs(item.start_time, format))
-    setDuration(item.duration)
+    setStartTime(dayjs(item.start_time))
+    setDuration(item.duration_minutes)
     setTask(item.task_id)
     setNotes(item.notes)
   }, [item])
+
+  useEffect(() => {
+    if (isEdited) {
+      enqueueSnackbar('Time registration updated!', { variant: 'success' })
+    }
+  }, [isEdited])
 
   const handleChange = (cb: any) => (e: any) => {
     cb(e.target.value)
@@ -58,6 +73,8 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
   }
 
   const handleDelete = (selectedId: number) => () => {
+    deleteWorkLogMutation(selectedId)
+    enqueueSnackbar('Time registration deleted!', { variant: 'success' })
     setItems((prevItems) => prevItems.filter(({ id }) => selectedId !== id))
   }
 
@@ -71,15 +88,28 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
 
   const handleSaveDraft = (selectedId: number) => () => {
     if (duration && startTime && notes && task) {
+      const { editable, ...rest } = item
+      updateWorkLogMutation({
+        id: selectedId,
+        workLogData: {
+          ...rest,
+          duration_minutes: duration,
+          start_time: dayjs(startTime).format('M/D/YYYY, h:mm:ss A'),
+          notes,
+          task_id: task,
+          status: 'draft',
+        },
+      })
+
       setItems((prevItems) =>
         prevItems.map((item) =>
           selectedId === item.id
             ? {
                 ...item,
-                duration,
+                duration_minutes: duration,
                 start_time: dayjs(startTime).format('M/D/YYYY, h:mm:ss A'),
                 notes,
-                task,
+                task_id: task,
                 editable: false,
               }
             : item
@@ -90,13 +120,34 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
 
   const handleSendToCustomer = (selectedId: number) => () => {
     if (duration && startTime && notes && task) {
-      console.log({
-        duration,
-        startTime: dayjs(startTime).format('M/D/YYYY, h:mm:ss A'),
-        notes,
-        task,
-        selectedId,
+      const { editable, ...rest } = item
+      updateWorkLogMutation({
+        id: selectedId,
+        workLogData: {
+          ...rest,
+          duration_minutes: duration,
+          start_time: dayjs(startTime).format('M/D/YYYY, h:mm:ss A'),
+          notes,
+          task_id: task,
+          status: 'sent',
+        },
       })
+
+      setItems((prevItems) =>
+        prevItems.map((item) =>
+          selectedId === item.id
+            ? {
+                ...item,
+                duration_minutes: duration,
+                start_time: dayjs(startTime).format('M/D/YYYY, h:mm:ss A'),
+                notes,
+                status: 'sent',
+                task_id: task,
+                editable: false,
+              }
+            : item
+        )
+      )
     }
   }
 
@@ -111,14 +162,13 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
     >
       {!item.editable ? (
         <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography>{item.start_time}</Typography>
+          <Typography>{dayjs(item.start_time).format(format)}</Typography>
           <Typography>
-            <TimeIcon /> {item.duration + ' min'}
+            <TimeIcon /> {item.duration_minutes + ' min'}
           </Typography>
           <Typography>
             {item.task_id
-              ? mockTaskData.find(({ id: taskId }) => taskId === item.task_id)
-                  ?.name
+              ? tasks.find(({ id: taskId }) => taskId === item.task_id)?.title
               : 'No task selected'}
           </Typography>
           <Typography>{item.notes}</Typography>
@@ -138,7 +188,7 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
                 color: 'white',
               }}
             >
-              draft
+              {item.status}
             </Box>
             <Button
               variant="contained"
@@ -189,7 +239,11 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
                     onChange={handleChange(setTask)}
                     fullWidth
                   >
-                    {mockTaskOptions}
+                    {tasks.map(({ id, title }) => (
+                      <MenuItem key={id} value={id}>
+                        {title}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Grid>
@@ -228,6 +282,7 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
               variant="contained"
               size="small"
               onClick={handleSaveDraft(item.id)}
+              disabled={isEditing}
             >
               Save draft
             </Button>

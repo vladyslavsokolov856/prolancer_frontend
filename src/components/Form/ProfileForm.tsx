@@ -1,16 +1,10 @@
 import { SubmitHandler, UseFormReturn } from 'react-hook-form'
 import Paper from '@mui/material/Paper'
 import Grid from '@mui/material/Grid'
-import InputLabel from '@mui/material/InputLabel'
-import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
-import TextField from '@mui/material/TextField'
-import RadioGroup from '@mui/material/RadioGroup'
-import FormHelperText from '@mui/material/FormHelperText'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Alert from '@mui/material/Alert'
-import Radio from '@mui/material/Radio'
 import Checkbox from '@mui/material/Checkbox'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -21,6 +15,12 @@ import FormControlLabel, {
 import { styled } from '@mui/material/styles'
 import { countries } from 'countries-list'
 import { useJobTypes } from '@/hooks/useJobTypes'
+import User from '@/types/users'
+import { useEffect, useMemo } from 'react'
+import { CircularProgress } from '@mui/material'
+import ProInput from '../ProInput'
+import ProSelect from '../ProSelect'
+import ProRadioGroup from '../ProRadioGroup'
 
 export type Inputs = {
   job_type_id: string
@@ -33,7 +33,7 @@ export type Inputs = {
   city: string
   postal_code: string
   country: string
-  email_preferences: string
+  email_preferences?: string
   bank_information: {
     name: string
     registration_number: string
@@ -71,38 +71,49 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title }) => {
   )
 }
 
-const StyledFormControlLabel = styled(FormControlLabel)<FormControlLabelProps>(
-  () => ({
-    width: '100%',
-    border: '1px solid rgb(79, 153, 79)',
-    color: '#6c757d',
-    borderRadius: '3px',
-    padding: '7px',
-    cursor: 'pointer',
-    margin: 0,
-    '& .MuiSlider-thumb': {
-      '&:hover, &.Mui-focusVisible': {},
-      '&.Mui-active': {},
-    },
-    '&..MuiFormControlLabel-root': {
-      backgroundColor: 'rgb(242, 255, 235)',
-    },
-  })
-)
-
-interface TaskFormProps {
+interface UserFormProps {
   form: UseFormReturn<Inputs, any, any>
   onSubmit: SubmitHandler<Inputs>
+  submitButtonDisabled?: boolean
+  initialValues?: User | null
 }
 
-const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
+const ProfileForm: React.FC<UserFormProps> = ({
+  form,
+  onSubmit,
+  submitButtonDisabled = false,
+  initialValues,
+}) => {
   const {
     register,
     handleSubmit,
+    reset,
+    watch,
     formState: { errors },
   } = form
 
   const { data: jobTypes } = useJobTypes()
+  const formLoaded = useMemo(() => {
+    return jobTypes
+  }, [jobTypes])
+  const email = watch('email')
+
+  useEffect(() => {
+    reset(initialValues || undefined)
+  }, [initialValues])
+
+  if (!formLoaded) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ height: 'calc(100vh - 100px)' }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -112,63 +123,54 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             <SectionHeader title="Settings" />
           </Grid>
           <Grid item md={6} xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="job-type-label">Job Type</InputLabel>
-              <Select
-                labelId="job-type-label"
-                id="job-type"
-                label="Job Type"
-                defaultValue=""
-                {...register('job_type_id', {
-                  required: 'Job Type is a required field',
-                })}
-                fullWidth
-                error={!!errors.job_type_id}
-              >
-                {jobTypes?.map(({ id, name }) => (
-                  <MenuItem key={id} value={id}>
-                    {name}
-                  </MenuItem>
-                ))}
-              </Select>
-              <FormHelperText error>
-                {errors.job_type_id && (errors.job_type_id?.message || '')}
-              </FormHelperText>
-            </FormControl>
+            <ProSelect
+              labelId="job-type-label"
+              id="job_type_id"
+              label="Job Type"
+              defaultValue={initialValues?.job_type_id || ''}
+              {...register('job_type_id', {
+                required: 'Job Type is a required field',
+              })}
+              required
+              fullWidth
+              error={!!errors.job_type_id}
+            >
+              {jobTypes?.map(({ id, name }) => (
+                <MenuItem key={id} value={id}>
+                  {name}
+                </MenuItem>
+              ))}
+            </ProSelect>
           </Grid>
           <Grid item md={6} xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="language-label">Language</InputLabel>
-              <Select
-                labelId="language-label"
-                id="language"
-                label="Language"
-                defaultValue=""
-                {...register('user_language', {
-                  required: 'Language is a required field',
-                })}
-                fullWidth
-                error={!!errors.user_language}
-              >
-                <MenuItem value="danish">Danish</MenuItem>
-                <MenuItem value="english">English</MenuItem>
-              </Select>
-            </FormControl>
-            <FormHelperText error>
-              {errors.user_language && (errors.user_language?.message || '')}
-            </FormHelperText>
+            <ProSelect
+              labelId="language-label"
+              id="user_language"
+              label="Language"
+              defaultValue={initialValues?.user_language || ''}
+              {...register('user_language', {
+                required: 'Language is a required field',
+              })}
+              required
+              fullWidth
+              error={!!errors.user_language}
+            >
+              <MenuItem value="danish">Danish</MenuItem>
+              <MenuItem value="english">English</MenuItem>
+            </ProSelect>
           </Grid>
 
           <Grid item xs={12}>
             <SectionHeader title="Contact" />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
-              label="First name *"
+            <ProInput
+              label="First name"
               style={{ margin: '1px' }}
               {...register('first_name', {
                 required: 'First name is a required field',
               })}
+              required
               error={!!errors.first_name}
               helperText={
                 <Typography
@@ -184,12 +186,13 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
-              label="Last name *"
+            <ProInput
+              label="Last name"
               style={{ margin: '1px' }}
               {...register('last_name', {
                 required: 'Last name is a required field',
               })}
+              required
               error={!!errors.last_name}
               helperText={
                 <Typography
@@ -205,12 +208,13 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
-              label="Email *"
+            <ProInput
+              label="Email"
               style={{ margin: '1px' }}
               {...register('email', {
                 required: 'Email is a required field',
               })}
+              required
               error={!!errors.email}
               helperText={
                 <Typography
@@ -226,12 +230,13 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
-              label="Phone number *"
+            <ProInput
+              label="Phone number"
               style={{ margin: '1px' }}
               {...register('phone_number', {
                 required: 'Phone number is a required field',
               })}
+              required
               error={!!errors.phone_number}
               helperText={
                 <Typography
@@ -251,12 +256,13 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             <SectionHeader title="Address information" />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              label="Address *"
+            <ProInput
+              label="Address"
               style={{ margin: '1px' }}
               {...register('address', {
                 required: 'Address is a required field',
               })}
+              required
               error={!!errors.address}
               helperText={
                 <Typography
@@ -272,12 +278,13 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
-              label="City *"
+            <ProInput
+              label="City"
               style={{ margin: '1px' }}
               {...register('city', {
                 required: 'City is a required field',
               })}
+              required
               error={!!errors.city}
               helperText={
                 <Typography
@@ -293,12 +300,13 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
-              label="Postal code *"
+            <ProInput
+              label="Postal code"
               style={{ margin: '1px' }}
               {...register('postal_code', {
                 required: 'Postal code is a required field',
               })}
+              required
               error={!!errors.postal_code}
               helperText={
                 <Typography
@@ -314,29 +322,24 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="country-select-label">Country *</InputLabel>
-              <Select
-                labelId="country-select-label"
-                id="country-select"
-                label="Country *"
-                defaultValue=""
-                {...register('country', {
-                  required: 'Country is a required field',
-                })}
-                fullWidth
-                error={!!errors.country}
-              >
-                {Object.entries(countries).map(([countryCode, countryData]) => (
-                  <MenuItem key={countryCode} value={countryCode}>
-                    {countryData.name}
-                  </MenuItem>
-                ))}
-              </Select>
-              <FormHelperText error>
-                {errors.country && (errors.country?.message || '')}
-              </FormHelperText>
-            </FormControl>
+            <ProSelect
+              labelId="country-select-label"
+              id="country"
+              label="Country"
+              defaultValue={initialValues?.country || ''}
+              {...register('country', {
+                required: 'Country is a required field',
+              })}
+              required
+              fullWidth
+              error={!!errors.country}
+            >
+              {Object.entries(countries).map(([countryCode, countryData]) => (
+                <MenuItem key={countryCode} value={countryCode}>
+                  {countryData.name}
+                </MenuItem>
+              ))}
+            </ProSelect>
           </Grid>
 
           <Grid item xs={12}>
@@ -345,92 +348,35 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
           <Grid item xs={12}>
             <p style={{ color: '#6c757d', fontSize: '0.9rem' }}>
               Personalise how you receive emails with your activity. All
-              notifications are sent to <b>guesmiaabdelmadjid6@gmail.com</b>.
+              notifications are sent to <b>{email}</b>.
             </p>
-            <FormControl
-              sx={{ width: '100%', marginTop: '20px', marginBottom: '6px' }}
-            >
-              <RadioGroup
-                row
-                defaultValue="instantly"
-                aria-labelledby="customer-type-radio-group-label"
-                {...register('email_preferences', {
-                  required: 'Customer type is a required field',
-                })}
-              >
-                <Grid
-                  container
-                  rowSpacing={1}
-                  columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                >
-                  <Grid item xs={12} md={4}>
-                    <StyledFormControlLabel
-                      value="instantly"
-                      control={<Radio />}
-                      label={
-                        <>
-                          <span>Instantly</span>
-                          <br />
-                          <span
-                            style={{
-                              color: 'rgb(195, 195, 195)',
-                              fontSize: '0.8rem',
-                            }}
-                          >
-                            For Every action in your account
-                          </span>
-                        </>
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <StyledFormControlLabel
-                      value="daily"
-                      control={<Radio />}
-                      label={
-                        <>
-                          <span>Daily</span>
-                          <br />
-                          <span
-                            style={{
-                              color: 'rgb(195, 195, 195)',
-                              fontSize: '0.8rem',
-                            }}
-                          >
-                            Sends a summary every day at 5pm
-                          </span>
-                        </>
-                      }
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <StyledFormControlLabel
-                      value="weekly"
-                      control={<Radio />}
-                      label={
-                        <>
-                          <span>Weekly</span>
-                          <br />
-                          <span
-                            style={{
-                              color: 'rgb(195, 195, 195)',
-                              fontSize: '0.8rem',
-                            }}
-                          >
-                            Sends a summary every friday at 5pm
-                          </span>
-                        </>
-                      }
-                    />
-                  </Grid>
-                </Grid>
-              </RadioGroup>
-            </FormControl>
+            <ProRadioGroup
+              {...register('email_preferences')}
+              options={[
+                {
+                  value: 'instantly',
+                  label: 'Instantly',
+                  description: 'For Every action in your account',
+                },
+                {
+                  value: 'daily',
+                  label: 'Daily',
+                  description: 'Sends a summary every day at 5pm',
+                },
+                {
+                  value: 'weekly',
+                  label: 'Weekly',
+                  description: 'Sends a summary every friday at 5pm',
+                },
+              ]}
+            />
+
             <p
               style={{
                 color: '#6c757d',
                 fontSize: '0.9rem',
                 marginBottom: '16px',
+                marginTop: '8px',
               }}
             >
               <b>NOTE</b>: You'll always get <b>instant</b> notifications for
@@ -443,12 +389,13 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             <SectionHeader title="Payment details" />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
-              label="Bank name *"
+            <ProInput
+              label="Bank name"
               style={{ margin: '1px' }}
               {...register('bank_information.name', {
                 required: 'Bank name is a required field',
               })}
+              required
               error={!!errors.bank_information?.name}
               helperText={
                 <Typography
@@ -466,12 +413,13 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
           </Grid>
           <Grid item md={6} xs={12}></Grid>
           <Grid item md={6} xs={12}>
-            <TextField
-              label="Bank registration number *"
+            <ProInput
+              label="Bank registration number"
               style={{ margin: '1px' }}
               {...register('bank_information.registration_number', {
                 required: 'Bank registration number is a required field',
               })}
+              required
               error={!!errors.bank_information?.registration_number}
               helperText={
                 <Typography
@@ -489,12 +437,13 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
-              label="Bank account number *"
+            <ProInput
+              label="Bank account number"
               style={{ margin: '1px' }}
               {...register('bank_information.account_number', {
                 required: 'Bank account number is a required field',
               })}
+              required
               error={!!errors.bank_information?.account_number}
               helperText={
                 <Typography
@@ -515,12 +464,13 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             <SectionHeader title="Tax information" />
           </Grid>
           <Grid item md={6} xs={12}>
-            <TextField
-              label="CPR *"
+            <ProInput
+              label="CPR"
               style={{ margin: '1px' }}
               {...register('tax_person_id', {
                 required: 'CPR is a required field',
               })}
+              required
               error={!!errors.tax_person_id}
               helperText={
                 <Typography
@@ -537,22 +487,20 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             />
           </Grid>
           <Grid item md={6} xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="tax-card-label">Tax card</InputLabel>
-              <Select
-                labelId="tax-card-label"
-                id="tax-card"
-                label="Tax card"
-                defaultValue=""
-                {...register('tax_card', {
-                  required: 'Tax card is a required field',
-                })}
-                fullWidth
-              >
-                <MenuItem value="main">Main Tax Card</MenuItem>
-                <MenuItem value="secondary">Secondary Tax Card</MenuItem>
-              </Select>
-            </FormControl>
+            <ProSelect
+              labelId="tax-card-label"
+              id="tax_card"
+              label="Tax card"
+              defaultValue={initialValues?.tax_card || ''}
+              {...register('tax_card', {
+                required: 'Tax card is a required field',
+              })}
+              required
+              fullWidth
+            >
+              <MenuItem value="main">Main Tax Card</MenuItem>
+              <MenuItem value="secondary">Secondary Tax Card</MenuItem>
+            </ProSelect>
           </Grid>
 
           <Grid item xs={12}>
@@ -582,29 +530,21 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
             </Alert>
           </Grid>
           <Grid item md={6} xs={12}>
-            <FormControl fullWidth>
-              <InputLabel id="requested-salary-payment-label">
-                Requested salary payment type *
-              </InputLabel>
-              <Select
-                labelId="requested-salary-payment-label"
-                id="requested-salary-payment"
-                label="Requested salary payment type *"
-                defaultValue="none"
-                {...register('salary_payment_type_requested', {
-                  required: 'Requested salary payment type is a required field',
-                })}
-                fullWidth
-              >
-                <MenuItem value="first">First of Month</MenuItem>
-                <MenuItem value="last">Last of Month</MenuItem>
-                <MenuItem value="none">None selected</MenuItem>
-              </Select>
-              <FormHelperText error>
-                {errors.salary_payment_type_requested &&
-                  (errors.salary_payment_type_requested?.message || '')}
-              </FormHelperText>
-            </FormControl>
+            <ProSelect
+              labelId="requested-salary-payment-label"
+              id="salary_payment_type_requested"
+              label="Requested salary payment type"
+              defaultValue={initialValues?.salary_payment_type_requested || ''}
+              {...register('salary_payment_type_requested', {
+                required: 'Requested salary payment type is a required field',
+              })}
+              required
+              fullWidth
+            >
+              <MenuItem value="first">First of Month</MenuItem>
+              <MenuItem value="last">Last of Month</MenuItem>
+              <MenuItem value="none">None selected</MenuItem>
+            </ProSelect>
           </Grid>
           <Grid item md={6} xs={12}></Grid>
           <Grid item md={6} xs={12}>
@@ -634,7 +574,11 @@ const ProfileForm: React.FC<TaskFormProps> = ({ form, onSubmit }) => {
           </Grid>
         </Grid>
         <Divider sx={{ marginTop: '15px', marginBottom: '15px' }} />
-        <Button type="submit" variant="contained">
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={submitButtonDisabled}
+        >
           Save Changes
         </Button>
       </StyledPaper>

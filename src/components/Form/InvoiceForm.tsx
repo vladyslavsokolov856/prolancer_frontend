@@ -2,98 +2,63 @@ import {
   Box,
   Button,
   Checkbox,
+  CircularProgress,
   Divider,
-  FormControl,
   FormControlLabel,
   FormHelperText,
   Grid,
-  InputLabel,
   MenuItem,
   Paper,
-  Select,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   Typography,
   styled,
   tableCellClasses,
 } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import DeleteIcon from '@mui/icons-material/Delete'
-import React, { useEffect, useState } from 'react'
-import { SubmitHandler, UseFormReturn, useForm } from 'react-hook-form'
+import React, { useEffect, useMemo, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { useJobTypes } from '@/hooks/useJobTypes'
 import dayjs, { Dayjs } from 'dayjs'
-import { DatePicker } from '@mui/x-date-pickers'
 import CurrencyList from 'currency-list'
 import FormDialog from '../FormDialog'
 import TaskForm, { Inputs as TaskFormInputs } from './TaskForm'
 import CustomerForm, { Inputs as CustomerFormInputs } from './CustomerForm'
+import { useCustomers } from '@/hooks/useCustomers'
+import { useTasks } from '@/hooks/useTasks'
+import ProSelect from '../ProSelect'
+import ProInput from '../ProInput'
+import ProDatePicker from '../ProDatePicker'
 
 interface IOrderLine {
   description: string
   quantity: number | null
-  unitPrice: number | null
+  unit_price: number | null
 }
 
-export type Inputs = {
+export type InvoiceInputs = {
   customer_id: number
   send_invoice_copy_to: string
   task_id: number
-  invoice_date: Dayjs | null
+  invoice_date: Dayjs | string | null
   currency: string
   payment_days: string
-  terms_accepted: boolean
+  terms_accepted?: boolean
   hours_worked: number
   order_lines: IOrderLine[]
+  status: string
+  vat_percentage: number
 }
-
-const customers = [
-  {
-    id: 1,
-    name: 'customer 1',
-    email: 'customer1@gmail.com',
-    first_name: 'C1',
-    last_name: 'Customer 1',
-  },
-  {
-    id: 2,
-    name: 'customer 2',
-    email: 'customer1@gmai2.com',
-    first_name: 'C2',
-    last_name: 'Customer 2',
-  },
-]
-
-const tasks = [
-  {
-    id: 1,
-    title: 'Task 1',
-    start_date: Date.now(),
-    end_date: Date.now(),
-    reference: 'reference 1',
-    job_type_id: 1,
-    minutes_spent: 20,
-  },
-  {
-    id: 2,
-    title: 'Task 2',
-    start_date: Date.now(),
-    end_date: Date.now(),
-    reference: 'reference 2',
-    job_type_id: 2,
-    minutes_spent: 10,
-  },
-]
 
 const currencies = CurrencyList.getAll('en_US')
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  margin: theme.spacing(1),
   padding: theme.spacing(2),
 }))
 
@@ -107,6 +72,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     color: '#6c757d',
     fontSize: 14,
     border: 'none',
+    padding: theme.spacing(1),
   },
 }))
 
@@ -132,65 +98,77 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ title }) => {
 }
 
 interface InvoiceFormProps {
-  form: UseFormReturn<Inputs, any, any>
-  onSubmit: SubmitHandler<Inputs>
+  onSubmit: SubmitHandler<InvoiceInputs>
+  type?: 'create' | 'update'
+  initialValues?: Partial<InvoiceInputs>
 }
 
-const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
+const InvoiceForm: React.FC<InvoiceFormProps> = ({
+  onSubmit,
+  type,
+  initialValues,
+}) => {
   const {
     register,
     watch,
     getValues,
     setValue,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = form
-
+  } = useForm<InvoiceInputs>({ defaultValues: { vat_percentage: 0 } })
   const taskHookForm = useForm<TaskFormInputs>()
   const customerHookForm = useForm<CustomerFormInputs>()
+
+  const { customers } = useCustomers()
+  const { tasks } = useTasks()
+  const { data: jobTypes } = useJobTypes()
+  const formLoaded = useMemo(() => {
+    return customers && tasks && jobTypes
+  }, [customers, tasks, jobTypes])
 
   const customerId = watch('customer_id')
   const taskId = watch('task_id')
   const currency = watch('currency', 'DKK')
+  const vatPercentage = watch('vat_percentage')
   const orderLines = watch('order_lines', [
-    { description: '', quantity: null, unitPrice: null },
+    { description: '', quantity: null, unit_price: null },
   ])
 
-  const { data: jobTypes } = useJobTypes()
-
-  const [selectedCustomer, setSelectedCustomer] = useState<any>(null)
-  const [selectedTask, setSelectedTask] = useState<any>(null)
   const [showDialog, setShowDialog] = useState<boolean>(false)
   const [formType, setFormType] = useState<'Customer' | 'Task'>('Customer')
-  const [totalAmount, setTotalAmount] = useState(0)
 
   useEffect(() => {
-    setSelectedCustomer(
-      customers.find((customer) => customer.id === customerId)
+    reset(initialValues)
+  }, [initialValues])
+
+  const selectedCustomer = useMemo(() => {
+    return customers.find(
+      (customer) =>
+        customer.id === customerId || customer.id === initialValues?.customer_id
     )
-  }, [customerId])
+  }, [customerId, initialValues, customers])
 
-  useEffect(() => {
-    setSelectedTask(tasks.find((task) => task.id === taskId))
-  }, [taskId])
+  const selectedTask = useMemo(() => {
+    return tasks.find(
+      (task) => task.id === taskId || task.id === initialValues?.task_id
+    )
+  }, [taskId, initialValues, tasks])
 
-  useEffect(() => {
-    const mount = orderLines?.reduce((pre, cur) => {
-      if (cur.quantity && cur.unitPrice)
-        return pre + cur.quantity * cur.unitPrice
-      else return pre
-    }, 0)
-    setTotalAmount(mount || 0)
-  })
+  const totalAmount = orderLines?.reduce((pre, cur) => {
+    if (cur.quantity && cur.unit_price)
+      return pre + cur.quantity * cur.unit_price
+    else return pre
+  }, 0)
 
   const handleAddOrderLine = () => {
     setValue('order_lines', [
       ...(orderLines || []),
-      { description: '', quantity: null, unitPrice: null },
+      { description: '', quantity: null, unit_price: null },
     ])
   }
 
-  const handleDeelteOrderLine = (index: number) => {
+  const handleDeleteOrderLine = (index: number) => {
     setValue(
       'order_lines',
       (orderLines || []).filter((_, i) => index !== i)
@@ -217,6 +195,19 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
     taskHookForm.reset()
   }
 
+  if (!formLoaded) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ height: 'calc(100vh - 100px)' }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
+
   return (
     <Box>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -230,65 +221,56 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
               <SectionHeader title="Customer" />
             </Grid>
             <Grid item xs={12}>
-              <Box display="flex" sx={{ width: '100%', gap: '20px' }}>
-                <FormControl fullWidth>
-                  <InputLabel id="customer-label">Customer *</InputLabel>
-                  <Select
-                    labelId="customer-label"
-                    id="customer"
-                    label="Customer *"
-                    defaultValue=""
-                    {...register('customer_id', {
-                      required: 'Customer is a required field',
-                    })}
-                    fullWidth
-                    error={!!errors.customer_id}
-                  >
-                    {customers?.map(({ id, name }) => (
-                      <MenuItem key={id} value={id}>
-                        {name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText error>
-                    {errors.customer_id && (errors.customer_id?.message || '')}
-                  </FormHelperText>
-                </FormControl>
+              <Stack direction="row" alignItems="end" sx={{ gap: '20px' }}>
+                <ProSelect
+                  labelId="customer-label"
+                  id="customer"
+                  label="Customer"
+                  defaultValue={initialValues?.customer_id}
+                  {...register('customer_id', {
+                    required: 'Customer is a required field',
+                  })}
+                  required
+                  fullWidth
+                  error={!!errors.customer_id}
+                >
+                  {customers?.map(({ id, company_name }) => (
+                    <MenuItem key={id} value={id}>
+                      {company_name}
+                    </MenuItem>
+                  ))}
+                </ProSelect>
                 <Button
                   color="primary"
                   variant="contained"
-                  sx={{ minWidth: '200px' }}
+                  sx={{ minWidth: '200px', mb: 1 }}
                   onClick={handleCreateCustomerClick}
                 >
                   Create customer
                 </Button>
-              </Box>
+              </Stack>
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
-                label="Customer contact *"
+              <ProInput
+                label="Customer contact"
                 style={{ margin: '1px' }}
                 disabled
-                value={
-                  selectedCustomer
-                    ? `${selectedCustomer.first_name} ${selectedCustomer.last_name}`
-                    : ''
-                }
+                value={selectedCustomer?.name_contact_person || ''}
                 fullWidth
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
-                label="Customer email *"
+              <ProInput
+                label="Customer email"
                 style={{ margin: '1px' }}
                 disabled
-                value={selectedCustomer ? selectedCustomer.email : ''}
+                value={selectedCustomer?.email_contact_person || ''}
                 fullWidth
               />
             </Grid>
             <Grid item xs={12} md={6}></Grid>
             <Grid item xs={12} md={6}>
-              <TextField
+              <ProInput
                 label="Send invoice copy to"
                 style={{ margin: '1px' }}
                 {...register('send_invoice_copy_to')}
@@ -300,53 +282,49 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
               <SectionHeader title="Task details" />
             </Grid>
             <Grid item xs={12}>
-              <Box display="flex" sx={{ width: '100%', gap: '20px' }}>
-                <FormControl fullWidth>
-                  <InputLabel id="task-label">Task *</InputLabel>
-                  <Select
-                    labelId="task-label"
-                    id="task"
-                    label="Task *"
-                    defaultValue=""
-                    {...register('task_id', {
-                      required: 'Task is a required field',
-                    })}
-                    fullWidth
-                    error={!!errors.task_id}
-                  >
-                    {tasks?.map(({ id, title }) => (
-                      <MenuItem key={id} value={id}>
-                        {title}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText error>
-                    {errors.task_id && (errors.task_id?.message || '')}
-                  </FormHelperText>
-                </FormControl>
+              <Stack direction="row" alignItems="end" sx={{ gap: '20px' }}>
+                <ProSelect
+                  labelId="task-label"
+                  id="task"
+                  label="Task"
+                  defaultValue={initialValues?.task_id}
+                  {...register('task_id', {
+                    required: 'Task is a required field',
+                  })}
+                  required
+                  fullWidth
+                  error={!!errors.task_id}
+                >
+                  {tasks?.map(({ id, title }) => (
+                    <MenuItem key={id} value={id}>
+                      {title}
+                    </MenuItem>
+                  ))}
+                </ProSelect>
                 <Button
                   color="primary"
                   variant="contained"
-                  sx={{ minWidth: '200px' }}
+                  sx={{ minWidth: '200px', mb: 1 }}
                   startIcon={<AddIcon />}
                   onClick={handleCreateTaskClick}
                 >
                   Create task
                 </Button>
-              </Box>
+              </Stack>
             </Grid>
 
             <Grid item xs={12}>
               <SectionHeader title="Invoice information" />
             </Grid>
             <Grid item xs={12} md={6}>
-              <DatePicker
-                defaultValue={getValues('invoice_date') || null}
+              <ProDatePicker
+                defaultValue={initialValues?.invoice_date as Dayjs}
                 {...register('invoice_date', {
                   required: 'Invoice date is required field',
                 })}
+                required
                 onChange={(value) => setValue('invoice_date', value)}
-                label="Invoice Date *"
+                label="Invoice Date"
                 slotProps={{
                   textField: {
                     fullWidth: true,
@@ -358,7 +336,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
+              <ProInput
                 label="Customer reference"
                 value={selectedTask ? selectedTask.reference : ''}
                 fullWidth
@@ -366,20 +344,21 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <DatePicker
-                label="Start Date *"
+              <ProDatePicker
+                label="Start Date"
                 value={selectedTask ? dayjs(selectedTask.start_date) : null}
                 slotProps={{
                   textField: {
                     fullWidth: true,
+                    size: 'small',
                   },
                 }}
                 disabled
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <DatePicker
-                label="End Date *"
+              <ProDatePicker
+                label="End Date"
                 value={selectedTask ? dayjs(selectedTask.end_date) : null}
                 slotProps={{
                   textField: {
@@ -390,32 +369,31 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel id="job-type-label">Job type *</InputLabel>
-                <Select
-                  labelId="job-type-label"
-                  id="job_type_id"
-                  label="Job type"
-                  value={selectedTask ? selectedTask.job_type_id : ''}
-                  fullWidth
-                  disabled
-                >
-                  {jobTypes?.map(({ id, name }) => (
-                    <MenuItem key={id} value={id}>
-                      {name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <ProSelect
+                labelId="job-type-label"
+                id="job_type_id"
+                label="Job type"
+                defaultValue={selectedTask?.job_type_id || ''}
+                value={selectedTask ? selectedTask.job_type_id : ''}
+                fullWidth
+                disabled
+              >
+                {jobTypes?.map(({ id, name }) => (
+                  <MenuItem key={id} value={id}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </ProSelect>
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
-                label="Hours worked *"
+              <ProInput
+                label="Hours worked"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.hours_worked}
                 {...register('hours_worked', {
                   required: 'Hours worked is required field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -435,13 +413,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
               <SectionHeader title="Payment details" />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
-                label="Payment days *"
+              <ProInput
+                label="Payment days"
                 style={{ margin: '1px', marginBottom: '.75rem' }}
                 error={!!errors.payment_days}
                 {...register('payment_days', {
                   required: 'Payment days is required field',
                 })}
+                required
                 helperText={
                   <Typography
                     component="span"
@@ -457,33 +436,35 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel id="currency-label">Currency *</InputLabel>
-                <Select
-                  labelId="currency-label"
-                  id="currency"
-                  label="Currency *"
-                  value={currency}
-                  {...register('currency', {
-                    required: 'Currency is a required field',
-                  })}
-                  fullWidth
-                  error={!!errors.currency}
-                >
-                  {Object.keys(currencies).map((code) => (
-                    <MenuItem key={code} value={code}>
-                      {`${code} - ${currencies[code]['name']}`}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText error>
-                  {errors.currency && (errors.currency?.message || '')}
-                </FormHelperText>
-              </FormControl>
+              <ProSelect
+                labelId="currency-label"
+                id="currency"
+                label="Currency"
+                value={currency}
+                {...register('currency', {
+                  required: 'Currency is a required field',
+                })}
+                required
+                fullWidth
+                error={!!errors.currency}
+              >
+                {Object.keys(currencies).map((code) => (
+                  <MenuItem key={code} value={code}>
+                    {`${code} - ${currencies[code]['name']}`}
+                  </MenuItem>
+                ))}
+              </ProSelect>
             </Grid>
             <Grid item xs={12}>
               <FormControlLabel
-                control={<Checkbox disabled />}
+                control={
+                  <Checkbox
+                    checked={vatPercentage > 0}
+                    onChange={(_, checked) => {
+                      setValue('vat_percentage', checked ? 25 : 0)
+                    }}
+                  />
+                }
                 label="Invoice with VAT"
               />
               <div
@@ -517,7 +498,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {orderLines?.map(({ quantity, unitPrice }, index) => (
+                    {orderLines?.map(({ quantity, unit_price }, index) => (
                       <TableRow
                         key={index}
                         sx={{
@@ -525,8 +506,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                         }}
                       >
                         <StyledTableCell component="th" scope="row">
-                          <TextField
-                            label="Description"
+                          <ProInput
                             error={!!errors.order_lines?.[index]?.description}
                             {...register(`order_lines.${index}.description`)}
                             helperText={
@@ -545,11 +525,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                           />
                         </StyledTableCell>
                         <StyledTableCell component="th" scope="row">
-                          <TextField
-                            label="Quantity"
+                          <ProInput
                             type="number"
                             error={!!errors.order_lines?.[index]?.quantity}
-                            {...register(`order_lines.${index}.quantity`)}
+                            {...register(`order_lines.${index}.quantity`, {
+                              valueAsNumber: true,
+                            })}
                             helperText={
                               <Typography
                                 component="span"
@@ -566,11 +547,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                           />
                         </StyledTableCell>
                         <StyledTableCell component="th" scope="row">
-                          <TextField
-                            label="Unit Price"
+                          <ProInput
                             type="number"
-                            error={!!errors.order_lines?.[index]?.unitPrice}
-                            {...register(`order_lines.${index}.unitPrice`)}
+                            error={!!errors.order_lines?.[index]?.unit_price}
+                            {...register(`order_lines.${index}.unit_price`, {
+                              valueAsNumber: true,
+                            })}
                             helperText={
                               <Typography
                                 component="span"
@@ -591,7 +573,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                             color="error"
                             variant="contained"
                             size="small"
-                            onClick={() => handleDeelteOrderLine(index)}
+                            onClick={() => handleDeleteOrderLine(index)}
                             sx={{ minWidth: '40px' }}
                           >
                             <DeleteIcon
@@ -600,8 +582,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                           </Button>
                           <span style={{ fontWeight: 600, marginLeft: '10px' }}>
                             {`${currency} ${
-                              quantity && unitPrice
-                                ? Number(quantity * unitPrice).toFixed(2)
+                              quantity && unit_price
+                                ? Number(quantity * unit_price).toFixed(2)
                                 : '0.00'
                             }`}
                           </span>
@@ -629,15 +611,23 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                       </StyledTableCell>
                     </TableRow>
                     <TableRow>
-                      <StyledTableCell align="right">VAT 25%</StyledTableCell>
+                      <StyledTableCell align="right">
+                        VAT {vatPercentage}%
+                      </StyledTableCell>
                       <StyledTableCell align="right" sx={{ fontWeight: 600 }}>
-                        {`${currency} ${(totalAmount / 4).toFixed(2)}`}
+                        {`${currency} ${(
+                          (totalAmount * vatPercentage) /
+                          100
+                        ).toFixed(2)}`}
                       </StyledTableCell>
                     </TableRow>
                     <TableRow>
                       <StyledTableCell align="right">In total</StyledTableCell>
                       <StyledTableCell align="right" sx={{ fontWeight: 600 }}>
-                        {`${currency} ${(totalAmount * 1.25).toFixed(2)}`}
+                        {`${currency} ${(
+                          totalAmount *
+                          (1 + vatPercentage / 100)
+                        ).toFixed(2)}`}
                       </StyledTableCell>
                     </TableRow>
                   </TableBody>
@@ -654,7 +644,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
                     defaultChecked={getValues('terms_accepted') || false}
                   />
                 }
-                label="Terms accpeted *"
+                label="Terms accpeted"
               />
               <FormHelperText error>
                 {errors.terms_accepted &&
@@ -666,10 +656,20 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({ form, onSubmit }) => {
           <Divider />
 
           <Box display="flex" sx={{ gap: '10px', marginTop: '10px' }}>
-            <Button color="primary" variant="contained">
-              Save as draft
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              onClick={() => setValue('status', 'draft')}
+            >
+              {type === 'create' ? 'Save as draft' : 'Update invoice'}
             </Button>
-            <Button color="primary" variant="contained">
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              onClick={() => setValue('status', 'sent')}
+            >
               Submit invoice
             </Button>
           </Box>
