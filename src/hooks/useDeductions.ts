@@ -2,6 +2,7 @@ import {
   fetchDeductions,
   deleteDeduction,
   createDeduction,
+  fetchDeduction,
 } from '@/services/deductionService'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
