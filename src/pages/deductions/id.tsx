@@ -29,9 +29,11 @@ const DeductionDetails = () => {
   const [open, setOpen] = useState<boolean>(false)
   const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
 
-  const { isLoading: isDeductionLoading, data: deduction } = useDeduction(
-    deductionId || ''
-  )
+  const {
+    isLoading: isDeductionLoading,
+    isError,
+    data: deduction,
+  } = useDeduction(deductionId || '')
   const { isLoading: isTaskLoading, tasks } = useTasks()
 
   const deductionData = useMemo(
@@ -64,6 +66,19 @@ const DeductionDetails = () => {
         sx={{ height: 'calc(100vh - 100px)' }}
       >
         <CircularProgress />
+      </Box>
+    )
+  }
+
+  if (isError && !deduction) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ height: 'calc(100vh - 100px)' }}
+      >
+        <Typography variant="h1">Not Found</Typography>
       </Box>
     )
   }
