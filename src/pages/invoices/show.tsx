@@ -50,7 +50,11 @@ const StyledTableCell = styled(TableCell)(() => ({
 const ShowInvoice = () => {
   let { invoiceId = '' } = useParams()
 
-  const { data: invoice, isLoading } = useInvoice(parseInt(invoiceId || ''))
+  const {
+    data: invoice,
+    isLoading,
+    isError,
+  } = useInvoice(parseInt(invoiceId || ''))
   const { user } = useUser(invoice?.user_id)
   const { customer } = useCustomer(invoice?.customer_id)
   const { task } = useTask(invoice?.task_id)
@@ -112,6 +116,19 @@ const ShowInvoice = () => {
         sx={{ height: 'calc(100vh - 100px)' }}
       >
         <CircularProgress />
+      </Box>
+    )
+  }
+
+  if (isError && !invoice) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ height: 'calc(100vh - 100px)' }}
+      >
+        <Typography variant="h1">Not Found</Typography>
       </Box>
     )
   }
