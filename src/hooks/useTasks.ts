@@ -32,7 +32,7 @@ export const useTasks = () => {
   }
 }
 
-export const useTask = (id: number) => {
+export const useTask = (id: number | undefined) => {
   const {
     data: task,
     isLoading,

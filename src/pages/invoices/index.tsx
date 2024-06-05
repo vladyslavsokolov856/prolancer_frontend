@@ -267,6 +267,7 @@ const InvoiceIndex = () => {
         data={formattedInvoices}
         filters={filters}
         BeforeTableComponent={InvoiceSummary}
+        tableName="invoices"
       />
 
       <ConfirmDialog

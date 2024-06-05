@@ -9,7 +9,7 @@ export const fetchTasks = async (): Promise<Task[]> => {
   )
 }
 
-export const fetchTask = async (id: number): Promise<Task> => {
+export const fetchTask = async (id: number | undefined): Promise<Task> => {
   const response: AxiosResponse<Task> = await axiosInstance.get(
     `/api/tasks/${id}`
   )

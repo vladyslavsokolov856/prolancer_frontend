@@ -48,10 +48,10 @@ export type InvoiceInputs = {
   task_id: number
   invoice_date: Dayjs | string | null
   currency: string
-  payment_days: string
+  payment_days: string | number
   terms_accepted?: boolean
   hours_worked: number
-  order_lines: IOrderLine[]
+  order_lines?: IOrderLine[]
   status: string
   vat_percentage: number
 }
@@ -159,7 +159,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
     if (cur.quantity && cur.unit_price)
       return pre + cur.quantity * cur.unit_price
     else return pre
-  }, 0)
+  }, 0) || 0
 
   const handleAddOrderLine = () => {
     setValue('order_lines', [
@@ -581,11 +581,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                             />
                           </Button>
                           <span style={{ fontWeight: 600, marginLeft: '10px' }}>
-                            {`${currency} ${
-                              quantity && unit_price
-                                ? Number(quantity * unit_price).toFixed(2)
-                                : '0.00'
-                            }`}
+                            {`${currency} ${quantity && unit_price
+                              ? Number(quantity * unit_price).toFixed(2)
+                              : '0.00'
+                              }`}
                           </span>
                         </StyledTableCell>
                       </TableRow>

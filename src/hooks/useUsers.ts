@@ -32,14 +32,14 @@ export const useUsers = () => {
   }
 }
 
-export const useUser = (id: number) => {
+export const useUser = (id: number | undefined) => {
   const {
     data: user,
     isLoading,
     isError,
     error,
   }: UseQueryResult<User, Error> = useQuery({
-    queryKey: ['users', id],
+    queryKey: ['user'],
     queryFn: () => fetchUser(id),
   })
 

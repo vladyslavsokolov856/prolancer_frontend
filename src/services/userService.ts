@@ -7,9 +7,9 @@ export const fetchUsers = async (): Promise<User[]> => {
   return response.data
 }
 
-export const fetchUser = async (id: number): Promise<User> => {
+export const fetchUser = async (userId: number | undefined): Promise<User> => {
   const response: AxiosResponse<User> = await axiosInstance.get(
-    `/api/users/${id}`
+    `/api/users/${userId}`
   )
   return response.data
 }
