@@ -14,7 +14,7 @@ import {
   Select,
   TextField,
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ProFilter, { IFilter } from '@/components/ProFilter'
 import ProList from '@/components/ProList'
 import dayjs from 'dayjs'
@@ -74,6 +74,35 @@ const searchFields: IListItemKey[] = ['notes']
 type Inputs = {
   notes: string
   task_id: string
+}
+
+interface IWorkLog {
+  taskId?: number
+}
+
+export const WorkLogList: React.FC<IWorkLog> = ({ taskId }) => {
+  const [listItems, setListItems] = useState<IListItem[]>([])
+  const { workLogs, isLoading: isWorkLogsLoading } = useWorkLogs()
+
+  useEffect(() => {
+    if (!isWorkLogsLoading)
+      setListItems(
+        taskId ? workLogs.filter((item) => item.task_id === taskId) : workLogs
+      )
+  }, [isWorkLogsLoading])
+
+  return (
+    <>
+      <ProFilter
+        filters={filters}
+        setItems={setListItems}
+        searchFields={searchFields}
+        originalListItems={workLogs}
+        sortItems={sortItems}
+      />
+      <ProList items={listItems} setItems={setListItems} />
+    </>
+  )
 }
 
 const TimeRegistration = () => {
@@ -299,6 +328,13 @@ const TimeRegistration = () => {
       />
       <ProList items={listItems} setItems={setListItems} />
 
+      <FormDialog
+        open={showDialog}
+        setOpen={setShowDialog}
+        title={'Create Customer'}
+        content={<TaskForm form={taskHookForm} onSubmit={onTaskFormSubmit} />}
+      />
+
       {addTimeRegistrationDialogOpen && (
         <CreateTimeRegistration
           open={true}
@@ -306,13 +342,6 @@ const TimeRegistration = () => {
           setListItems={setListItems}
         />
       )}
-
-      <FormDialog
-        open={showDialog}
-        setOpen={setShowDialog}
-        title={'Create Customer'}
-        content={<TaskForm form={taskHookForm} onSubmit={onTaskFormSubmit} />}
-      />
     </Box>
   )
 }

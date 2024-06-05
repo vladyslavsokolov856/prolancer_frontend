@@ -25,12 +25,21 @@ const deductionStatus = [
   { key: '', name: 'None' },
 ]
 
-const DeductionIndex = () => {
+interface DeductionTableProps {
+  taskId?: number
+}
+
+export const DeductionTable: React.FC<DeductionTableProps> = ({ taskId }) => {
   const { isLoading, deductions } = useDeductions()
   const [open, setOpen] = useState<boolean>(false)
   const { deleteDeductionMutation } = useDeleteDeduction()
   const [selectedDeduction, setSelectedDeduction] =
     useState<SelectedDeductionType>(null)
+
+  const deductionData = useMemo(() => {
+    if (taskId) return deductions.filter((item) => item.task_id === taskId)
+    else return deductions
+  }, [deductions])
 
   const handleDeleteClick = (id: number) => {
     setSelectedDeduction(deductions?.find((item) => item.id === id))
@@ -139,24 +148,10 @@ const DeductionIndex = () => {
   }
 
   return (
-    <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h4">Deductions</Typography>
-
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          sx={{ height: '35px' }}
-          component={RouterLink}
-          to="/deductions/new"
-        >
-          Create Deduction
-        </Button>
-      </Box>
-
+    <>
       <ProTable
         columns={columns}
-        data={deductions}
+        data={deductionData}
         filters={[
           {
             key: 'status',
@@ -174,6 +169,28 @@ const DeductionIndex = () => {
         content="Are you sure you want to delete this deduction?"
         onSubmit={() => deleteDeductionMutation(selectedDeduction?.id)}
       />
+    </>
+  )
+}
+
+const DeductionIndex = () => {
+  return (
+    <Box>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography variant="h4">Deductions</Typography>
+
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          sx={{ height: '35px' }}
+          component={RouterLink}
+          to="/deductions/new"
+        >
+          Create Deduction
+        </Button>
+      </Box>
+
+      <DeductionTable />
     </Box>
   )
 }

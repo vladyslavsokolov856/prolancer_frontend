@@ -282,6 +282,7 @@ const TaskIndex = () => {
             items: taskStatus,
           },
         ]}
+        tableName="tasks"
       />
     </Box>
   )
