@@ -10,4 +10,5 @@ export default interface Deduction {
   user_id: number
   task_id: number
   deleted: boolean
+  created_at: Date
 }

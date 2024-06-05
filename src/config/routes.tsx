@@ -12,7 +12,9 @@ import EditTaskPage from '@/pages/tasks/edit'
 import NewInvoicePage from '@/pages/invoices/new'
 import ShowInvoice from '@/pages/invoices/show'
 import EditInvoice from '@/pages/invoices/edit'
+
 import NewDeductionPage from '@/pages/deductions/new'
+import DeductionDetailPage from '@/pages/deductions/id'
 
 import DeductionIndexPage from '@/pages/deductions'
 import UserIndexPage from '@/pages/users'
@@ -82,6 +84,10 @@ const invoiceRoutes: RouteConfig[] = [
 ]
 
 const deductionRoutes: RouteConfig[] = [
+  {
+    path: '/deductions/:deductionId',
+    element: <DeductionDetailPage />,
+  },
   {
     path: '/deductions/new',
     element: <NewDeductionPage />,
