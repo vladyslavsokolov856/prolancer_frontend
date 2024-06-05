@@ -10,6 +10,7 @@ import NewTaskPage from '@/pages/tasks/new'
 import EditTaskPage from '@/pages/tasks/edit'
 
 import NewInvoicePage from '@/pages/invoices/new'
+import ShowInvoice from '@/pages/invoices/show'
 import EditInvoice from '@/pages/invoices/edit'
 
 import NewDeductionPage from '@/pages/deductions/new'
@@ -64,6 +65,11 @@ const invoiceRoutes: RouteConfig[] = [
   {
     path: '/invoices',
     element: <Invoices />,
+  },
+  {
+    path: '/invoices/:invoiceId',
+    element: <ShowInvoice />,
+    label: 'Show Invoice',
   },
   {
     path: '/invoices/new',

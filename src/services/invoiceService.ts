@@ -29,7 +29,7 @@ export const fetchInvoice = async (invoiceId: number | string) => {
 }
 
 export const updateInvoice = async (
-  data: InvoiceInputs & { id: number | string }
+  data: Partial<InvoiceInputs> & { id: number | string }
 ) => {
   const response = await axiosInstance.put<Invoice>(
     `/api/invoices/${data.id}`,

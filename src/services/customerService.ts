@@ -8,3 +8,12 @@ export const fetchCustomers = async (): Promise<Customer[]> => {
   )
   return response.data
 }
+
+export const fetchCustomer = async (
+  customerId: number | undefined
+): Promise<Customer> => {
+  const response: AxiosResponse<Customer> = await axiosInstance.get(
+    `/api/customers/${customerId}`
+  )
+  return response.data
+}
