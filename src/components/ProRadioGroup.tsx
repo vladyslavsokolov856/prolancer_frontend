@@ -1,5 +1,4 @@
 import {
-  Box,
   FormControlLabel,
   InputLabel,
   Radio,
@@ -9,7 +8,6 @@ import {
   Typography,
   useTheme,
 } from '@mui/material'
-import { green } from '@mui/material/colors'
 import { forwardRef } from 'react'
 
 type ProRadioGroupProps = RadioGroupProps & {

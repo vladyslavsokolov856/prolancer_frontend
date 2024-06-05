@@ -9,9 +9,7 @@ import Checkbox from '@mui/material/Checkbox'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import FormControl from '@mui/material/FormControl'
-import FormControlLabel, {
-  FormControlLabelProps,
-} from '@mui/material/FormControlLabel'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import { styled } from '@mui/material/styles'
 import { countries } from 'countries-list'
 import { useJobTypes } from '@/hooks/useJobTypes'

@@ -19,6 +19,7 @@ const ProDatePicker = forwardRef<unknown, ProDatePickerProps>(
 
         <DatePicker
           {...props}
+          ref={() => ref}
           slotProps={{
             ...slotProps,
             textField: {
