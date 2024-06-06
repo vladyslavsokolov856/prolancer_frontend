@@ -48,13 +48,13 @@ const Title = styled('span')({
 const InfoTitle = styled('h6')({
   color: 'gray',
   fontWeight: 700,
-  fontSize: '18px',
+  fontSize: '14px',
 })
 
 const InfoContent = styled('h6')({
   color: 'gray',
   fontWeight: 300,
-  fontSize: '18px',
+  fontSize: '14px',
 })
 
 interface IBadge {
@@ -170,7 +170,7 @@ const TaskDetailPage = () => {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between">
+      <Box display="flex" justifyContent="space-between" alignItems="baseline">
         <Title>Task</Title>
         <Box display="flex" sx={{ gap: '10px' }}>
           <Button
@@ -178,6 +178,7 @@ const TaskDetailPage = () => {
             startIcon={<ContentCopyOutlinedIcon />}
             component={RouterLink}
             to={`/tasks/new?taskId=${taskId}`}
+            sx={{ maxHeight: '40px' }}
           >
             Copy
           </Button>
@@ -186,6 +187,7 @@ const TaskDetailPage = () => {
             startIcon={<ReceiptOutlinedIcon />}
             component={RouterLink}
             to="/invoices/new"
+            sx={{ maxHeight: '40px' }}
           >
             Create invoice
           </Button>
@@ -194,6 +196,7 @@ const TaskDetailPage = () => {
             startIcon={<AssignmentOutlinedIcon />}
             component={RouterLink}
             to="/tasks/new"
+            sx={{ maxHeight: '40px' }}
           >
             Create task
           </Button>
@@ -202,6 +205,7 @@ const TaskDetailPage = () => {
             startIcon={<EditIcon />}
             component={RouterLink}
             to={`/tasks/${taskId}/edit`}
+            sx={{ maxHeight: '40px' }}
           >
             Edit
           </Button>
@@ -227,7 +231,7 @@ const TaskDetailPage = () => {
           }
           sx={{
             '& .MuiCardHeader-title': {
-              fontSize: '25px',
+              fontSize: '20px',
               fontWeight: 700,
               color: 'rgb(108,117,125)',
             },
@@ -241,7 +245,7 @@ const TaskDetailPage = () => {
                 sx={{
                   color: 'white',
                   backgroundColor: 'rgb(0,66,196)',
-                  fontSize: '25px',
+                  fontSize: '20px',
                   paddingLeft: '10px',
                   fontWeight: 700,
                 }}
@@ -357,7 +361,7 @@ const TaskDetailPage = () => {
                 sx={{
                   color: 'white',
                   backgroundColor: 'rgb(0,66,196)',
-                  fontSize: '25px',
+                  fontSize: '20px',
                   paddingLeft: '10px',
                   fontWeight: 700,
                 }}
@@ -433,7 +437,7 @@ const TaskDetailPage = () => {
             sx={{
               color: 'white',
               backgroundColor: 'rgb(0,66,196)',
-              fontSize: '25px',
+              fontSize: '20px',
               paddingLeft: '10px',
               fontWeight: 700,
             }}
@@ -451,7 +455,7 @@ const TaskDetailPage = () => {
             sx={{
               color: 'white',
               backgroundColor: 'rgb(0,66,196)',
-              fontSize: '25px',
+              fontSize: '20px',
               paddingLeft: '10px',
               fontWeight: 700,
             }}
