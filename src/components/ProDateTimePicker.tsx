@@ -1,15 +1,15 @@
 import { ReactNode, forwardRef } from 'react'
 import { InputLabel, Stack } from '@mui/material'
-import { DatePicker, DatePickerProps } from '@mui/x-date-pickers'
+import { DateTimePicker, DateTimePickerProps } from '@mui/x-date-pickers'
 import { Dayjs } from 'dayjs'
 
-type ProDatePickerProps = {
+type ProDateTimePickerProps = {
   helperText?: ReactNode
   required?: boolean
   error?: boolean
-} & DatePickerProps<Dayjs>
+} & DateTimePickerProps<Dayjs>
 
-const ProDatePicker = forwardRef<unknown, ProDatePickerProps>(
+const ProDateTimePicker = forwardRef<unknown, ProDateTimePickerProps>(
   ({ label, required, helperText, slotProps, sx, ...props }, ref) => {
     return (
       <Stack marginY={0.5} sx={sx} flex={1}>
@@ -17,9 +17,8 @@ const ProDatePicker = forwardRef<unknown, ProDatePickerProps>(
           {label} {required && <span style={{ color: 'red' }}>*</span>}
         </InputLabel>
 
-        <DatePicker
+        <DateTimePicker
           {...props}
-          ref={() => ref}
           slotProps={{
             ...slotProps,
             textField: {
@@ -34,4 +33,4 @@ const ProDatePicker = forwardRef<unknown, ProDatePickerProps>(
   }
 )
 
-export default ProDatePicker
+export default ProDateTimePicker

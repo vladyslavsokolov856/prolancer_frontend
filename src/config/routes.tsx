@@ -6,6 +6,7 @@ import New from '@/pages/customers/new'
 import TimeRegistration from '@/pages/time'
 
 import TaskIndexPage from '@/pages/tasks'
+import TaskDetailPage from '@/pages/tasks/id'
 import NewTaskPage from '@/pages/tasks/new'
 import EditTaskPage from '@/pages/tasks/edit'
 
@@ -49,6 +50,10 @@ const timeRoutes: RouteConfig[] = [
 
 const taskRoutes: RouteConfig[] = [
   { path: '/tasks', element: <TaskIndexPage /> },
+  {
+    path: '/tasks/:taskId',
+    element: <TaskDetailPage />,
+  },
   {
     path: '/tasks/:taskId/edit',
     element: <EditTaskPage />,

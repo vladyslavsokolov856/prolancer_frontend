@@ -4,6 +4,8 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
+import CloseIcon from '@mui/icons-material/Close'
+import { IconButton } from '@mui/material'
 
 type ColorType =
   | 'inherit'
@@ -57,6 +59,18 @@ const FormDialog: React.FC<FormDialogProps> = ({
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xl">
       <DialogTitle>{title}</DialogTitle>
+      <IconButton
+        aria-label="close"
+        onClick={handleClose}
+        sx={{
+          position: 'absolute',
+          right: 8,
+          top: 8,
+          color: 'rgb(100,100,100)',
+        }}
+      >
+        <CloseIcon />
+      </IconButton>
       <DialogContent>{content}</DialogContent>
       {showActionButtons && (
         <DialogActions>
