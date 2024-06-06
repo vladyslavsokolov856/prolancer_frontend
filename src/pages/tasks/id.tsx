@@ -32,12 +32,14 @@ import { useSnackbar } from 'notistack'
 import WorkLogForm, {
   Inputs as WorkLogFormInputs,
 } from '@/components/Form/WorkLogForm'
-import { useCreateWorkLog } from '@/hooks/useWorkLogs'
+import { useCreateWorkLog, useWorkLogs } from '@/hooks/useWorkLogs'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import { DeductionTable } from '../deductions'
 import { InvoiceTable } from '../invoices'
 import { WorkLogList } from '../time'
+import { pdf } from '@react-pdf/renderer'
+import { TaskWorkLogPdf } from '@/components/Pdf/TaskWorkLogPdf'
 
 const Title = styled('span')({
   fontWeight: 700,
@@ -106,6 +108,7 @@ const TaskDetailPage = () => {
   const { createWorkLogMutation } = useCreateWorkLog()
   const [formType, setFormType] = useState<'Deduction' | 'WorkLog'>('Deduction')
   const workLogHookForm = useForm<WorkLogFormInputs>()
+  const { workLogs } = useWorkLogs()
 
   const [selectedTab, setSelectedTab] = useState('work_log')
 
@@ -491,6 +494,34 @@ const TaskDetailPage = () => {
                 backgroundColor: 'rgb(200,200,200)',
                 color: 'black',
                 '& .MuiButtonBase-root': { alignItems: 'stretch' },
+              }}
+              onClick={async () => {
+                if (task) {
+                  const blob = await pdf(
+                    <TaskWorkLogPdf
+                      task={{
+                        ...task,
+                        user_name: 'Guesmia',
+                        customer_name: taskData?.customer?.name_contact_person,
+                        customer_address: taskData?.customer?.address,
+                        customer_city: taskData?.customer?.city,
+                        customer_postal_code: taskData?.customer?.postal_code,
+                        job_type_name: taskData?.jobType?.name,
+                      }}
+                      workLogs={workLogs.filter(
+                        (workLog) => workLog.task_id === taskId
+                      )}
+                    />
+                  ).toBlob()
+                  const url = URL.createObjectURL(blob)
+
+                  const a = document.createElement('a')
+                  a.href = url
+                  a.download = `task-work-log-${taskId}.pdf`
+                  a.click()
+
+                  URL.revokeObjectURL(url)
+                }
               }}
             >
               Download time registration
