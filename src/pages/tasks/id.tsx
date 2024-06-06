@@ -203,15 +203,17 @@ const TaskDetailPage = () => {
           >
             Create task
           </Button>
-          <Button
-            variant="contained"
-            startIcon={<EditIcon />}
-            component={RouterLink}
-            to={`/tasks/${taskId}/edit`}
-            sx={{ maxHeight: '40px' }}
-          >
-            Edit
-          </Button>
+          {taskData?.status === 'draft' && (
+            <Button
+              variant="contained"
+              startIcon={<EditIcon />}
+              component={RouterLink}
+              to={`/tasks/${taskId}/edit`}
+              sx={{ maxHeight: '40px' }}
+            >
+              Edit
+            </Button>
+          )}
         </Box>
       </Box>
 
