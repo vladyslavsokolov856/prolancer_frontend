@@ -243,6 +243,49 @@ const Index = () => {
     [invoices, customers]
   )
 
+  const {
+    draftCount,
+    draftAmount,
+    openCount,
+    openAmount,
+    paidCount,
+    paidAmount,
+  } = useMemo(() => {
+    let draftCount = 0
+    let draftAmount = 0
+    let openCount = 0
+    let openAmount = 0
+    let paidCount = 0
+    let paidAmount = 0
+
+    invoices.map((invoice) => {
+      const task = tasks.find((item) => item.id === invoice.task_id)
+      switch (invoice.status) {
+        case 'draft':
+          draftCount++
+          draftAmount += parseFloat(`${task?.payment_amount || 0}`)
+          break
+        case 'paid':
+          paidCount++
+          paidAmount += parseFloat(`${task?.payment_amount || 0}`)
+          break
+        default:
+          openCount++
+          openAmount += parseFloat(`${task?.payment_amount || 0}`)
+          break
+      }
+    })
+
+    return {
+      draftCount,
+      draftAmount,
+      openCount,
+      openAmount,
+      paidCount,
+      paidAmount,
+    }
+  }, [invoices, tasks])
+
   if (isTasksLoading || isInvoicesLoading || isCustomersLoading) {
     return (
       <Box
@@ -269,24 +312,30 @@ const Index = () => {
           <Statistic
             backgroundColor="rgb(108, 117, 125)"
             title="Draft"
-            amountContent="0,00 kr."
-            countContent="0 invoices"
+            amountContent={`${draftAmount
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} kr.`}
+            countContent={`${draftCount} invoices`}
           />
         </Grid>
         <Grid item xs={12} md={4}>
           <Statistic
             backgroundColor="#0142c2"
             title="Open"
-            amountContent="0,00 kr."
-            countContent="0 invoices"
+            amountContent={`${openAmount
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} kr.`}
+            countContent={`${openCount} invoices`}
           />
         </Grid>
         <Grid item xs={12} md={4}>
           <Statistic
             backgroundColor="#5cb85c"
             title="Paid amount"
-            amountContent="0,00 kr."
-            countContent="0 payments"
+            amountContent={`${paidAmount
+              .toString()
+              .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} kr.`}
+            countContent={`${paidCount} invoices`}
           />
         </Grid>
       </Grid>
@@ -345,13 +394,15 @@ const Index = () => {
             key={invoice?.id}
           />
         ))}
-        <Box
-          display="flex"
-          justifyContent="center"
-          sx={{ marginBottom: '10px' }}
-        >
-          {`Shoing ${invoiceData?.length} entry`}
-        </Box>
+        {invoiceData?.length > 0 && (
+          <Box
+            display="flex"
+            justifyContent="center"
+            sx={{ marginBottom: '10px' }}
+          >
+            {`Shoing ${invoiceData?.length} entry`}
+          </Box>
+        )}
       </Box>
 
       <Box sx={{ marginTop: '20px' }}>
@@ -366,13 +417,15 @@ const Index = () => {
           <TaskCard task={task} key={task?.id} />
         ))}
 
-        <Box
-          display="flex"
-          justifyContent="center"
-          sx={{ marginBottom: '10px' }}
-        >
-          {`Shoing ${tasks?.length} entry`}
-        </Box>
+        {tasks?.length > 0 && (
+          <Box
+            display="flex"
+            justifyContent="center"
+            sx={{ marginBottom: '10px' }}
+          >
+            {`Shoing ${tasks?.length} entry`}
+          </Box>
+        )}
       </Box>
     </Box>
   )
