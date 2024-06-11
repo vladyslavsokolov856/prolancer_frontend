@@ -16,6 +16,6 @@ export default interface Invoice {
   vat_percentage: number
   task_id: number
   payment_days: number
-  customer: Customer
+  customer: Customer | undefined
   amount: number
 }
