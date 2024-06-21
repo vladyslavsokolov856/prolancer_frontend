@@ -21,12 +21,11 @@ const EditTask = () => {
   const { enqueueSnackbar } = useSnackbar()
   const form = useForm<Inputs>()
   const { task, isLoading } = useTask(parseInt(taskId || ''))
-  const { isEditing, isEdited, updateTaskMutation } = useEditTask(
-    parseInt(taskId || '')
-  )
+  const { isEditing, isEdited, updateTaskMutation } = useEditTask()
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     updateTaskMutation({
+      id: task?.id,
       ...data,
       start_date: data.start_date ? data.start_date.toDate() : null,
       end_date: data.end_date ? data.end_date.toDate() : null,

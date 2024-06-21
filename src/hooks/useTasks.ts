@@ -10,6 +10,7 @@ import {
   createTask,
   editTask,
   deleteTask,
+  fetchTaskByIdentifier,
 } from '@/services/taskService'
 import Task from '@/types/tasks'
 
@@ -51,6 +52,25 @@ export const useTask = (id: number | undefined) => {
   }
 }
 
+export const useTaskByIdentifer = (identifier: string | undefined) => {
+  const {
+    data: task,
+    isLoading,
+    isError,
+    error,
+  }: UseQueryResult<Task, Error> = useQuery({
+    queryKey: ['tasks', identifier],
+    queryFn: () => fetchTaskByIdentifier(identifier),
+  })
+
+  return {
+    task: task || null,
+    isLoading,
+    isError,
+    error,
+  }
+}
+
 export const useCreateTask = () => {
   const queryClient = useQueryClient()
   const {
@@ -71,14 +91,15 @@ export const useCreateTask = () => {
   }
 }
 
-export const useEditTask = (id: number) => {
+export const useEditTask = () => {
   const queryClient = useQueryClient()
   const {
     mutate: updateTaskMutation,
     isSuccess: isEdited,
     isPending: isEditing,
   } = useMutation({
-    mutationFn: (taskData: Task) => editTask(id, taskData),
+    mutationFn: (taskData: Task) =>
+      editTask(parseInt(`${taskData.id}` || ''), taskData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tasks'] })
     },
