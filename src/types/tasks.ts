@@ -1,3 +1,5 @@
+import Customer from "./customers"
+
 export default interface Task {
   id?: number
   status: string
@@ -28,4 +30,5 @@ export default interface Task {
   show_customer_price: boolean
   requested_changes?: string
   deleted?: boolean
+  customer?: Customer
 }
