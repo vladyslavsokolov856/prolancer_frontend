@@ -155,7 +155,7 @@ const TaskDetailsByIdentifierPage = () => {
                 justifyContent="space-between"
                 alignItems="baseline"
               >
-                <Title>Software Engineer</Title>
+                <Title>{task.title}</Title>
                 <Chip
                   label={taskData.status?.toUpperCase()}
                   color={
