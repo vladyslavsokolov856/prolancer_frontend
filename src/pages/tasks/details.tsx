@@ -26,10 +26,10 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { useEditTask, useTaskByIdentifer } from '@/hooks/useTasks'
 import { useParams } from 'react-router-dom'
-import { useCustomers } from '@/hooks/userCustomers'
 import { useEffect, useMemo, useState } from 'react'
 import { useJobTypes } from '@/hooks/useJobTypes'
 import { useSnackbar } from 'notistack'
+import dayjs from 'dayjs'
 
 const Title = styled('span')({
   fontWeight: 700,
@@ -60,7 +60,6 @@ const paymentTerms = [
 const TaskDetailsByIdentifierPage = () => {
   const { identifier } = useParams()
   const { task, isLoading } = useTaskByIdentifer(identifier || '')
-  const { customers, isLoading: isCustomersLoading } = useCustomers()
   const { data: jobTypes, isLoading: isJobTypesLoading } = useJobTypes()
   const { enqueueSnackbar } = useSnackbar()
   const { isEdited, updateTaskMutation } = useEditTask()
@@ -69,12 +68,11 @@ const TaskDetailsByIdentifierPage = () => {
   const taskData = useMemo(
     () => ({
       ...task,
-      customer: customers.find((customer) => customer.id === task?.customer_id),
       paymentType: paymentTypes.find((item) => item.key === task?.payment_type),
       paymentTerm: paymentTerms.find((item) => item.key === task?.payment_term),
       jobType: jobTypes?.find((item) => item.id === task?.job_type_id),
     }),
-    [task, customers]
+    [task]
   )
 
   const handleApprove = () => {
@@ -106,7 +104,7 @@ const TaskDetailsByIdentifierPage = () => {
     }
   }, [isEdited])
 
-  if (isLoading || isCustomersLoading || isJobTypesLoading) {
+  if (isLoading || isJobTypesLoading) {
     return (
       <Box
         display="flex"
@@ -192,7 +190,7 @@ const TaskDetailsByIdentifierPage = () => {
                                 >
                                   Review details
                                 </Typography>
-                                <div style={{ fontSize: '14.4px' }}>done</div>
+                                {/* <div style={{ fontSize: '14.4px' }}>done</div> */}
                               </Box>
                             }
                           />
@@ -228,7 +226,11 @@ const TaskDetailsByIdentifierPage = () => {
                                   Timeline
                                 </div>
                                 <div style={{ color: 'rgb(108, 117, 125)' }}>
-                                  May 14 → May 16, 2024
+                                  {`${dayjs(taskData?.start_date).format(
+                                    'MMM DD'
+                                  )} → ${dayjs(taskData?.end_date).format(
+                                    'MMM DD, YYYY'
+                                  )}`}
                                 </div>
                               </Grid>
                               <Grid item sm={12} sx={{ marginTop: '10px' }}>
@@ -249,7 +251,11 @@ const TaskDetailsByIdentifierPage = () => {
                         </Card>
 
                         <Accordion
-                          sx={{ marginTop: '20px', padding: '.75rem 1.5rem' }}
+                          sx={{
+                            marginTop: '20px',
+                            marginBottom: '20px !important',
+                            padding: 0,
+                          }}
                         >
                           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                             <Typography
@@ -257,6 +263,7 @@ const TaskDetailsByIdentifierPage = () => {
                               sx={{
                                 fontSize: '1.125rem',
                                 fontWeight: 700,
+                                padding: '.75rem 1.5rem',
                                 color: '#6c757d',
                               }}
                             >
@@ -311,7 +318,7 @@ const TaskDetailsByIdentifierPage = () => {
                         </Accordion>
                       </Box>
 
-                      <Box className="steper" sx={{ paddingTop: '20px' }}>
+                      <Box className="steper" sx={{ marginBottom: '20px' }}>
                         <Card sx={{ width: '100%' }}>
                           <StyledCardHeader
                             sx={{ color: '#6c757d' }}
@@ -332,7 +339,10 @@ const TaskDetailsByIdentifierPage = () => {
                         </Card>
                       </Box>
 
-                      <Box className="last-steper" sx={{ paddingTop: '20px' }}>
+                      <Box
+                        className="last-steper"
+                        sx={{ marginBottom: '20px' }}
+                      >
                         <Card sx={{ width: '100%' }}>
                           <StyledCardHeader
                             sx={{ color: '#6c757d' }}
