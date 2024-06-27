@@ -17,3 +17,24 @@ export const fetchCustomer = async (
   )
   return response.data
 }
+
+export const createCustomer = async (
+  customerData: Customer
+): Promise<Customer> => {
+  const response: AxiosResponse<Customer> = await axiosInstance.post(
+    `/api/customers`,
+    customerData
+  )
+  return response.data
+}
+
+export const editCustomer = async (
+  id: number,
+  customerData: Customer
+): Promise<Customer> => {
+  const response: AxiosResponse<Customer> = await axiosInstance.put(
+    `/api/customers/${id}`,
+    customerData
+  )
+  return response.data
+}

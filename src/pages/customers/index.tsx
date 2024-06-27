@@ -7,36 +7,19 @@ import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
 import ProTable, { ColumnType, RecordType } from '@/components/ProTable'
 import { Link as RouterLink } from 'react-router-dom'
-
-const mockData: RecordType[] = [
-  {
-    id: 1,
-    name: 'asdf',
-    address: 'Hello',
-    telephone: 'telephone',
-    customer_type: 'person',
-    email: 'hello@computer.com',
-  },
-  {
-    id: 2,
-    name: 'asdf1',
-    address: 'Hello1',
-    telephone: 'telephone2',
-    customer_type: 'customer',
-    email: 'hello1@computer.com',
-  },
-]
+import { useCustomers } from '@/hooks/userCustomers'
+import { CircularProgress } from '@mui/material'
 
 const columns: ColumnType[] = [
   {
-    key: 'name',
+    key: 'name_contact_person',
     name: 'Name',
     render: (value, record) => {
       return (
         <Box>
           <Box display="flex" gap="5px">
             <Chip
-              label={value.slice(0, 2)}
+              label={value ? value.slice(0, 2) : ''}
               size="small"
               sx={{ borderRadius: '2px' }}
             />
@@ -50,9 +33,9 @@ const columns: ColumnType[] = [
     },
   },
   { key: 'address', name: 'Address' },
-  { key: 'telephone', name: 'Telephone' },
+  { key: 'phone_contact_person', name: 'Telephone' },
   {
-    key: 'customer_type',
+    key: 'type',
     name: 'Customer Type',
     render: (value) => (
       <Chip
@@ -81,6 +64,21 @@ const columns: ColumnType[] = [
 ]
 
 const CustomerIndex = () => {
+  const { customers, isLoading } = useCustomers()
+
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ height: 'calc(100vh - 100px)' }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
+
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -114,7 +112,7 @@ const CustomerIndex = () => {
         option to create new ones and edit existing ones
       </Alert>
 
-      <ProTable columns={columns} data={mockData} />
+      <ProTable columns={columns} data={customers} />
     </Box>
   )
 }

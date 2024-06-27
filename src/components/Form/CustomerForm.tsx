@@ -15,6 +15,8 @@ import { SubmitHandler, UseFormReturn } from 'react-hook-form'
 import ProInput from '../ProInput'
 import ProSelect from '../ProSelect'
 import ProRadioGroup from '../ProRadioGroup'
+import { useEffect } from 'react'
+import Customer from '@/types/customers'
 
 export type Inputs = {
   country: string
@@ -46,15 +48,32 @@ const languageOptions = ['Danish', 'English'].map((lang) => (
 interface CustomerFormProps {
   form: UseFormReturn<Inputs, any, any>
   onSubmit: SubmitHandler<Inputs>
+  type?: 'Create' | 'Update'
+  submitButtonDisabled?: boolean
+  initialValues?: Customer | null
 }
 
-const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
+const CustomerForm: React.FC<CustomerFormProps> = ({
+  form,
+  onSubmit,
+  submitButtonDisabled = false,
+  type = 'Create',
+  initialValues,
+}) => {
   const {
     register,
     handleSubmit,
     watch,
+    reset,
+    setValue,
     formState: { errors },
   } = form
+  const country = watch('country')
+
+  useEffect(() => {
+    reset(initialValues || undefined)
+    form.trigger()
+  }, [initialValues])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -65,7 +84,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
               labelId="country-select-label"
               id="country-select"
               label="Country"
-              defaultValue=""
+              defaultValue={initialValues?.country || ''}
               {...register('country', {
                 required: 'Country is a required field',
               })}
@@ -83,22 +102,20 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
           <Grid item md={6} xs={12}>
             <ProRadioGroup
               label="Customer Type"
-              defaultValue="business"
+              defaultValue={initialValues?.type || ''}
               aria-labelledby="customer-type-radio-group-label"
-              {...register('type', {
-                required: 'Customer type is a required field',
-              })}
               required
               options={[
                 { label: 'Private', value: 'private' },
-                { label: 'Business', value: 'business' },
+                { label: 'Business', value: 'organization' },
               ]}
-            ></ProRadioGroup>
+              onChange={(e) => setValue('type', e.target.value)}
+            />
           </Grid>
         </Grid>
       </StyledPaper>
 
-      {watch('country') && (
+      {country && (
         <StyledPaper elevation={4}>
           <Grid
             container
@@ -131,7 +148,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
             <Grid item md={6} xs={12}>
               <ProSelect
                 label="Language"
-                defaultValue="English"
+                defaultValue={initialValues?.language || 'English'}
                 {...register('language', {
                   required: 'Language is a required field',
                 })}
@@ -364,8 +381,13 @@ const CustomerForm: React.FC<CustomerFormProps> = ({ form, onSubmit }) => {
             </Grid>
           </Grid>
           <Divider sx={{ marginTop: '15px', marginBottom: '15px' }} />
-          <Button type="submit" variant="contained" disableElevation>
-            Create Customer
+          <Button
+            type="submit"
+            variant="contained"
+            disableElevation
+            disabled={submitButtonDisabled}
+          >
+            {type === 'Create' ? ' Create Customer' : 'Update Customer'}
           </Button>
         </StyledPaper>
       )}
