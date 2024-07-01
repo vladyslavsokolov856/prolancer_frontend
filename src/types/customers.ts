@@ -1,6 +1,6 @@
 export default interface Customer {
-  id: number
-  user_id: number
+  id?: number
+  user_id?: number
   type: string
   language: string
   company_name: string
@@ -12,7 +12,7 @@ export default interface Customer {
   postal_code: string
   country: string
   payment_due_days: number
-  company_id: string
+  company_id: number
   ean: number
-  deleted: boolean
+  deleted?: boolean
 }

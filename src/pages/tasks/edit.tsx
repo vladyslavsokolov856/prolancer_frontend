@@ -15,7 +15,7 @@ const Title = styled('span')({
 })
 
 const EditTask = () => {
-  let { taskId } = useParams()
+  const { taskId } = useParams()
 
   const navigate = useNavigate()
   const { enqueueSnackbar } = useSnackbar()
@@ -37,7 +37,7 @@ const EditTask = () => {
       enqueueSnackbar('Task Edited!', { variant: 'success' })
       navigate('/tasks')
     }
-  }, [isEdited])
+  }, [isEdited, enqueueSnackbar, navigate])
 
   if (isLoading) {
     return (

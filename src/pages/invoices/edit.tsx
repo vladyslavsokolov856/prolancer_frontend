@@ -23,12 +23,12 @@ const EditInvoice = () => {
     if (invoice && invoice.status !== 'draft') {
       navigate('/invoices')
     }
-  }, [invoice])
+  }, [invoice, navigate])
 
   const { mutate: updateInvoice } = useUpdateInvoice()
 
   const handleSubmit = useCallback(
-    ({ terms_accepted, ...data }: InvoiceInputs) => {
+    ({ ...data }: InvoiceInputs) => {
       updateInvoice(
         { ...data, id: invoiceId },
         {
@@ -38,7 +38,7 @@ const EditInvoice = () => {
         }
       )
     },
-    [invoiceId]
+    [invoiceId, navigate, updateInvoice]
   )
 
   if (!invoice) {

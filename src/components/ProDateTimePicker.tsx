@@ -10,7 +10,7 @@ type ProDateTimePickerProps = {
 } & DateTimePickerProps<Dayjs>
 
 const ProDateTimePicker = forwardRef<unknown, ProDateTimePickerProps>(
-  ({ label, required, helperText, slotProps, sx, ...props }, ref) => {
+  ({ label, required, helperText, slotProps, sx, ...props }) => {
     return (
       <Stack marginY={0.5} sx={sx} flex={1}>
         <InputLabel sx={{ my: 0.5 }}>

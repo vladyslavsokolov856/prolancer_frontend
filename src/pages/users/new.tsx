@@ -20,7 +20,7 @@ const CreateUser = () => {
   const { isCreating, isCreated, createUserMutation } = useCreateUser()
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const { email_preferences, ...rest } = data
+    const { ...rest } = data
     createUserMutation({ ...rest, role: 'user' })
   }
 
@@ -29,7 +29,7 @@ const CreateUser = () => {
       enqueueSnackbar('User Created!', { variant: 'success' })
       navigate('/admin/users')
     }
-  }, [isCreated])
+  }, [isCreated, enqueueSnackbar, navigate])
 
   return (
     <Box display="flex" justifyContent="left" flexDirection="column">

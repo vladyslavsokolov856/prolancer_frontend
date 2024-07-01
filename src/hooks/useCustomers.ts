@@ -1,6 +1,6 @@
-import { useQuery, UseQueryResult } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient, UseQueryResult } from '@tanstack/react-query'
 import Customer from '@/types/customers'
-import { fetchCustomer, fetchCustomers } from '@/services/customerService'
+import { createCustomer, editCustomer, fetchCustomer, fetchCustomers } from '@/services/customerService'
 
 export const useCustomers = () => {
   const {
@@ -37,5 +37,45 @@ export const useCustomer = (id: number | undefined) => {
     isLoading,
     isError,
     error,
+  }
+}
+
+export const useEditCustomer = (id: number) => {
+  const queryClient = useQueryClient()
+  const {
+    mutate: updateCustomerMutation,
+    isSuccess: isEdited,
+    isPending: isEditing,
+  } = useMutation({
+    mutationFn: (userData: Customer) => editCustomer(id, userData),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+    },
+  })
+
+  return {
+    updateCustomerMutation,
+    isEdited,
+    isEditing,
+  }
+}
+
+export const useCreateCustomer = () => {
+  const queryClient = useQueryClient()
+  const {
+    mutate: createCustomerMutation,
+    isSuccess: isCreated,
+    isPending: isCreating,
+  } = useMutation({
+    mutationFn: createCustomer,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['customers'] })
+    },
+  })
+
+  return {
+    createCustomerMutation,
+    isCreated,
+    isCreating,
   }
 }

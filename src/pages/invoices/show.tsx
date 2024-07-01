@@ -48,7 +48,7 @@ const StyledTableCell = styled(TableCell)(() => ({
 }))
 
 const ShowInvoice = () => {
-  let { invoiceId = '' } = useParams()
+  const { invoiceId = '' } = useParams()
 
   const {
     data: invoice,
