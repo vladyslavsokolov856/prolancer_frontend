@@ -211,10 +211,10 @@ const PreviewDialog: React.FC<PreviewDialogProps> = ({
             <strong>The fine print - the conditions*</strong>
           </p>
           <p>
-            ​** The worker (Freelancer) is, in connection with the performance
-            of this task, a project employee of Factofly. Therefore, if there
-            are changes to the above job description, Factofly must be notified
-            in writing in order for them to take effect.*
+            ** The worker (Freelancer) is, in connection with the performance of
+            this task, a project employee of Factofly. Therefore, if there are
+            changes to the above job description, Factofly must be notified in
+            writing in order for them to take effect.*
           </p>
           <p>
             <em>
@@ -227,7 +227,7 @@ const PreviewDialog: React.FC<PreviewDialogProps> = ({
           </p>
           <p>
             Please write to us if you have any questions or call us on +45 71 96
-            00 54. ​
+            00 54.
           </p>
           <p>Sincerely</p>
           <p>Factofly on behalf of Guesmia Abdelmadjid</p>
@@ -287,20 +287,20 @@ const TaskForm: React.FC<TaskFormProps> = ({
 
   useEffect(() => {
     if (initialValues && !isCustomersLoading && !isJobTypesLoading) {
-      const { id, start_date, end_date, ...rest } = initialValues
+      const { start_date, end_date, ...rest } = initialValues
       reset(rest)
       setValue('start_date', dayjs(start_date))
       setValue('end_date', dayjs(end_date))
     }
     setValue('status', 'sent')
-  }, [initialValues, isCustomersLoading, isJobTypesLoading])
+  }, [initialValues, isCustomersLoading, isJobTypesLoading, reset, setValue])
 
   useEffect(() => {
     const selectedCustomerData = customers.find(
       (customer) => customer.id === customerId
     )
     setSelectedCustomer(selectedCustomerData)
-  }, [customerId])
+  }, [customerId, customers])
 
   const handleSaveasDraft = () => {
     if (isValid) {

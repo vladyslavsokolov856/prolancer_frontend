@@ -89,7 +89,7 @@ const ProFilter: React.FC<IProFilter> = ({
       .filter((item) => {
         return Object.keys(filterOptions).every((key) => {
           return (
-            item.hasOwnProperty(key) &&
+            Object.prototype.hasOwnProperty.call(item, key) &&
             item[key as IListItemKey] === filterOptions[key as IListItemKey]
           )
         })
@@ -106,7 +106,17 @@ const ProFilter: React.FC<IProFilter> = ({
           })
         : filteredItems
     setItems(sortedItems)
-  }, [search, filterOptions, sortField, sortDirection])
+  }, [
+    search,
+    filterOptions,
+    sortField,
+    sortDirection,
+    originalListItems,
+    page,
+    rowsPerPage,
+    searchFields,
+    setItems,
+  ])
 
   const handleToggleSorDirection = () => {
     if (sortField) setSortDirection((prev) => !prev)

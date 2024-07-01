@@ -13,7 +13,7 @@ const Title = styled('span')({
 })
 
 const EditCustomer = () => {
-  let { customerId } = useParams()
+  const { customerId } = useParams()
 
   const navigate = useNavigate()
   const { enqueueSnackbar } = useSnackbar()
@@ -32,7 +32,7 @@ const EditCustomer = () => {
       enqueueSnackbar('Customer Edited!', { variant: 'success' })
       navigate('/customers')
     }
-  }, [isEdited])
+  }, [isEdited, enqueueSnackbar, navigate])
 
   if (isLoading) {
     return (

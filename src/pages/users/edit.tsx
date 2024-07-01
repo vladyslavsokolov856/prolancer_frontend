@@ -14,7 +14,7 @@ const Title = styled('span')({
 })
 
 const EditUser = () => {
-  let { userId } = useParams()
+  const { userId } = useParams()
 
   const navigate = useNavigate()
   const { enqueueSnackbar } = useSnackbar()
@@ -25,7 +25,7 @@ const EditUser = () => {
   const form = useForm<Inputs>()
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const { email_preferences, ...rest } = data
+    const { ...rest } = data
     updateUserMutation(rest)
   }
 
@@ -34,7 +34,7 @@ const EditUser = () => {
       enqueueSnackbar('User Edited!', { variant: 'success' })
       navigate('/admin/users')
     }
-  }, [isEdited])
+  }, [isEdited, enqueueSnackbar, navigate])
 
   if (isLoading) {
     return (

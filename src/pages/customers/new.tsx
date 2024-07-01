@@ -29,7 +29,7 @@ const CreateCustomer = () => {
       enqueueSnackbar('Customer Created!', { variant: 'success' })
       navigate('/customers')
     }
-  }, [isCreated])
+  }, [isCreated, enqueueSnackbar, navigate])
 
   return (
     <Box display="flex" justifyContent="left" flexDirection="column">

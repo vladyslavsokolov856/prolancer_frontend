@@ -17,10 +17,7 @@ const CreateInvoice = () => {
 
   const { mutate: createInvoice } = useCreateInvoice()
 
-  const onSubmit: SubmitHandler<InvoiceInputs> = async ({
-    terms_accepted,
-    ...data
-  }) => {
+  const onSubmit: SubmitHandler<InvoiceInputs> = async ({ ...data }) => {
     console.log(data)
     createInvoice(data, {
       onSuccess: () => navigate('/invoices'),

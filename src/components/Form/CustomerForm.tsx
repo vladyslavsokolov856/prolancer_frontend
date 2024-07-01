@@ -73,7 +73,7 @@ const CustomerForm: React.FC<CustomerFormProps> = ({
   useEffect(() => {
     reset(initialValues || undefined)
     form.trigger()
-  }, [initialValues])
+  }, [initialValues, form, reset])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

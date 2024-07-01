@@ -211,7 +211,7 @@ const Index = () => {
 
   const handleUnsend = (invoiceId: number) => {
     const invoice = invoices.find((item) => item.id === invoiceId)
-    const { id, ...rest } = invoice!
+    const { ...rest } = invoice!
     updateInvoice(
       { ...rest, status: 'draft', id: invoiceId },
       {
@@ -240,7 +240,7 @@ const Index = () => {
           customer: customers.find((item) => item.id === invoice.customer_id),
           task: tasks.find((item) => item.id === invoice.task_id),
         })),
-    [invoices, customers]
+    [invoices, customers, tasks]
   )
 
   const {

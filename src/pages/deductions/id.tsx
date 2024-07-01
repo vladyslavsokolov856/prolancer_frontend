@@ -55,7 +55,7 @@ const DeductionDetails = () => {
       enqueueSnackbar('Deduction Deleted!', { variant: 'success' })
       navigate('/deductions')
     }
-  }, [isDeleted])
+  }, [isDeleted, enqueueSnackbar, navigate])
 
   if (isDeductionLoading || isTaskLoading) {
     return (

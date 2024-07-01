@@ -72,7 +72,7 @@ const TaskDetailsByIdentifierPage = () => {
       paymentTerm: paymentTerms.find((item) => item.key === task?.payment_term),
       jobType: jobTypes?.find((item) => item.id === task?.job_type_id),
     }),
-    [task]
+    [task, jobTypes]
   )
 
   const handleApprove = () => {
@@ -102,7 +102,7 @@ const TaskDetailsByIdentifierPage = () => {
       else if (statusType === 'declined')
         enqueueSnackbar('Task is Declined!', { variant: 'success' })
     }
-  }, [isEdited])
+  }, [isEdited, enqueueSnackbar, statusType])
 
   if (isLoading || isJobTypesLoading) {
     return (

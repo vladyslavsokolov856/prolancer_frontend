@@ -98,7 +98,7 @@ const paymentTerms = [
 ]
 
 const TaskDetailPage = () => {
-  let { taskId } = useParams()
+  const { taskId } = useParams()
   const { enqueueSnackbar } = useSnackbar()
   const [showDialog, setShowDialog] = useState<boolean>(false)
   const { task, isLoading: isTaskLoading } = useTask(parseInt(taskId || ''))
