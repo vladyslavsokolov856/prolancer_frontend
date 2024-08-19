@@ -284,7 +284,7 @@ const InvoiceIndex = () => {
         customer quick and easy and track the invoice status from sent to paid.
         Read more about invoices and the status descriptions{' '}
         <Link
-          href="https://intercom.help/factofly/en/articles/5900739-invoice"
+          href="https://intercom.help/prolancer/en/articles/5900739-invoice"
           target="_blank"
           referrerPolicy="no-referrer"
           sx={{ textDecoration: 'none' }}

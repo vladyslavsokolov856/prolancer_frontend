@@ -18,12 +18,12 @@ const Footer: React.FC = () => {
       <div>
         <EmailOutlinedIcon fontSize="small" sx={{ marginRight: '15px' }} />
         <a
-          href="mailto:kontakt@factofly.com"
+          href="mailto:kontakt@prolancer.com"
           target="_blank"
           rel="noreferrer"
           style={{ color: '#0142c2', outline: 'none !important' }}
         >
-          kontakt@factofly.com
+          kontakt@prolancer.com
         </a>
         <CallOutlinedIcon fontSize="small" sx={{ marginRight: '15px' }} />
         <a
@@ -34,11 +34,11 @@ const Footer: React.FC = () => {
         </a>
       </div>
       <span style={{ color: 'rgb(152, 166, 173)' }}>
-        Invoice with Factofly, no more accounting, more time to help your
+        Invoice with Prolancer, no more accounting, more time to help your
         customers✌️
       </span>
       <div style={{ color: 'rgb(152, 166, 173)' }}>
-        <span>v3.11.0</span> - 2024© Factofly - Made with ❤️ in Copenhagen
+        <span>v3.11.0</span> - 2024© Prolancer - Made with ❤️ in Copenhagen
       </div>
     </Box>
   )
