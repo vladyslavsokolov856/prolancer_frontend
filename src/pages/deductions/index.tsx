@@ -10,7 +10,7 @@ import ProTable, { ColumnType } from '@/components/ProTable'
 import { Link as RouterLink } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { useDeductions, useDeleteDeduction } from '@/hooks/useDeductions'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import Deduction from '@/types/deductions'
 
@@ -39,12 +39,12 @@ export const DeductionTable: React.FC<DeductionTableProps> = ({ taskId }) => {
   const deductionData = useMemo(() => {
     if (taskId) return deductions.filter((item) => item.task_id === taskId)
     else return deductions
-  }, [deductions])
+  }, [deductions, taskId])
 
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = useCallback((id: number) => {
     setSelectedDeduction(deductions?.find((item) => item.id === id))
     setOpen(true)
-  }
+  }, [deductions])
 
   const columns: ColumnType[] = useMemo(
     () => [

@@ -37,7 +37,7 @@ const CreateTask = () => {
       enqueueSnackbar('Task Created!', { variant: 'success' })
       navigate('/tasks')
     }
-  }, [isCreated])
+  }, [isCreated, enqueueSnackbar, navigate])
 
   return (
     <Box display="flex" justifyContent="left" flexDirection="column">

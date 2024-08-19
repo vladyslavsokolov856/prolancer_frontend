@@ -29,6 +29,7 @@ const ProRadioGroup = forwardRef<unknown, ProRadioGroupProps>(
         <RadioGroup row {...props} ref={ref} sx={{ gap: 2 }}>
           {options.map(({ value, label, description }) => (
             <Stack
+              key={value}
               sx={{
                 flex: 1,
                 border: 1,
@@ -52,7 +53,6 @@ const ProRadioGroup = forwardRef<unknown, ProRadioGroupProps>(
                     <Typography mt={1}>{label}</Typography>
                   )
                 }
-                key={value}
                 sx={{ alignItems: 'start' }}
               />
             </Stack>

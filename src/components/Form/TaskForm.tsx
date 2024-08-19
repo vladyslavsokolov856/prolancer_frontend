@@ -227,7 +227,7 @@ const PreviewDialog: React.FC<PreviewDialogProps> = ({
           </p>
           <p>
             Please write to us if you have any questions or call us on +45 71 96
-            00 54. ​
+            00 54.
           </p>
           <p>Sincerely</p>
           <p>Prolancer on behalf of Guesmia Abdelmadjid</p>
@@ -287,20 +287,20 @@ const TaskForm: React.FC<TaskFormProps> = ({
 
   useEffect(() => {
     if (initialValues && !isCustomersLoading && !isJobTypesLoading) {
-      const { id, start_date, end_date, ...rest } = initialValues
+      const { start_date, end_date, ...rest } = initialValues
       reset(rest)
       setValue('start_date', dayjs(start_date))
       setValue('end_date', dayjs(end_date))
     }
     setValue('status', 'sent')
-  }, [initialValues, isCustomersLoading, isJobTypesLoading])
+  }, [initialValues, isCustomersLoading, isJobTypesLoading, reset, setValue])
 
   useEffect(() => {
     const selectedCustomerData = customers.find(
       (customer) => customer.id === customerId
     )
     setSelectedCustomer(selectedCustomerData)
-  }, [customerId])
+  }, [customerId, customers])
 
   const handleSaveasDraft = () => {
     if (isValid) {

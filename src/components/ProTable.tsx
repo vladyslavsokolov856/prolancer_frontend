@@ -126,7 +126,7 @@ const ProTable: React.FC<IProTable> = ({
       setSortDirection(column.initialSort === 'asc')
       setSortField(column.key)
     }
-  }, [])
+  }, [columns])
 
   useEffect(() => {
     const startIndex = page * rowsPerPage
@@ -153,11 +153,14 @@ const ProTable: React.FC<IProTable> = ({
           const filterFunction = filterFunctions[key]
           if (filterFunction) {
             return (
-              item.hasOwnProperty(key) &&
+              Object.prototype.hasOwnProperty.call(item, key) &&
               filterFunction(item[key], filterOptions[key])
             )
           }
-          return item.hasOwnProperty(key) && item[key] === filterOptions[key]
+          return (
+            Object.prototype.hasOwnProperty.call(item, key) &&
+            item[key] === filterOptions[key]
+          )
         })
       })
       .slice(startIndex, endIndex)

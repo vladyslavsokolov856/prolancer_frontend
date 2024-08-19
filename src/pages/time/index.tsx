@@ -89,7 +89,7 @@ export const WorkLogList: React.FC<IWorkLog> = ({ taskId }) => {
       setListItems(
         taskId ? workLogs.filter((item) => item.task_id === taskId) : workLogs
       )
-  }, [isWorkLogsLoading])
+  }, [isWorkLogsLoading, taskId, workLogs])
 
   return (
     <>
@@ -132,14 +132,14 @@ const TimeRegistration = () => {
 
   useEffect(() => {
     if (!isWorkLogsLoading && !isTasksLoading) setListItems(workLogs)
-  }, [isWorkLogsLoading, isTasksLoading])
+  }, [isWorkLogsLoading, isTasksLoading, workLogs])
 
   useEffect(() => {
     if (isTaskCreated) {
       enqueueSnackbar('Task created!', { variant: 'success' })
       setShowDialog((prev) => !prev)
     }
-  }, [isTaskCreated])
+  }, [isTaskCreated, enqueueSnackbar])
 
   useEffect(() => {
     if (isCreated && createdWorkLog) {
@@ -148,7 +148,7 @@ const TimeRegistration = () => {
         return [createdWorkLog, ...prevItems]
       })
     }
-  }, [isCreated])
+  }, [isCreated, createdWorkLog, enqueueSnackbar])
 
   useEffect(() => {
     let interval: any = undefined

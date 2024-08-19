@@ -15,18 +15,17 @@ const Title = styled('span')({
 })
 
 const EditTask = () => {
-  let { taskId } = useParams()
+  const { taskId } = useParams()
 
   const navigate = useNavigate()
   const { enqueueSnackbar } = useSnackbar()
   const form = useForm<Inputs>()
   const { task, isLoading } = useTask(parseInt(taskId || ''))
-  const { isEditing, isEdited, updateTaskMutation } = useEditTask(
-    parseInt(taskId || '')
-  )
+  const { isEditing, isEdited, updateTaskMutation } = useEditTask()
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     updateTaskMutation({
+      id: task?.id,
       ...data,
       start_date: data.start_date ? data.start_date.toDate() : null,
       end_date: data.end_date ? data.end_date.toDate() : null,
@@ -38,7 +37,7 @@ const EditTask = () => {
       enqueueSnackbar('Task Edited!', { variant: 'success' })
       navigate('/tasks')
     }
-  }, [isEdited])
+  }, [isEdited, enqueueSnackbar, navigate])
 
   if (isLoading) {
     return (

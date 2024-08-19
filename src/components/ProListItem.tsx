@@ -54,7 +54,7 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
     if (isEdited) {
       enqueueSnackbar('Time registration updated!', { variant: 'success' })
     }
-  }, [isEdited])
+  }, [isEdited, enqueueSnackbar])
 
   const handleChange = (cb: any) => (e: any) => {
     cb(e.target.value)
@@ -88,7 +88,7 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
 
   const handleSaveDraft = (selectedId: number) => () => {
     if (duration && startTime && notes && task) {
-      const { editable, ...rest } = item
+      const { ...rest } = item
       updateWorkLogMutation({
         id: selectedId,
         workLogData: {
@@ -120,7 +120,7 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
 
   const handleSendToCustomer = (selectedId: number) => () => {
     if (duration && startTime && notes && task) {
-      const { editable, ...rest } = item
+      const { ...rest } = item
       updateWorkLogMutation({
         id: selectedId,
         workLogData: {

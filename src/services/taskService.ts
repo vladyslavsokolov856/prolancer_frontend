@@ -16,6 +16,16 @@ export const fetchTask = async (id: number | undefined): Promise<Task> => {
   return response.data
 }
 
+export const fetchTaskByIdentifier = async (
+  identifier: string | undefined
+): Promise<Task> => {
+  const response: AxiosResponse<Task> = await axiosInstance.post(
+    `/api/tasks/details`,
+    { identifier }
+  )
+  return response.data
+}
+
 export const createTask = async (taskData: Task): Promise<Task> => {
   const response: AxiosResponse<Task> = await axiosInstance.post(
     `/api/tasks`,

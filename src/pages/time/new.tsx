@@ -73,7 +73,7 @@ const CreateTimeRegistration: React.FC<ICreateTimeRegistration> = ({
       })
       onClose()
     }
-  }, [isCreated])
+  }, [isCreated, createdWorkLog, enqueueSnackbar, onClose, setListItems])
 
   return (
     <Dialog

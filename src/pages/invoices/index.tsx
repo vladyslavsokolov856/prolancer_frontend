@@ -7,7 +7,7 @@ import { Link } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { useInvoices, useDeleteInvoice } from '@/hooks/useInvoices'
 import { Link as RouterLink } from 'react-router-dom'
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import ProTable, { ColumnType } from '@/components/ProTable'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -83,15 +83,18 @@ export const InvoiceTable: React.FC<InvoiceTableProps> = ({ taskId }) => {
   const [selectedInvoice, setSelectedInvoice] =
     useState<SelectedInvoiceType>(null)
 
-  const handleDeleteClick = (id: number) => {
-    setSelectedInvoice(invoices.find((item) => item.id === id))
-    setOpen(true)
-  }
+  const handleDeleteClick = useCallback(
+    (id: number) => {
+      setSelectedInvoice(invoices.find((item) => item.id === id))
+      setOpen(true)
+    },
+    [invoices]
+  )
 
   const invoiceData = useMemo(() => {
     if (taskId) return invoices.filter((item) => item.task_id === taskId)
     else return invoices
-  }, [invoices])
+  }, [invoices, taskId])
 
   const filters = useMemo(
     () => [

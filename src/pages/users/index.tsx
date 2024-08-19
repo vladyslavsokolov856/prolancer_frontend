@@ -5,7 +5,7 @@ import Chip from '@mui/material/Chip'
 import AddIcon from '@mui/icons-material/Add'
 import { useUsers, useDeleteUser } from '@/hooks/useUsers'
 import { Link as RouterLink } from 'react-router-dom'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import ProTable, { ColumnType } from '@/components/ProTable'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -21,10 +21,13 @@ const UserIndex = () => {
   const [open, setOpen] = useState<boolean>(false)
   const [selectedUser, setSelectedUser] = useState<SelectedUserType>(null)
 
-  const handleDeleteClick = (id: number) => {
-    setSelectedUser(users.find((item) => item.id === id))
-    setOpen(true)
-  }
+  const handleDeleteClick = useCallback(
+    (id: number) => {
+      setSelectedUser(users.find((item) => item.id === id))
+      setOpen(true)
+    },
+    [users]
+  )
 
   const columns: ColumnType[] = useMemo(
     () => [
