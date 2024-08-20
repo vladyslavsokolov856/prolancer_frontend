@@ -577,7 +577,7 @@ const TaskDetailPage = () => {
       <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: '30px' }}>
         <Tabs
           value={selectedTab}
-          onChange={(e, value) => setSelectedTab(value)}
+          onChange={(_, value) => setSelectedTab(value)}
           aria-label="basic tabs example"
         >
           <Tab label="Time registration" value="work_log" />
