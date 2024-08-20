@@ -113,7 +113,7 @@ export const TaskWorkLogPdf = ({
               Time registration
             </Text>
             <Text style={[styles.col, styles.textAlignRight, { fontSize: 48 }]}>
-              factofly
+              prolancer
             </Text>
           </View>
           <View style={[styles.row, { gap: 20, marginBottom: 20 }]}>

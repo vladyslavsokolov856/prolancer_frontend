@@ -15,7 +15,7 @@ const LogoIcon: React.FC<LogoIconProps> = ({ color = 'white', ...props }) => {
     >
       {/* <Logo style={{ fill: color }} /> */}
       <Typography fontSize={40} color={color}>
-        factofly
+        prolancer
       </Typography>
     </Box>
   )
