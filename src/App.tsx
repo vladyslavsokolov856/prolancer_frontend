@@ -4,13 +4,14 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Layout from '@/components/Layout'
 // import SignIn from '@/pages/signin'
 import TaskDetailsByIdentifierPage from './pages/tasks/details'
-import { useContext } from 'react'
+// import { useContext } from 'react'
 import Login from './pages/signin_new'
 import Callback from './pages/callback'
-import { AuthContext, AuthContextType } from './context/auth'
+// import { AuthContext, AuthContextType } from './context/auth'
 
 function App() {
-  const { token } = useContext(AuthContext) as AuthContextType
+  // const { token } = useContext(AuthContext) as AuthContextType
+  const token = "ACCESS_TOKEN"
   return (
     <BrowserRouter>
       <Routes>
