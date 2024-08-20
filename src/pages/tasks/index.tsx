@@ -12,7 +12,7 @@ import ProTable, { ColumnType } from '@/components/ProTable'
 import { Link as RouterLink } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { Menu, MenuItem } from '@mui/material'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useTasks } from '@/hooks/useTasks'
 import { useCustomers } from '@/hooks/userCustomers'
 import { useUsers } from '@/hooks/useUsers'
@@ -33,25 +33,27 @@ const taskStatus = [
 ]
 
 const TaskIndex = () => {
-  const { isLoading: isTaskLoading, tasks } = useTasks()
-  const { isLoading: isCustomerLoading, customers } = useCustomers()
-  const { isLoading: isUserLoading, users } = useUsers()
-  const { isLoading: isJobTypeLoading, data: jobTypes } = useJobTypes()
-  const { isLoading: isWorkLogLoading, workLogs } = useWorkLogs()
+  const { tasks } = useTasks()
+  const { customers } = useCustomers()
+  const { users } = useUsers()
+  const { data: jobTypes } = useJobTypes()
+  const { workLogs } = useWorkLogs()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedRow, setSelectedRow] = useState<Task | null>(null)
   const open = Boolean(anchorEl)
 
-  const handleClick =
+  const handleClick = useCallback(
     (record: Task) => (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget)
       setSelectedRow(record)
-    }
+    },
+    []
+  )
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setAnchorEl(null)
     setSelectedRow(null)
-  }
+  }, [])
 
   const columns: ColumnType[] = useMemo(
     () => [
@@ -221,7 +223,7 @@ const TaskIndex = () => {
         ),
       },
     ],
-    [open, anchorEl, handleClick, handleClose, isWorkLogLoading, selectedRow]
+    [open, anchorEl, handleClick, handleClose, selectedRow, workLogs]
   )
 
   const taskData = useMemo(
@@ -245,7 +247,7 @@ const TaskIndex = () => {
           )?.name,
         }
       }),
-    [isCustomerLoading, isTaskLoading, isUserLoading, isJobTypeLoading, tasks]
+    [tasks, customers, jobTypes, users]
   )
 
   return (
@@ -282,6 +284,7 @@ const TaskIndex = () => {
             items: taskStatus,
           },
         ]}
+        tableName="tasks"
       />
     </Box>
   )

@@ -38,3 +38,69 @@
 .read-the-docs {
   color: #888;
 }
+
+.step {
+  width: '100%';
+  position: relative;
+}
+
+.step::before {
+  display: inline-block;
+  content: '';
+  position: absolute;
+  top: 0px;
+  left: 15px;
+  width: 10px;
+  height: 100%;
+}
+
+.steper {
+  width: '100%';
+  position: relative;
+}
+
+.steper::before {
+  border-left: 2px solid rgb(92, 184, 92);
+  display: inline-block;
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: -25px;
+  height: calc(100% + 20px);
+  width: 10px;
+}
+
+.steper::after {
+  content: '';
+  border: 2px solid rgb(92, 184, 92);
+  background-color: rgb(92, 184, 92);
+  display: inline-block;
+  position: absolute;
+  top: 1rem;
+  left: -30px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.last-steper {
+  width: '100%';
+  position: relative;
+}
+
+.last-steper::after {
+  content: '';
+  padding: 6px;
+  width: 12px;
+  height: 12px;
+  top: 0.75rem;
+  left: -35px;
+  font-size: 14px;
+  text-align: center;
+  border: 5px solid rgba(1, 66, 194, 0.3);
+  background-color: rgb(1, 66, 194);
+  background-clip: padding-box;
+  display: inline-block;
+  position: absolute;
+  border-radius: 50%;
+}

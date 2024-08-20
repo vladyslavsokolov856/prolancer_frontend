@@ -10,7 +10,7 @@ import ProTable, { ColumnType } from '@/components/ProTable'
 import { Link as RouterLink } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { useDeductions, useDeleteDeduction } from '@/hooks/useDeductions'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import Deduction from '@/types/deductions'
 
@@ -25,17 +25,26 @@ const deductionStatus = [
   { key: '', name: 'None' },
 ]
 
-const DeductionIndex = () => {
+interface DeductionTableProps {
+  taskId?: number
+}
+
+export const DeductionTable: React.FC<DeductionTableProps> = ({ taskId }) => {
   const { isLoading, deductions } = useDeductions()
   const [open, setOpen] = useState<boolean>(false)
   const { deleteDeductionMutation } = useDeleteDeduction()
   const [selectedDeduction, setSelectedDeduction] =
     useState<SelectedDeductionType>(null)
 
-  const handleDeleteClick = (id: number) => {
+  const deductionData = useMemo(() => {
+    if (taskId) return deductions.filter((item) => item.task_id === taskId)
+    else return deductions
+  }, [deductions, taskId])
+
+  const handleDeleteClick = useCallback((id: number) => {
     setSelectedDeduction(deductions?.find((item) => item.id === id))
     setOpen(true)
-  }
+  }, [deductions])
 
   const columns: ColumnType[] = useMemo(
     () => [
@@ -139,24 +148,10 @@ const DeductionIndex = () => {
   }
 
   return (
-    <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h4">Deductions</Typography>
-
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          sx={{ height: '35px' }}
-          component={RouterLink}
-          to="/deductions/new"
-        >
-          Create Deduction
-        </Button>
-      </Box>
-
+    <>
       <ProTable
         columns={columns}
-        data={deductions}
+        data={deductionData}
         filters={[
           {
             key: 'status',
@@ -174,6 +169,28 @@ const DeductionIndex = () => {
         content="Are you sure you want to delete this deduction?"
         onSubmit={() => deleteDeductionMutation(selectedDeduction?.id)}
       />
+    </>
+  )
+}
+
+const DeductionIndex = () => {
+  return (
+    <Box>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography variant="h4">Deductions</Typography>
+
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          sx={{ height: '35px' }}
+          component={RouterLink}
+          to="/deductions/new"
+        >
+          Create Deduction
+        </Button>
+      </Box>
+
+      <DeductionTable />
     </Box>
   )
 }

@@ -140,7 +140,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
 
   useEffect(() => {
     reset(initialValues)
-  }, [initialValues])
+  }, [initialValues, reset])
 
   const selectedCustomer = useMemo(() => {
     return customers.find(
@@ -155,11 +155,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
     )
   }, [taskId, initialValues, tasks])
 
-  const totalAmount = orderLines?.reduce((pre, cur) => {
-    if (cur.quantity && cur.unit_price)
-      return pre + cur.quantity * cur.unit_price
-    else return pre
-  }, 0) || 0
+  const totalAmount =
+    orderLines?.reduce((pre, cur) => {
+      if (cur.quantity && cur.unit_price)
+        return pre + cur.quantity * cur.unit_price
+      else return pre
+    }, 0) || 0
 
   const handleAddOrderLine = () => {
     setValue('order_lines', [
@@ -581,10 +582,11 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                             />
                           </Button>
                           <span style={{ fontWeight: 600, marginLeft: '10px' }}>
-                            {`${currency} ${quantity && unit_price
-                              ? Number(quantity * unit_price).toFixed(2)
-                              : '0.00'
-                              }`}
+                            {`${currency} ${
+                              quantity && unit_price
+                                ? Number(quantity * unit_price).toFixed(2)
+                                : '0.00'
+                            }`}
                           </span>
                         </StyledTableCell>
                       </TableRow>

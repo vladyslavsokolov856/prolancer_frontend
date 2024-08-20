@@ -145,7 +145,7 @@ const PreviewDialog: React.FC<PreviewDialogProps> = ({
             Dear {customer?.first_name} {customer?.last_name},
           </p>
           <p>
-            We are writing from Factofly, a freelance agency that Guesmia
+            We are writing from Prolancer, a freelance agency that Guesmia
             Abdelmadjid uses to perform and bill for work to be delivered to
             you.
           </p>
@@ -193,10 +193,10 @@ const PreviewDialog: React.FC<PreviewDialogProps> = ({
             </Button>
           </Box>
           <p>
-            <strong>What is Factofly?</strong>
+            <strong>What is Prolancer?</strong>
           </p>
           <p>
-            Factofly is a service that freelancers use to perform work through
+            Prolancer is a service that freelancers use to perform work through
             and send invoices from. We hire the freelancer for the project while
             the work is carried out for you, as well as take care of the
             invoicing and administration and ensure that the freelancer is
@@ -204,7 +204,7 @@ const PreviewDialog: React.FC<PreviewDialogProps> = ({
           </p>
           <p>
             This means that you as a company enter into an agreement with
-            Factofly regarding the work in question. The invoice therefore comes
+            Prolancer regarding the work in question. The invoice therefore comes
             from us - on behalf of the freelancer - and must also be paid to us.
           </p>
           <p>
@@ -212,25 +212,25 @@ const PreviewDialog: React.FC<PreviewDialogProps> = ({
           </p>
           <p>
             ​** The worker (Freelancer) is, in connection with the performance
-            of this task, a project employee of Factofly. Therefore, if there
-            are changes to the above job description, Factofly must be notified
+            of this task, a project employee of Prolancer. Therefore, if there
+            are changes to the above job description, Prolancer must be notified
             in writing in order for them to take effect.*
           </p>
           <p>
             <em>
-              Factofly ensures full compliance for all parties involved, and is
+              Prolancer ensures full compliance for all parties involved, and is
               responsible for the employee being covered by liability and
-              workers' compensation insurance. Factofly also withholds and
+              workers' compensation insurance. Prolancer also withholds and
               settles all taxes and fees in connection with the employment of
               the employee in connection with this task.
             </em>
           </p>
           <p>
             Please write to us if you have any questions or call us on +45 71 96
-            00 54. ​
+            00 54.
           </p>
           <p>Sincerely</p>
-          <p>Factofly on behalf of Guesmia Abdelmadjid</p>
+          <p>Prolancer on behalf of Guesmia Abdelmadjid</p>
         </div>
       </DialogContent>
     </BootstrapDialog>
@@ -287,20 +287,20 @@ const TaskForm: React.FC<TaskFormProps> = ({
 
   useEffect(() => {
     if (initialValues && !isCustomersLoading && !isJobTypesLoading) {
-      const { id, start_date, end_date, ...rest } = initialValues
+      const { start_date, end_date, ...rest } = initialValues
       reset(rest)
       setValue('start_date', dayjs(start_date))
       setValue('end_date', dayjs(end_date))
     }
     setValue('status', 'sent')
-  }, [initialValues, isCustomersLoading, isJobTypesLoading])
+  }, [initialValues, isCustomersLoading, isJobTypesLoading, reset, setValue])
 
   useEffect(() => {
     const selectedCustomerData = customers.find(
       (customer) => customer.id === customerId
     )
     setSelectedCustomer(selectedCustomerData)
-  }, [customerId])
+  }, [customerId, customers])
 
   const handleSaveasDraft = () => {
     if (isValid) {
@@ -821,7 +821,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                 When creating the task, I confirm the general terms and
                 conditions and that the information entered is correct and that
                 in connection with the performance of this task I am employed by
-                Factofly who supervises and has the authority to instruct in
+                Prolancer who supervises and has the authority to instruct in
                 connection with the employment
               </span>
             </Grid>

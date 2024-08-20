@@ -98,7 +98,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
 
   useEffect(() => {
     reset(initialValues || undefined)
-  }, [initialValues])
+  }, [initialValues, reset])
 
   if (!formLoaded) {
     return (

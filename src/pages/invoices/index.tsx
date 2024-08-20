@@ -7,7 +7,7 @@ import { Link } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { useInvoices, useDeleteInvoice } from '@/hooks/useInvoices'
 import { Link as RouterLink } from 'react-router-dom'
-import { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import ProTable, { ColumnType } from '@/components/ProTable'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -69,7 +69,11 @@ const statusFilter = {
   ],
 }
 
-const InvoiceIndex = () => {
+interface InvoiceTableProps {
+  taskId?: number
+}
+
+export const InvoiceTable: React.FC<InvoiceTableProps> = ({ taskId }) => {
   const { invoices } = useInvoices()
   const { customers } = useCustomers()
   const { orderLines } = useOrderLines()
@@ -79,10 +83,18 @@ const InvoiceIndex = () => {
   const [selectedInvoice, setSelectedInvoice] =
     useState<SelectedInvoiceType>(null)
 
-  const handleDeleteClick = (id: number) => {
-    setSelectedInvoice(invoices.find((item) => item.id === id))
-    setOpen(true)
-  }
+  const handleDeleteClick = useCallback(
+    (id: number) => {
+      setSelectedInvoice(invoices.find((item) => item.id === id))
+      setOpen(true)
+    },
+    [invoices]
+  )
+
+  const invoiceData = useMemo(() => {
+    if (taskId) return invoices.filter((item) => item.task_id === taskId)
+    else return invoices
+  }, [invoices, taskId])
 
   const filters = useMemo(
     () => [
@@ -188,7 +200,7 @@ const InvoiceIndex = () => {
     [handleDeleteClick]
   )
 
-  const formattedInvoices = invoices.map((invoice) => {
+  const formattedInvoices = invoiceData.map((invoice) => {
     const customer = customers.find(({ id }) => id == invoice.customer_id)
     const date = invoice.invoice_date
     const amount = orderLines.reduce((acc, next) => {
@@ -220,6 +232,28 @@ const InvoiceIndex = () => {
     return newInvoice
   })
 
+  return (
+    <>
+      <ProTable
+        columns={columns}
+        data={formattedInvoices}
+        filters={filters}
+        BeforeTableComponent={InvoiceSummary}
+        tableName="invoices"
+      />
+
+      <ConfirmDialog
+        open={open}
+        setOpen={setOpen}
+        title={`Delete Invoice ${selectedInvoice?.id}`}
+        content="Are you sure you want to delete this invoice?"
+        onSubmit={() => deleteInvoiceMutation(selectedInvoice?.id)}
+      />
+    </>
+  )
+}
+
+const InvoiceIndex = () => {
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -253,7 +287,7 @@ const InvoiceIndex = () => {
         customer quick and easy and track the invoice status from sent to paid.
         Read more about invoices and the status descriptions{' '}
         <Link
-          href="https://intercom.help/factofly/en/articles/5900739-invoice"
+          href="https://intercom.help/prolancer/en/articles/5900739-invoice"
           target="_blank"
           referrerPolicy="no-referrer"
           sx={{ textDecoration: 'none' }}
@@ -262,21 +296,7 @@ const InvoiceIndex = () => {
         </Link>
       </Alert>
 
-      <ProTable
-        columns={columns}
-        data={formattedInvoices}
-        filters={filters}
-        BeforeTableComponent={InvoiceSummary}
-        tableName="invoices"
-      />
-
-      <ConfirmDialog
-        open={open}
-        setOpen={setOpen}
-        title={`Delete Invoice ${selectedInvoice?.id}`}
-        content="Are you sure you want to delete this invoice?"
-        onSubmit={() => deleteInvoiceMutation(selectedInvoice?.id)}
-      />
+      <InvoiceTable />
     </Box>
   )
 }

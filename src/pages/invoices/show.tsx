@@ -48,7 +48,7 @@ const StyledTableCell = styled(TableCell)(() => ({
 }))
 
 const ShowInvoice = () => {
-  let { invoiceId = '' } = useParams()
+  const { invoiceId = '' } = useParams()
 
   const {
     data: invoice,
@@ -82,7 +82,7 @@ const ShowInvoice = () => {
   const [step, setStep] = useState(0)
   const handleSend = () => {
     updateInvoice(
-      { status: 'draft', id: invoiceId },
+      { status: 'sent', id: invoiceId },
       {
         onSuccess: () => {
           setStep(1)

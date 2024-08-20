@@ -14,7 +14,7 @@ import {
   Select,
   TextField,
 } from '@mui/material'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ProFilter, { IFilter } from '@/components/ProFilter'
 import ProList from '@/components/ProList'
 import dayjs from 'dayjs'
@@ -76,6 +76,35 @@ type Inputs = {
   task_id: string
 }
 
+interface IWorkLog {
+  taskId?: number
+}
+
+export const WorkLogList: React.FC<IWorkLog> = ({ taskId }) => {
+  const [listItems, setListItems] = useState<IListItem[]>([])
+  const { workLogs, isLoading: isWorkLogsLoading } = useWorkLogs()
+
+  useEffect(() => {
+    if (!isWorkLogsLoading)
+      setListItems(
+        taskId ? workLogs.filter((item) => item.task_id === taskId) : workLogs
+      )
+  }, [isWorkLogsLoading, taskId, workLogs])
+
+  return (
+    <>
+      <ProFilter
+        filters={filters}
+        setItems={setListItems}
+        searchFields={searchFields}
+        originalListItems={workLogs}
+        sortItems={sortItems}
+      />
+      <ProList items={listItems} setItems={setListItems} />
+    </>
+  )
+}
+
 const TimeRegistration = () => {
   const [isRecording, setIsRecording] = useState<boolean>(false)
   const [listItems, setListItems] = useState<IListItem[]>([])
@@ -103,14 +132,14 @@ const TimeRegistration = () => {
 
   useEffect(() => {
     if (!isWorkLogsLoading && !isTasksLoading) setListItems(workLogs)
-  }, [isWorkLogsLoading, isTasksLoading])
+  }, [isWorkLogsLoading, isTasksLoading, workLogs])
 
   useEffect(() => {
     if (isTaskCreated) {
       enqueueSnackbar('Task created!', { variant: 'success' })
       setShowDialog((prev) => !prev)
     }
-  }, [isTaskCreated])
+  }, [isTaskCreated, enqueueSnackbar])
 
   useEffect(() => {
     if (isCreated && createdWorkLog) {
@@ -119,7 +148,7 @@ const TimeRegistration = () => {
         return [createdWorkLog, ...prevItems]
       })
     }
-  }, [isCreated])
+  }, [isCreated, createdWorkLog, enqueueSnackbar])
 
   useEffect(() => {
     let interval: any = undefined
@@ -299,6 +328,13 @@ const TimeRegistration = () => {
       />
       <ProList items={listItems} setItems={setListItems} />
 
+      <FormDialog
+        open={showDialog}
+        setOpen={setShowDialog}
+        title={'Create Customer'}
+        content={<TaskForm form={taskHookForm} onSubmit={onTaskFormSubmit} />}
+      />
+
       {addTimeRegistrationDialogOpen && (
         <CreateTimeRegistration
           open={true}
@@ -306,13 +342,6 @@ const TimeRegistration = () => {
           setListItems={setListItems}
         />
       )}
-
-      <FormDialog
-        open={showDialog}
-        setOpen={setShowDialog}
-        title={'Create Customer'}
-        content={<TaskForm form={taskHookForm} onSubmit={onTaskFormSubmit} />}
-      />
     </Box>
   )
 }

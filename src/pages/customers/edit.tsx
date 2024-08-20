@@ -1,11 +1,10 @@
-import { Box, CircularProgress } from '@mui/material'
-import { styled } from '@mui/material/styles'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import ProfileForm, { Inputs } from '@/components/Form/ProfileForm'
-import { useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import CustomerForm, { Inputs } from '@/components/Form/CustomerForm'
+import { useCustomer, useEditCustomer } from '@/hooks/useCustomers'
+import { Box, CircularProgress, styled } from '@mui/material'
 import { useSnackbar } from 'notistack'
-import { useEditUser, useUser } from '@/hooks/useUsers'
+import { useEffect } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { useNavigate, useParams } from 'react-router-dom'
 
 const Title = styled('span')({
   fontWeight: 700,
@@ -13,26 +12,25 @@ const Title = styled('span')({
   color: 'rgb(108, 117, 125)',
 })
 
-const EditUser = () => {
-  const { userId } = useParams()
+const EditCustomer = () => {
+  const { customerId } = useParams()
 
   const navigate = useNavigate()
   const { enqueueSnackbar } = useSnackbar()
-  const { user, isLoading } = useUser(parseInt(userId || ''))
-  const { isEditing, isEdited, updateUserMutation } = useEditUser(
-    parseInt(userId || '')
+  const { customer, isLoading } = useCustomer(parseInt(customerId || ''))
+  const { isEditing, isEdited, updateCustomerMutation } = useEditCustomer(
+    parseInt(customerId || '')
   )
   const form = useForm<Inputs>()
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const { ...rest } = data
-    updateUserMutation(rest)
+    updateCustomerMutation(data)
   }
 
   useEffect(() => {
     if (isEdited) {
-      enqueueSnackbar('User Edited!', { variant: 'success' })
-      navigate('/admin/users')
+      enqueueSnackbar('Customer Edited!', { variant: 'success' })
+      navigate('/customers')
     }
   }, [isEdited, enqueueSnackbar, navigate])
 
@@ -53,14 +51,15 @@ const EditUser = () => {
     <Box display="flex" justifyContent="left" flexDirection="column">
       <Title>Edit user</Title>
 
-      <ProfileForm
+      <CustomerForm
         form={form}
         onSubmit={onSubmit}
         submitButtonDisabled={isEditing}
-        initialValues={user}
+        type="Update"
+        initialValues={customer}
       />
     </Box>
   )
 }
 
-export default EditUser
+export default EditCustomer
