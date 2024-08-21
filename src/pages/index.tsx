@@ -305,7 +305,7 @@ const Index = () => {
         variant="h3"
         sx={{ fontWeight: 700, marginTop: '10px', marginBottom: '10px' }}
       >
-        Hi Guesmia Abdelmadjid, welcome back to Factofly
+        Hi Guesmia Abdelmadjid, welcome back to Prolancer
       </Typography>
       <Grid container spacing={1}>
         <Grid item xs={12} md={4}>

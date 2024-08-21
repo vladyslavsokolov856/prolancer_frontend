@@ -280,7 +280,7 @@ const TaskDetailsByIdentifierPage = () => {
                                 color: 'rgb(175, 175, 175)',
                               }}
                             >
-                              Factofly is a freelance agency or umbrella company
+                              Prolancer is a freelance agency or umbrella company
                               helping solopreneurs to invoice w/o a need for a
                               registered business, hereby freeing up time for
                               their business. Time that can be used to focus on
@@ -288,7 +288,7 @@ const TaskDetailsByIdentifierPage = () => {
                               <br />
                               <br />
                               When you as a client are being invoiced through
-                              Factofly, you can be at ease knowing that all
+                              Prolancer, you can be at ease knowing that all
                               parties are fully compliant. We insure our users
                               while working, and make sure VAT and taxes are
                               filed accordingly.
@@ -298,13 +298,13 @@ const TaskDetailsByIdentifierPage = () => {
                               company in Denmark with more than 6.000 users. If
                               this offer raises any questions or concerns, we
                               are available at +4571960054 or via
-                              kontakt@factofly.com <br />
+                              kontakt@Prolancer.com <br />
                               <br />
                               This offer has been sent from the user without the
-                              interference of Factofly. The validity of the
-                              offer is under the condition of Factofly’s
+                              interference of Prolancer. The validity of the
+                              offer is under the condition of Prolancer’s
                               approval after you have accepted the offer.
-                              Factofly is not bound by this offer, fully or
+                              Prolancer is not bound by this offer, fully or
                               partially, until this accept has been granted.
                             </p>
                             <FormGroup>
@@ -561,7 +561,7 @@ const TaskDetailsByIdentifierPage = () => {
                                 Employed by
                               </div>
                               <p>
-                                Factofly Aps
+                                Prolancer Aps
                                 <br />
                                 Danneskiold-Samsøes Allé 41
                                 <br />
@@ -571,10 +571,10 @@ const TaskDetailsByIdentifierPage = () => {
                                 <br />
                                 <MailOutlineIcon />{' '}
                                 <a
-                                  href="mailto:kontakt@factofly.com"
+                                  href="mailto:kontakt@Prolancer.com"
                                   style={{ color: 'blue' }}
                                 >
-                                  kontakt@factofly.com
+                                  kontakt@Prolancer.com
                                 </a>
                               </p>
                             </Box>
