@@ -88,7 +88,7 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
 
   const handleSaveDraft = (selectedId: number) => () => {
     if (duration && startTime && notes && task) {
-      const { ...rest } = item
+      const { editable, ...rest } = item
       updateWorkLogMutation({
         id: selectedId,
         workLogData: {
