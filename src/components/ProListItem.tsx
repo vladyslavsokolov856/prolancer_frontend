@@ -30,9 +30,14 @@ const format = 'M/D/YYYY, hh:mm:ss A'
 interface IProListItem {
   item: IListItem
   setItems: Dispatch<SetStateAction<IListItem[]>>
+  confirmDelete: (params: any) => void
 }
 
-const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
+const ProListItem: React.FC<IProListItem> = ({
+  item,
+  setItems,
+  confirmDelete,
+}) => {
   const [startTime, setStartTime] = useState<dayjs.Dayjs | null>(null)
   const [duration, setDuration] = useState(0)
   const [task, setTask] = useState<number | undefined | null>(null)
@@ -73,9 +78,14 @@ const ProListItem: React.FC<IProListItem> = ({ item, setItems }) => {
   }
 
   const handleDelete = (selectedId: number) => () => {
-    deleteWorkLogMutation(selectedId)
-    enqueueSnackbar('Time registration deleted!', { variant: 'success' })
-    setItems((prevItems) => prevItems.filter(({ id }) => selectedId !== id))
+    confirmDelete({
+      id: selectedId,
+      onConfirm: () => {
+        deleteWorkLogMutation(selectedId)
+        enqueueSnackbar('Time registration deleted!', { variant: 'success' })
+        setItems((prevItems) => prevItems.filter(({ id }) => selectedId !== id))
+      },
+    })
   }
 
   const handleCancel = (selectedId: number) => () => {
