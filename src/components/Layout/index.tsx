@@ -6,6 +6,7 @@ import { matchRoutes, renderMatches, useLocation } from 'react-router'
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import layoutConfig from '@/config/layout'
 import { Box, useTheme, Container } from '@mui/material'
+import { Helmet } from 'react-helmet-async'
 
 const Layout: React.FC = () => {
   const location = useLocation()
@@ -14,6 +15,8 @@ const Layout: React.FC = () => {
   const matches = useMemo(() => {
     return matchRoutes(routesConfig, location)
   }, [location])
+
+  const label = matches[0].route.label
 
   const [
     {
@@ -64,6 +67,9 @@ const Layout: React.FC = () => {
               marginTop: '20px',
             }}
           >
+            <Helmet>
+              <title>Prolancer - {label}</title>
+            </Helmet>
             <Container>{renderMatches(matches)}</Container>
           </Box>
           {layout.footer && <Footer />}
