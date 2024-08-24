@@ -31,8 +31,10 @@ const ProList: React.FC<IProList> = ({ items, setItems }) => {
       <ConfirmDialog
         open={open}
         setOpen={setOpen}
-        title={`Delete Deduction`}
-        content="Are you sure you want to delete this deduction?"
+        title=""
+        content="Are you sure that you wish to delete this item?"
+        submitTextColor="error"
+        submitText="Delete"
         onSubmit={() => {
           selectedItem.onConfirm()
         }}
