@@ -836,7 +836,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
                     defaultChecked={getValues('terms_accepted') || false}
                   />
                 }
-                label="Terms accpeted"
+                label="Terms accepted"
               />
               <FormHelperText error>
                 {errors.terms_accepted &&
