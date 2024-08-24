@@ -25,7 +25,7 @@ const ProList: React.FC<IProList> = ({ items, setItems }) => {
           key={item.id}
           item={item}
           setItems={setItems}
-          confirmDelete={handleDeleteClick}
+          onDeleteClick={handleDeleteClick}
         />
       ))}
       <ConfirmDialog
