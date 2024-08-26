@@ -8,13 +8,14 @@ import {
   Paper,
   Typography,
 } from '@mui/material'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm, Controller } from 'react-hook-form'
 import CurrencyList from 'currency-list'
 
 import { useTasks } from '@/hooks/useTasks'
 import ProSelect from '../ProSelect'
 import ProInput from '../ProInput'
 import ProFileField from '../ProFileInput'
+import { useCallback } from 'react'
 
 export type DeductionInputs = {
   task_id: string
@@ -32,7 +33,16 @@ type DeductionFormProps = {
 const currencies = CurrencyList.getAll('en_US')
 
 const DeductionForm: React.FC<DeductionFormProps> = ({ onSubmit }) => {
-  const { register, setValue, watch, handleSubmit } = useForm<DeductionInputs>()
+  const {
+    register,
+    setValue,
+    watch,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<DeductionInputs>({
+    mode: 'onChange',
+  })
 
   const { tasks } = useTasks()
 
@@ -46,8 +56,19 @@ const DeductionForm: React.FC<DeductionFormProps> = ({ onSubmit }) => {
             <ProSelect
               label="Task"
               defaultValue=""
-              {...register('task_id', { required: true })}
+              {...register('task_id', { required: 'Task is required' })}
               required
+              error={!!errors.task_id}
+              helperText={
+                <Typography
+                  component="span"
+                  fontWeight={500}
+                  fontSize={11}
+                  color="error"
+                >
+                  {errors.task_id && (errors.task_id?.message || '')}
+                </Typography>
+              }
             >
               {tasks?.map(({ id, title }) => (
                 <MenuItem key={id} value={id}>
@@ -60,8 +81,21 @@ const DeductionForm: React.FC<DeductionFormProps> = ({ onSubmit }) => {
           <Grid item xs={12}>
             <ProInput
               label="Description"
-              {...register('description', { required: true })}
+              {...register('description', {
+                required: 'Description is required',
+              })}
               required
+              error={!!errors.description}
+              helperText={
+                <Typography
+                  component="span"
+                  fontWeight={500}
+                  fontSize={11}
+                  color="error"
+                >
+                  {errors.description && (errors.description?.message || '')}
+                </Typography>
+              }
             />
           </Grid>
 
@@ -70,7 +104,18 @@ const DeductionForm: React.FC<DeductionFormProps> = ({ onSubmit }) => {
               label="Currency"
               defaultValue=""
               required
-              {...register('currency', { required: true })}
+              {...register('currency', { required: 'Currency is required' })}
+              error={!!errors.currency}
+              helperText={
+                <Typography
+                  component="span"
+                  fontWeight={500}
+                  fontSize={11}
+                  color="error"
+                >
+                  {errors.currency && (errors.currency?.message || '')}
+                </Typography>
+              }
             >
               {Object.keys(currencies).map((code) => (
                 <MenuItem key={code} value={code}>
@@ -84,7 +129,27 @@ const DeductionForm: React.FC<DeductionFormProps> = ({ onSubmit }) => {
             <ProInput
               label="Total"
               required
-              {...register('amount', { required: true })}
+              {...register('amount', {
+                required: 'Please enter the total amount',
+                validate: (value) => {
+                  // check if value is a number
+                  if (isNaN(Number(value))) {
+                    return 'Total amount must be a number'
+                  }
+                  return true
+                },
+              })}
+              error={!!errors.amount}
+              helperText={
+                <Typography
+                  component="span"
+                  fontWeight={500}
+                  fontSize={11}
+                  color="error"
+                >
+                  {errors.amount && (errors.amount?.message || '')}
+                </Typography>
+              }
             />
           </Grid>
 
@@ -97,12 +162,38 @@ const DeductionForm: React.FC<DeductionFormProps> = ({ onSubmit }) => {
           </Grid>
 
           <Grid item xs={12}>
-            <ProFileField
-              accept={{ 'image/*': ['.jpeg', '.png', '.pdf'] }}
-              onDrop={(acceptedFiles) => {
-                setValue('attachment', acceptedFiles[0])
-              }}
+            <Controller
+              control={control}
+              name="attachment"
+              rules={{ required: 'Attachment is required' }}
+              render={({ field: { onChange } }) => (
+                <div
+                  className={`${
+                    errors.attachment ? 'border border-red-500' : ''
+                  }`}
+                >
+                  <ProFileField
+                    onChange={(e: any) => onChange(e.target.files[0])}
+                    accept={{ 'image/*': ['.jpeg', '.png', '.pdf'] }}
+                    onDrop={useCallback((acceptedFiles: File[]) => {
+                      setValue('attachment', acceptedFiles[0], {
+                        shouldValidate: true,
+                      })
+                    }, [])}
+                  />
+                </div>
+              )}
             />
+            {errors.attachment && (
+              <Typography
+                component="span"
+                fontWeight={500}
+                fontSize={11}
+                color="error"
+              >
+                {errors.attachment && (errors.attachment?.message || '')}
+              </Typography>
+            )}
             {attachment ? (
               <Typography marginY={1}>{attachment.name}</Typography>
             ) : null}
