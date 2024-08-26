@@ -208,7 +208,7 @@ export const TaskWorkLogPdf = ({
           >
             <Text>
               {
-                'Factofy - Danneskiold-Samsøes Allé 41 - 1434 København K - CVR-nr.: 39781689\nTlf.: +45 71 96 00 54 - E-mail: kontakt@factofy.com - Hjemmeside: www.factofy.com\nBank: Sydbank - Kontonr.:7701 / 0002863064 - IBAN-nr.: DK5477010002863064 - SWIFT-kode: SYBKDK22'
+                'Factofy - Danneskiold-Samsøes Allé 41 - 1434 København K - CVR-nr.: 39781689\nTlf.: +45 25943954 - E-mail: kontakt@prolancer.dk - Hjemmeside: www.prolancer.com\nBank: Sydbank - Kontonr.:7701 / 0002863064 - IBAN-nr.: DK5477010002863064 - SWIFT-kode: SYBKDK22'
               }
             </Text>
           </View>
