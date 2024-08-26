@@ -331,7 +331,7 @@ const TimeRegistration = () => {
       <FormDialog
         open={showDialog}
         setOpen={setShowDialog}
-        title={'Create Customer'}
+        title={'Create task'}
         content={<TaskForm form={taskHookForm} onSubmit={onTaskFormSubmit} />}
       />
 
