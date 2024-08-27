@@ -47,7 +47,7 @@ const StyledTableRow = styled(TableRow)(() => ({
 }))
 
 interface IItem {
-  key: string | number
+  key?: string | number
   name: string
 }
 
@@ -142,7 +142,7 @@ const ProTable: React.FC<IProTable> = ({
     const filterFunctions = {} as Record<string, FilterFunctionType>
     filters?.forEach((filter) => {
       if (filter.filterFunction) {
-        filterFunctions[filter.key] = filter.filterFunction
+        filterFunctions[filter!.key] = filter.filterFunction
       }
     })
 

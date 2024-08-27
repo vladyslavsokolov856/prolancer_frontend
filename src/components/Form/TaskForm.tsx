@@ -204,14 +204,15 @@ const PreviewDialog: React.FC<PreviewDialogProps> = ({
           </p>
           <p>
             This means that you as a company enter into an agreement with
-            Prolancer regarding the work in question. The invoice therefore comes
-            from us - on behalf of the freelancer - and must also be paid to us.
+            Prolancer regarding the work in question. The invoice therefore
+            comes from us - on behalf of the freelancer - and must also be paid
+            to us.
           </p>
           <p>
             <strong>The fine print - the conditions*</strong>
           </p>
           <p>
-            ​** The worker (Freelancer) is, in connection with the performance
+            ** The worker (Freelancer) is, in connection with the performance
             of this task, a project employee of Prolancer. Therefore, if there
             are changes to the above job description, Prolancer must be notified
             in writing in order for them to take effect.*

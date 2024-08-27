@@ -22,7 +22,7 @@ import ArrowUpIcon from '@mui/icons-material/ArrowUpward'
 type Filter = 'select' | 'date' | 'checkbox'
 
 interface IFilterItem {
-  key: number
+  key: string | number
   name: string
 }
 
