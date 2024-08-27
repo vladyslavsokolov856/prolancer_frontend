@@ -400,7 +400,7 @@ const Index = () => {
             justifyContent="center"
             sx={{ marginBottom: '10px' }}
           >
-            {`Shoing ${invoiceData?.length} entry`}
+            {`Showing ${invoiceData?.length} entry`}
           </Box>
         )}
       </Box>
@@ -423,7 +423,7 @@ const Index = () => {
             justifyContent="center"
             sx={{ marginBottom: '10px' }}
           >
-            {`Shoing ${tasks?.length} entry`}
+            {`Showing ${tasks?.length} entry`}
           </Box>
         )}
       </Box>
