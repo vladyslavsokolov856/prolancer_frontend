@@ -38,3 +38,11 @@ export const editCustomer = async (
   )
   return response.data
 }
+
+export const deleteCustomer = async (
+  customerId: number | string | undefined
+) => {
+  const response = await axiosInstance.delete(`/api/customers/${customerId}`)
+
+  return response.data
+}
