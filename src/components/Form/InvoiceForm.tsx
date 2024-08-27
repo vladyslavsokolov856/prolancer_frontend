@@ -645,7 +645,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                     defaultChecked={getValues('terms_accepted') || false}
                   />
                 }
-                label="Terms accpeted"
+                label="Terms accepted"
               />
               <FormHelperText error>
                 {errors.terms_accepted &&

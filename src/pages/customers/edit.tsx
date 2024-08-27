@@ -49,7 +49,7 @@ const EditCustomer = () => {
 
   return (
     <Box display="flex" justifyContent="left" flexDirection="column">
-      <Title>Edit user</Title>
+      <Title>Edit Customer</Title>
 
       <CustomerForm
         form={form}

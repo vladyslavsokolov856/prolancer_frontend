@@ -298,7 +298,7 @@ const TaskDetailsByIdentifierPage = () => {
                               company in Denmark with more than 6.000 users. If
                               this offer raises any questions or concerns, we
                               are available at +4571960054 or via
-                              kontakt@Prolancer.com <br />
+                              kontakt@prolancer.dk <br />
                               <br />
                               This offer has been sent from the user without the
                               interference of Prolancer. The validity of the
@@ -571,10 +571,10 @@ const TaskDetailsByIdentifierPage = () => {
                                 <br />
                                 <MailOutlineIcon />{' '}
                                 <a
-                                  href="mailto:kontakt@Prolancer.com"
+                                  href="mailto:kontakt@prolancer.dk"
                                   style={{ color: 'blue' }}
                                 >
-                                  kontakt@Prolancer.com
+                                  kontakt@prolancer.dk
                                 </a>
                               </p>
                             </Box>

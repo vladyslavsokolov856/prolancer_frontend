@@ -330,9 +330,8 @@ const TaskDetailPage = () => {
                       <InfoContent>
                         {`${taskData?.payment_amount
                           ?.toString()
-                          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ${
-                          taskData?.currency
-                        }$`}
+                          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ${taskData?.currency
+                          }$`}
                       </InfoContent>
                     </Box>
 
@@ -577,7 +576,7 @@ const TaskDetailPage = () => {
       <Box sx={{ borderBottom: 1, borderColor: 'divider', marginTop: '30px' }}>
         <Tabs
           value={selectedTab}
-          onChange={(_, value) => setSelectedTab(value)}
+          onChange={(__, value) => setSelectedTab(value)}
           aria-label="basic tabs example"
         >
           <Tab label="Time registration" value="work_log" />

@@ -6,12 +6,13 @@ import React, { PropsWithChildren } from 'react'
 
 type ProFileField = DropzoneOptions
 
-const ProFileField: React.FC<PropsWithChildren<ProFileField>> = ({
-  multiple,
-  onDrop,
-  children,
-  ...rest
-}) => {
+const ProFileField: React.FC<
+  PropsWithChildren<
+    ProFileField & {
+      onChange: (...event: any[]) => void
+    }
+  >
+> = ({ multiple, onDrop, onChange, children, ...rest }) => {
   const { getRootProps, getInputProps } = useDropzone({
     multiple,
     onDrop,
@@ -32,7 +33,7 @@ const ProFileField: React.FC<PropsWithChildren<ProFileField>> = ({
       }}
       {...getRootProps()}
     >
-      <input {...getInputProps()} />
+      <input {...getInputProps({ onChange })} />
       <CloudUploadOutlinedIcon sx={{ width: 40, height: 40 }} />
       <Typography variant="h6">Drop files here or click to upload</Typography>
       {children}

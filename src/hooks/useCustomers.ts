@@ -28,7 +28,7 @@ export const useCustomer = (id: number | undefined) => {
     isError,
     error,
   }: UseQueryResult<Customer, Error> = useQuery({
-    queryKey: ['customer'],
+    queryKey: ['customers', id],
     queryFn: () => fetchCustomer(id),
   })
 
@@ -49,7 +49,7 @@ export const useEditCustomer = (id: number) => {
   } = useMutation({
     mutationFn: (userData: Customer) => editCustomer(id, userData),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] })
+      queryClient.invalidateQueries({ queryKey: ['customers', id] })
     },
   })
 

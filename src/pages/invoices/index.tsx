@@ -103,7 +103,7 @@ export const InvoiceTable: React.FC<InvoiceTableProps> = ({ taskId }) => {
         type: 'select',
         key: 'customer_id',
         items: customers.map((customer) => ({
-          key: customer.id,
+          key: customer.id as number,
           name:
             customer &&
             (customer.type === 'private'

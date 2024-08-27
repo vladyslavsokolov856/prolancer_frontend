@@ -36,6 +36,7 @@ const customerRoutes: RouteConfig[] = [
   {
     path: '/customers',
     element: <CustomersPage />,
+    label: 'Customers',
   },
   {
     path: '/customers/new',
@@ -53,14 +54,16 @@ const timeRoutes: RouteConfig[] = [
   {
     path: '/time-registration',
     element: <TimeRegistration />,
+    label: 'Time Registration',
   },
 ]
 
 const taskRoutes: RouteConfig[] = [
-  { path: '/tasks', element: <TaskIndexPage /> },
+  { path: '/tasks', element: <TaskIndexPage />, label: 'Tasks' },
   {
     path: '/tasks/:taskId',
     element: <TaskDetailPage />,
+    label: 'Task details',
   },
   {
     path: '/tasks/:taskId/edit',
@@ -78,6 +81,7 @@ const invoiceRoutes: RouteConfig[] = [
   {
     path: '/invoices',
     element: <Invoices />,
+    label: 'Invoices',
   },
   {
     path: '/invoices/:invoiceId',
@@ -100,6 +104,7 @@ const deductionRoutes: RouteConfig[] = [
   {
     path: '/deductions/:deductionId',
     element: <DeductionDetailPage />,
+    label: 'Deduction details',
   },
   {
     path: '/deductions/new',
@@ -109,20 +114,21 @@ const deductionRoutes: RouteConfig[] = [
   {
     path: '/deductions',
     element: <DeductionIndexPage />,
+    label: 'Deductions',
   },
 ]
 
 const userRoutes: RouteConfig[] = [
-  { path: '/admin/users', element: <UserIndexPage /> },
+  { path: '/admin/users', element: <UserIndexPage />, label: 'Users' },
   {
     path: '/admin/users/:userId/edit',
     element: <EditUserPage />,
-    label: 'Edit Task',
+    label: 'Edit User',
   },
   {
     path: '/admin/users/new',
     element: <NewUserpage />,
-    label: 'New Task',
+    label: 'New User',
   },
 ]
 
@@ -130,6 +136,7 @@ const routesConfig: RouteConfig[] = [
   {
     path: '/',
     element: <Index />,
+    label: 'Dashboard',
   },
   ...customerRoutes,
   ...timeRoutes,

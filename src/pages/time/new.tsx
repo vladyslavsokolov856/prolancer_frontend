@@ -21,6 +21,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useTasks } from '@/hooks/useTasks'
 import { useCreateWorkLog } from '@/hooks/useWorkLogs'
 import { useSnackbar } from 'notistack'
+import { Link as RouterLink } from 'react-router-dom'
 
 interface ICreateTimeRegistration {
   open: boolean
@@ -110,6 +111,8 @@ const CreateTimeRegistration: React.FC<ICreateTimeRegistration> = ({
               </Grid>
               <Grid item md={3}>
                 <Button
+                  component={RouterLink}
+                  to="/tasks/new"
                   startIcon={<AddIcon />}
                   variant="contained"
                   size="large"
