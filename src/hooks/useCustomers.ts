@@ -1,6 +1,17 @@
-import { useMutation, useQuery, useQueryClient, UseQueryResult } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  UseQueryResult,
+} from '@tanstack/react-query'
 import Customer from '@/types/customers'
-import { createCustomer, editCustomer, fetchCustomer, fetchCustomers } from '@/services/customerService'
+import {
+  createCustomer,
+  deleteCustomer,
+  editCustomer,
+  fetchCustomer,
+  fetchCustomers,
+} from '@/services/customerService'
 
 export const useCustomers = () => {
   const {
@@ -77,5 +88,20 @@ export const useCreateCustomer = () => {
     createCustomerMutation,
     isCreated,
     isCreating,
+  }
+}
+
+export const useDeleteCustomer = () => {
+  const queryClient = useQueryClient()
+  const { mutate: delteCustomerMutation, isPending: isDeleting } = useMutation({
+    mutationFn: deleteCustomer,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['customers'] })
+    },
+  })
+
+  return {
+    delteCustomerMutation,
+    isDeleting,
   }
 }
