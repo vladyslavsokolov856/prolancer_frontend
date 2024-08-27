@@ -274,7 +274,7 @@ const TaskIndex = () => {
             key: 'customer_id',
             name: 'Customer',
             items: customers.map((customer) => ({
-              key: customer.id,
+              key: customer.id as number,
               name: customer.name_contact_person,
             })),
           },

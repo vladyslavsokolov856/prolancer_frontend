@@ -16,7 +16,7 @@ const Layout: React.FC = () => {
     return matchRoutes(routesConfig, location)
   }, [location])
 
-  const label = matches[0].route.label
+  const label = matches![0].route.label || "";
 
   const [
     {
