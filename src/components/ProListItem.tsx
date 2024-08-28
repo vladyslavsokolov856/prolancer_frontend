@@ -9,6 +9,18 @@ import {
   Select,
   TextField,
   Typography,
+  Checkbox,
+  Card,
+  CardHeader,
+  CardContent,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  styled,
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/EditOutlined'
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined'
@@ -27,6 +39,16 @@ dayjs.extend(customParseFormat)
 
 const format = 'M/D/YYYY, hh:mm:ss A'
 
+const StyledTableRow = styled(TableRow)(() => ({
+  backgroundColor: 'rgb(49, 58, 70)',
+}))
+
+const StyledTableCell = styled(TableCell)(() => ({
+  fontSize: '14px',
+  color: 'white',
+  fontWeight: 400,
+}))
+
 interface IProListItem {
   item: IListItem
   setItems: Dispatch<SetStateAction<IListItem[]>>
@@ -42,6 +64,8 @@ const ProListItem: React.FC<IProListItem> = ({
   const [duration, setDuration] = useState(0)
   const [task, setTask] = useState<number | undefined | null>(null)
   const [notes, setNotes] = useState<string>('')
+  const [open, setOpen] = useState<boolean>(false)
+  const [isChecked, setIsChecked] = useState<boolean>(true)
 
   const { tasks } = useTasks()
   const { updateWorkLogMutation, isEdited, isEditing } = useEditWorkLog()
@@ -128,6 +152,18 @@ const ProListItem: React.FC<IProListItem> = ({
     }
   }
 
+  const handleShowSendMailToCustomerDialog = () => {
+    setOpen(true)
+  }
+
+  const handleCloseSendMailToCustomerDialog = () => {
+    setOpen(false)
+  }
+
+  const handleCheck = () => {
+    setIsChecked(!isChecked)
+  }
+
   const handleSendToCustomer = (selectedId: number) => () => {
     if (duration && startTime && notes && task) {
       const { editable, ...rest } = item
@@ -158,6 +194,26 @@ const ProListItem: React.FC<IProListItem> = ({
             : item
         )
       )
+    }
+    handleCloseSendMailToCustomerDialog()
+  }
+
+  const handleGetTaskTitle = (taskId: any) => {
+    if (!taskId) return ''
+    return tasks.filter((item) => item.id === taskId)[0].title
+  }
+
+  const handleCalculateRemainingTime = (taskId: any) => {
+    if (taskId) {
+      const totalMinutes =
+        tasks.filter((item) => item.id === taskId)[0].expected_minutes * 60
+      const remainingHours = Math.floor((totalMinutes - duration) / 60)
+      const remainingMinutes = (totalMinutes - duration) % 60
+
+      if (remainingHours === 0 && remainingMinutes === 0) return '0 mins'
+      else if (remainingHours !== 0 && remainingMinutes === 0)
+        return `${remainingHours} hrs`
+      return `${remainingHours} hrs ${remainingMinutes} mins`
     }
   }
 
@@ -300,13 +356,122 @@ const ProListItem: React.FC<IProListItem> = ({
               variant="contained"
               size="small"
               startIcon={<EmailIcon />}
-              onClick={handleSendToCustomer(item.id)}
+              onClick={handleShowSendMailToCustomerDialog}
             >
               Send to customer
             </Button>
           </Box>
         </>
       )}
+      <Dialog
+        open={open}
+        onClose={handleCloseSendMailToCustomerDialog}
+        sx={{ padding: '1rem' }}
+        maxWidth="lg"
+      >
+        <DialogTitle
+          id="alert-dialog-title"
+          sx={{ fontWeight: 700, fontSize: '18px', color: '#6c757d' }}
+        >
+          Send time registration
+        </DialogTitle>
+        <DialogContent>
+          <Typography fontWeight={600} fontSize="14.4px" color="#6c757d">
+            Send notification to customer
+          </Typography>
+          <Checkbox onChange={handleCheck} checked={isChecked} />
+          {isChecked && (
+            <Card sx={{ backgroundColor: 'rgb(238,242,247)' }}>
+              <CardHeader
+                title={
+                  <Typography
+                    color="rgb(152, 166, 173)"
+                    fontSize="14.4px"
+                    fontWeight={700}
+                  >
+                    Update to {handleGetTaskTitle(task)}
+                  </Typography>
+                }
+                sx={{ borderBottom: '1px solid rgba(0, 0, 0, .125)' }}
+              />
+              <CardContent>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '25px',
+                    color: 'rgb(152,166,173)',
+                    fontWeight: 400,
+                    fontSize: '14.4px',
+                  }}
+                >
+                  <Typography>Dear ,</Typography>
+                  <Typography>
+                    The following work for Build home page has been updated:
+                  </Typography>
+                  <Table>
+                    <TableBody>
+                      <StyledTableRow>
+                        <StyledTableCell>
+                          {dayjs(startTime).format('M/D/YYYY')}
+                        </StyledTableCell>
+                        <StyledTableCell>{duration} mins</StyledTableCell>
+                        <StyledTableCell>{notes}</StyledTableCell>
+                      </StyledTableRow>
+                    </TableBody>
+                  </Table>
+                  <Typography>
+                    Remaining time on Build home page:{' '}
+                    {handleCalculateRemainingTime(task)}
+                  </Typography>
+                  <Typography>
+                    If you have any questions about the registered work, please
+                    <br />
+                    contact me directly
+                  </Typography>
+                  <Typography>
+                    Sincerely,
+                    <br /> Richard White
+                  </Typography>
+                  <Typography>
+                    Sent from Factofly Aps
+                    <br />
+                    +45 25 94 39 54
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          )}
+          <Box
+            sx={{
+              display: 'flex',
+              gap: '10px',
+              marginTop: '20px',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <Button
+              variant="contained"
+              size="medium"
+              sx={{
+                backgroundColor: '#6c757d',
+                ':hover': { backgroundColor: '#5c636a' },
+              }}
+              onClick={handleCloseSendMailToCustomerDialog}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              size="medium"
+              onClick={handleSendToCustomer(item.id)}
+              disabled={isEditing}
+            >
+              Send to customer
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
     </Paper>
   )
 }
