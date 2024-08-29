@@ -5,20 +5,20 @@ import routesConfig from '@/config/routes'
 import { matchRoutes, renderMatches, useLocation, Navigate } from 'react-router'
 import { Suspense, useContext, useEffect, useMemo, useState } from 'react'
 import layoutConfig from '@/config/layout'
-import { Box, useTheme, Container } from '@mui/material'
+import { Box, useTheme, Container, CircularProgress } from '@mui/material'
 import { Helmet } from 'react-helmet-async'
 import { AuthContext, AuthContextType } from '@/context/auth'
 
 const Layout: React.FC = () => {
   const location = useLocation()
   const theme = useTheme()
-  const { authenticated } = useContext(AuthContext) as AuthContextType;
+  const { authenticated } = useContext(AuthContext) as AuthContextType
 
   const matches = useMemo(() => {
     return matchRoutes(routesConfig, location)
   }, [location])
 
-  const label = matches![0].route.label || "";
+  const label = matches![0].route.label || ''
 
   const [
     {
@@ -39,7 +39,7 @@ const Layout: React.FC = () => {
 
   return (
     <>
-      {authenticated === true &&
+      {authenticated === true && (
         <Suspense fallback="loading">
           <div>
             {layout.sidebar && <Sidebar open={open} />}
@@ -80,8 +80,17 @@ const Layout: React.FC = () => {
             </Box>
           </div>
         </Suspense>
-      }
-      {authenticated === null && <div>Main loading....</div>}
+      )}
+      {authenticated === null && (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ height: 'calc(100vh - 100px)' }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
       {authenticated === false && <Navigate to="/signin" />}
     </>
   )
