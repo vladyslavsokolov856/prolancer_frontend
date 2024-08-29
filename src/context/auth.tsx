@@ -19,7 +19,7 @@ type AuthProviderProps = {
 export const zitadelConfig: ZitadelConfig = {
   authority: 'http://prolancer-authentication-ebcf8a4aae1e.herokuapp.com/',
   client_id: '275389987892098434@prolancer',
-  redirect_uri: 'http://localhost:5173/callback',
+  redirect_uri: 'http://localhost:5173',
   post_logout_redirect_uri: 'http://localhost:5173/signin',
   project_resource_id: '274633502618575146',
 }
