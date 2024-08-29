@@ -3,6 +3,7 @@ import {
   deleteDeduction,
   createDeduction,
   fetchDeduction,
+  updateDeduction
 } from '@/services/deductionService'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
@@ -60,5 +61,16 @@ export const useDeduction = (id: number | string) => {
   return useQuery({
     queryFn: () => fetchDeduction(id),
     queryKey: ['deductions', id],
+  })
+}
+
+export const useUpdateDeduction = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: updateDeduction,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['deductions'] })
+    },
   })
 }

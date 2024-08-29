@@ -40,3 +40,14 @@ export const deleteDeduction = async (
   const response = await axios.delete(`/api/deductions/${deductionId}`)
   return response.data
 }
+
+export const updateDeduction = async (
+  data: Partial<DeductionInputs> & { id: number | string }
+) => {
+  const response = await axios.put<Deduction>(
+    `/api/deductions/${data.id}`,
+    data
+  )
+
+  return response.data
+}
