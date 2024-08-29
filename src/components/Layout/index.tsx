@@ -81,7 +81,16 @@ const Layout: React.FC = () => {
           </div>
         </Suspense>
       )}
-      {authenticated === null && <CircularProgress />}
+      {authenticated === null && (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          sx={{ height: 'calc(100vh - 100px)' }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
       {authenticated === false && <Navigate to="/signin" />}
     </>
   )
