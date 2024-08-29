@@ -89,6 +89,5 @@ export const navigationConfig: NavigationItemConfig[] = [
     type: 'item',
     label: 'Log out',
     icon: OutputOutlinedIcon,
-    to: '/api/auth/logout',
   },
 ]
