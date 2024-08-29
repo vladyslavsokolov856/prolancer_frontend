@@ -1,9 +1,9 @@
 import { AxiosResponse } from 'axios'
 import OrderLine from '@/types/orderLines'
-import axiosInstance from './axios'
+import axios from 'axios'
 
 export const fetchOrderLines = async (): Promise<OrderLine[]> => {
-  const response: AxiosResponse<OrderLine[]> = await axiosInstance.get(
+  const response: AxiosResponse<OrderLine[]> = await axios.get(
     `/api/order-lines`
   )
   return response.data

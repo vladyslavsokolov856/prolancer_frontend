@@ -3,6 +3,7 @@ import Settings from '@/pages/settings'
 import Invoices from '@/pages/invoices'
 
 import CustomersPage from '@/pages/customers'
+import CustomerDetailPage from '@/pages/customers/id'
 import NewCustomerPage from '@/pages/customers/new'
 import EditCustomerPage from '@/pages/customers/edit'
 
@@ -42,6 +43,11 @@ const customerRoutes: RouteConfig[] = [
     path: '/customers/new',
     element: <NewCustomerPage />,
     label: 'New Customer',
+  },
+  {
+    path: '/customers/:customerId',
+    element: <CustomerDetailPage />,
+    label: 'Edit Customer',
   },
   {
     path: '/customers/:customerId/edit',

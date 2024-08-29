@@ -1,9 +1,9 @@
 import { AxiosResponse } from 'axios'
 import WorkLog from '@/types/workLogs'
-import axiosInstance from './axios'
+import axios from 'axios'
 
 export const fetchWorkLogs = async (): Promise<WorkLog[]> => {
-  const response: AxiosResponse<WorkLog[]> = await axiosInstance.get(
+  const response: AxiosResponse<WorkLog[]> = await axios.get(
     `/api/work-logs`
   )
   return response.data.sort(
@@ -12,7 +12,7 @@ export const fetchWorkLogs = async (): Promise<WorkLog[]> => {
 }
 
 export const fetchWorkLog = async (id: number): Promise<WorkLog> => {
-  const response: AxiosResponse<WorkLog> = await axiosInstance.get(
+  const response: AxiosResponse<WorkLog> = await axios.get(
     `/api/work-logs/${id}`
   )
   return response.data
@@ -21,7 +21,7 @@ export const fetchWorkLog = async (id: number): Promise<WorkLog> => {
 export const createWorkLog = async (
   workLogData: Omit<WorkLog, 'id'>
 ): Promise<WorkLog> => {
-  const response: AxiosResponse<WorkLog> = await axiosInstance.post(
+  const response: AxiosResponse<WorkLog> = await axios.post(
     `/api/work-logs`,
     workLogData
   )
@@ -32,7 +32,7 @@ export const editWorkLog = async (
   id: number,
   workLogData: WorkLog
 ): Promise<WorkLog> => {
-  const response: AxiosResponse<WorkLog> = await axiosInstance.put(
+  const response: AxiosResponse<WorkLog> = await axios.put(
     `/api/work-logs/${id}`,
     workLogData
   )
@@ -42,7 +42,7 @@ export const editWorkLog = async (
 export const deleteWorkLog = async (
   workLogId: number | string | undefined
 ): Promise<WorkLog> => {
-  const response: AxiosResponse<WorkLog> = await axiosInstance.delete(
+  const response: AxiosResponse<WorkLog> = await axios.delete(
     `/api/work-logs/${workLogId}`
   )
   return response.data
