@@ -59,67 +59,39 @@ const Sidebar: React.FC<ISidebarProps> = ({ open }) => {
     )
 
     const secondNavItems = secondNavigationConfigItems.map(
-      ({ label, to, icon: ItemIcon }) => {
-        const isSignOut = label === 'Log out'
-
-        return isSignOut ? (
-          <Button
-            key={to}
-            onClick={signout}
-            sx={{ color: 'black', padding: '10px 30px' }}
-          >
-            {ItemIcon && (
-              <ListItemIcon
-                sx={{
-                  margin: '0 10px 0 0',
-                  minWidth: '20px',
-                  color: '#f5fafd',
-                }}
-              >
-                <ItemIcon />
-              </ListItemIcon>
-            )}
-            <span
-              style={{
-                whiteSpace: 'nowrap',
-                color: '#f5fafd',
-                fontSize: '14.2222px',
-              }}
-            >
-              {label}
-            </span>
-          </Button>
-        ) : (
-          <ListItemButton
-            key={to}
-            component={Link}
-            to={to as string}
-            sx={{ color: 'black', padding: '10px 30px' }}
-            selected={to === pathname}
-          >
-            {ItemIcon && (
-              <ListItemIcon
-                sx={{
-                  margin: '0 10px 0 0',
-                  minWidth: '20px',
-                  color: '#f5fafd',
-                }}
-              >
-                <ItemIcon />
-              </ListItemIcon>
-            )}
-            <ListItemText
+      ({ label, to, icon: ItemIcon }) => (
+        <ListItemButton
+          key={to}
+          component={Link}
+          to={to as string}
+          sx={{ color: 'black', padding: '10px 30px' }}
+          selected={to === pathname}
+          onClick={() => {
+            if (label === 'Log out') signout()
+          }}
+        >
+          {ItemIcon && (
+            <ListItemIcon
               sx={{
-                whiteSpace: 'nowrap',
+                margin: '0 10px 0 0',
+                minWidth: '20px',
                 color: '#f5fafd',
-                fontSize: '1.1rem',
               }}
             >
-              {label}
-            </ListItemText>
-          </ListItemButton>
-        )
-      }
+              <ItemIcon />
+            </ListItemIcon>
+          )}
+          <ListItemText
+            sx={{
+              whiteSpace: 'nowrap',
+              color: '#f5fafd',
+              fontSize: '1.1rem',
+            }}
+          >
+            {label}
+          </ListItemText>
+        </ListItemButton>
+      )
     )
 
     return (
