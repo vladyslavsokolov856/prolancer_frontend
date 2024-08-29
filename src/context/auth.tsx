@@ -18,7 +18,7 @@ type AuthProviderProps = {
 
 export const zitadelConfig: ZitadelConfig = {
   authority: import.meta.env.VITE_ZITADEL_AUTHORITY,
-  client_id: import.meta.env.VITE_ZITADEL_CLIENT_IT,
+  client_id: import.meta.env.VITE_ZITADEL_CLIENT_ID,
   redirect_uri: import.meta.env.VITE_ZITADEL_REDIRECT_URI,
   post_logout_redirect_uri: import.meta.env.VITE_ZITADEL_POST_LOGOUT_REDIRECT_URI,
   project_resource_id: import.meta.env.VITE_ZITADEL_PROJECT_RESOURCE_ID,
