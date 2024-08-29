@@ -378,7 +378,7 @@ const TaskTable: React.FC<TaskTableProps> = ({ tasks, customer }) => {
       {
         key: 'id',
         name: '',
-        render: (value, record) => (
+        render: (__, record) => (
           <Box
             display="flex"
             alignItems="center"
@@ -507,8 +507,8 @@ const CustomerDetails = () => {
     () =>
       invoices && customerId
         ? invoices.filter(
-            (invoice) => invoice.customer_id === parseInt(customerId)
-          )
+          (invoice) => invoice.customer_id === parseInt(customerId)
+        )
         : [],
     [invoices, customerId]
   )
@@ -653,7 +653,7 @@ const CustomerDetails = () => {
                 <span style={{ color: 'rgb(152, 166, 173)', fontWeight: 700 }}>
                   CVR
                 </span>
-                <span style={{ minHeight: '20px' }}>{}</span>
+                <span style={{ minHeight: '20px' }}>{ }</span>
                 <span style={{ color: 'rgb(152, 166, 173)', fontWeight: 700 }}>
                   EAN
                 </span>

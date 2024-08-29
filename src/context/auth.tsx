@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             logoutCallback();
           }
         })
-        .catch((error: any) => {
+        .catch(() => {
           logoutCallback();
         });
     }
@@ -83,7 +83,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             logoutCallback();
           }
         })
-        .catch((error: any) => {
+        .catch(() => {
           logoutCallback();
         });
     }
