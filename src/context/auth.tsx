@@ -17,25 +17,25 @@ type AuthProviderProps = {
 }
 
 export const zitadelConfig: ZitadelConfig = {
-  authority: 'http://prolancer-authentication-ebcf8a4aae1e.herokuapp.com/',
-  client_id: '275389987892098434@prolancer',
-  redirect_uri: 'http://localhost:5173',
-  post_logout_redirect_uri: 'http://localhost:5173/signin',
-  project_resource_id: '274633502618575146',
+  authority: import.meta.env.VITE_ZITADEL_AUTHORITY,
+  client_id: import.meta.env.VITE_ZITADEL_CLIENT_IT,
+  redirect_uri: import.meta.env.VITE_ZITADEL_REDIRECT_URI,
+  post_logout_redirect_uri: import.meta.env.VITE_ZITADEL_POST_LOGOUT_REDIRECT_URI,
+  project_resource_id: import.meta.env.VITE_ZITADEL_PROJECT_RESOURCE_ID,
 }
+
+const zitadel = createZitadelAuth(zitadelConfig)
 
 const zitadelDatakey = `oidc.user:${zitadelConfig.authority}:${zitadelConfig.client_id}`;
 
 const localStorageUserInfo = localStorage.getItem(zitadelDatakey);
-export const localStorageParsedUserInfo = Boolean(localStorageUserInfo) ? JSON.parse(localStorageUserInfo!) : null;
+const localStorageParsedUserInfo = Boolean(localStorageUserInfo) ? JSON.parse(localStorageUserInfo!) : null;
 
 configAxios(localStorageParsedUserInfo);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [userInfo, setUserInfo] = useState<User | null>(localStorageParsedUserInfo)
   const [authenticated, setAuthenticated] = useState<boolean | null>(Boolean(localStorageUserInfo) ? true : null)
-
-  const zitadel = createZitadelAuth(zitadelConfig)
 
   const signin = () => {
     zitadel.authorize()
@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           logoutCallback();
         });
     }
-  }, [authenticated, setAuthenticated]);
+  }, [zitadel, authenticated, configAxios, loginCallback, logoutCallback]);
 
   return (
     <AuthContext.Provider
