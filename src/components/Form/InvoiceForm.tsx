@@ -7,6 +7,7 @@ import {
   FormControlLabel,
   FormHelperText,
   Grid,
+  Link,
   MenuItem,
   Paper,
   Stack,
@@ -479,7 +480,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 There is VAT on most services, unless the service you provide
                 falls under the exceptions. You can read more on Skat’s website,
                 if you are unsure if there is VAT on the service you provide.
-                Skat
+                <Link
+                  href="https://skat.dk"
+                  target="_blank"
+                  referrerPolicy="no-referrer"
+                  sx={{ textDecoration: 'none' }}
+                >
+                  Skat
+                </Link>
               </div>
             </Grid>
 
