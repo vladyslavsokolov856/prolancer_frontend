@@ -283,17 +283,8 @@ const InvoiceIndex = () => {
           },
         }}
       >
-        Get a comprehensive overview of your invoices. Send an invoice to your
-        customer quick and easy and track the invoice status from sent to paid.
-        Read more about invoices and the status descriptions{' '}
-        <Link
-          href="https://intercom.help/prolancer/en/articles/5900739-invoice"
-          target="_blank"
-          referrerPolicy="no-referrer"
-          sx={{ textDecoration: 'none' }}
-        >
-          here <OpenInNewIcon sx={{ fontSize: 14 }} />
-        </Link>
+        Here, you can manage your invoices. Create new invoices, view previously
+        sent invoices and monitor their status
       </Alert>
 
       <InvoiceTable />
