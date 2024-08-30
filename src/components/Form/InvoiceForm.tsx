@@ -484,7 +484,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             </Grid>
 
             <Grid item xs={12}>
-              <SectionHeader title="Order llines" />
+              <SectionHeader title="Order details" />
             </Grid>
             <Grid item xs={12}>
               <TableContainer component={Paper}>
@@ -600,7 +600,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                           startIcon={<AddIcon />}
                           onClick={handleAddOrderLine}
                         >
-                          Add order line
+                          Add order detail
                         </Button>
                       </StyledTableCell>
                     </TableRow>
