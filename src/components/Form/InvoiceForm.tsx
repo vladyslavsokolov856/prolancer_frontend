@@ -7,6 +7,7 @@ import {
   FormControlLabel,
   FormHelperText,
   Grid,
+  Link,
   MenuItem,
   Paper,
   Stack,
@@ -476,14 +477,22 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                   lineHeight: 1.5,
                 }}
               >
-                As a starting point, there is always VAT on your services,
-                unless it falls within special categories or is for companies
-                outside Denmark in the EU.
+                There is VAT on most services, unless the service you provide
+                falls under the exceptions. You can read more on Skat’s website,
+                if you are unsure if there is VAT on the service you provide.
+                <Link
+                  href="https://skat.dk"
+                  target="_blank"
+                  referrerPolicy="no-referrer"
+                  sx={{ textDecoration: 'none' }}
+                >
+                  Skat
+                </Link>
               </div>
             </Grid>
 
             <Grid item xs={12}>
-              <SectionHeader title="Order llines" />
+              <SectionHeader title="Order details" />
             </Grid>
             <Grid item xs={12}>
               <TableContainer component={Paper}>
@@ -599,7 +608,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                           startIcon={<AddIcon />}
                           onClick={handleAddOrderLine}
                         >
-                          Add order line
+                          Add order detail
                         </Button>
                       </StyledTableCell>
                     </TableRow>

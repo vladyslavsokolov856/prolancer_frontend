@@ -3,7 +3,6 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Alert from '@mui/material/Alert'
 import Chip from '@mui/material/Chip'
-import { Link } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { useInvoices, useDeleteInvoice } from '@/hooks/useInvoices'
 import { Link as RouterLink } from 'react-router-dom'
@@ -11,7 +10,6 @@ import React, { useCallback, useMemo, useState } from 'react'
 import ProTable, { ColumnType } from '@/components/ProTable'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import OpenInNewIcon from '@mui/icons-material/OpenInNew'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import Invoice from '@/types/invoices'
 import InvoiceSummary from '@/components/Utils/InvoiceSummary'
@@ -283,17 +281,8 @@ const InvoiceIndex = () => {
           },
         }}
       >
-        Get a comprehensive overview of your invoices. Send an invoice to your
-        customer quick and easy and track the invoice status from sent to paid.
-        Read more about invoices and the status descriptions{' '}
-        <Link
-          href="https://intercom.help/prolancer/en/articles/5900739-invoice"
-          target="_blank"
-          referrerPolicy="no-referrer"
-          sx={{ textDecoration: 'none' }}
-        >
-          here <OpenInNewIcon sx={{ fontSize: 14 }} />
-        </Link>
+        Here, you can manage your invoices. Create new invoices, view previously
+        sent invoices and monitor their status
       </Alert>
 
       <InvoiceTable />
