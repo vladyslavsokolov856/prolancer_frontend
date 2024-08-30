@@ -476,9 +476,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                   lineHeight: 1.5,
                 }}
               >
-                As a starting point, there is always VAT on your services,
-                unless it falls within special categories or is for companies
-                outside Denmark in the EU.
+                There is VAT on most services, unless the service you provide
+                falls under the exceptions. You can read more on Skat’s website,
+                if you are unsure if there is VAT on the service you provide.
+                Skat
               </div>
             </Grid>
 
