@@ -443,7 +443,7 @@ const ShowInvoice = () => {
             fontWeight: 700,
           }}
         >
-          Order lines
+          Order details
         </Box>
         <Table size="small" sx={{ marginTop: '10px', fontWeight: 700 }}>
           <TableHead sx={{ backgroundColor: '#313a46' }}>

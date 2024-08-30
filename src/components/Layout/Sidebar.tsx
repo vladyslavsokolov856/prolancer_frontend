@@ -6,12 +6,14 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Button,
   useTheme,
 } from '@mui/material'
-import { useMemo } from 'react'
+import { useMemo, useContext } from 'react'
 import { navigationConfig } from '@/config/navigation'
 import { Link, useLocation } from 'react-router-dom'
 import LogoIcon from '@/components/Utils/LogoIcon'
+import { AuthContext, AuthContextType } from '@/context/auth'
 
 interface ISidebarProps {
   open: boolean
@@ -19,8 +21,8 @@ interface ISidebarProps {
 
 const Sidebar: React.FC<ISidebarProps> = ({ open }) => {
   const { pathname } = useLocation()
-
   const theme = useTheme()
+  const { signout } = useContext(AuthContext) as AuthContextType
 
   const navItems = useMemo(() => {
     const firstNavigationConfigItems = navigationConfig.slice(
@@ -64,16 +66,27 @@ const Sidebar: React.FC<ISidebarProps> = ({ open }) => {
           to={to as string}
           sx={{ color: 'black', padding: '10px 30px' }}
           selected={to === pathname}
+          onClick={() => {
+            if (label === 'Log out') signout()
+          }}
         >
           {ItemIcon && (
             <ListItemIcon
-              sx={{ margin: '0 10px 0 0', minWidth: '20px', color: '#f5fafd' }}
+              sx={{
+                margin: '0 10px 0 0',
+                minWidth: '20px',
+                color: '#f5fafd',
+              }}
             >
-              <ItemIcon></ItemIcon>
+              <ItemIcon />
             </ListItemIcon>
           )}
           <ListItemText
-            sx={{ whiteSpace: 'nowrap', color: '#f5fafd', fontSize: '1.1rem' }}
+            sx={{
+              whiteSpace: 'nowrap',
+              color: '#f5fafd',
+              fontSize: '1.1rem',
+            }}
           >
             {label}
           </ListItemText>

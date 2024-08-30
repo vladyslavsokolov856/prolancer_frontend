@@ -20,8 +20,9 @@ import EditInvoice from '@/pages/invoices/edit'
 
 import NewDeductionPage from '@/pages/deductions/new'
 import DeductionDetailPage from '@/pages/deductions/id'
-
 import DeductionIndexPage from '@/pages/deductions'
+import EditDeductionPage from '@/pages/deductions/edit'
+
 import UserIndexPage from '@/pages/users'
 import EditUserPage from '@/pages/users/edit'
 import NewUserpage from '@/pages/users/new'
@@ -122,6 +123,11 @@ const deductionRoutes: RouteConfig[] = [
     element: <DeductionIndexPage />,
     label: 'Deductions',
   },
+  {
+    path: '/deductions/:deductionId/edit',
+    element: <EditDeductionPage />,
+    label: 'Edit Deduction'
+  }
 ]
 
 const userRoutes: RouteConfig[] = [
