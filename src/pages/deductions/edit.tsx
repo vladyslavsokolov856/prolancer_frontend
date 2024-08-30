@@ -5,7 +5,7 @@ import DeductionForm, { DeductionInputs } from '@/components/Form/DeductionForm'
 import { useDeduction, useUpdateDeduction } from '@/hooks/useDeductions'
 import { useTasks } from '@/hooks/useTasks'
 import { } from '@/hooks/useDeductions'
-import {useCallback} from 'react'
+import { useCallback } from 'react'
 
 const EditDeduction = () => {
   const navigate = useNavigate()
@@ -19,7 +19,7 @@ const EditDeduction = () => {
     data: deduction,
   } = useDeduction(deductionId || '')
 
-  const { isLoading: isTasksLoading, tasks } = useTasks()
+  const { isLoading: isTasksLoading } = useTasks()
 
   const handleSubmit = useCallback(
     ({ ...data }: DeductionInputs) => {
@@ -68,7 +68,7 @@ const EditDeduction = () => {
         Edit Deduction{' '}
       </Typography>
 
-      <DeductionForm onSubmit={handleSubmit} type="update" initialValues={{...deduction}}/>
+      <DeductionForm onSubmit={handleSubmit} type="update" initialValues={{ ...deduction }} />
     </Box>
   )
 }

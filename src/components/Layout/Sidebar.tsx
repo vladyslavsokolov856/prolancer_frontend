@@ -6,7 +6,6 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Button,
   useTheme,
 } from '@mui/material'
 import { useMemo, useContext } from 'react'
