@@ -65,12 +65,12 @@ const Appbar: React.FC<IAppbarProps> = () => {
     <Button
       key={label}
       onClick={handleCloseNavMenu}
-      sx={{ my: 2, color: 'white', display: 'block' }}
+      sx={{ color: 'white' }}
+      component={Link}
+      to={to as string}
+      startIcon={ItemIcon ? <ItemIcon /> : null}
     >
-      <Link to={to as string}>
-        {ItemIcon && <ItemIcon />}&nbsp;
-        {label}
-      </Link>
+      {label}
     </Button>
   ))
 
@@ -218,9 +218,9 @@ const Appbar: React.FC<IAppbarProps> = () => {
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
               sx={{ color: 'white' }}
+              startIcon={<ShortcutOutlinedIcon />}
             >
-              <ShortcutOutlinedIcon />
-              &nbsp; Shortcuts
+              Shortcuts
             </Button>
             <Menu
               id="basic-menu"
@@ -236,11 +236,8 @@ const Appbar: React.FC<IAppbarProps> = () => {
             </Menu>
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            <Button onClick={signout} sx={{ p: 0 }}>
-              <Typography sx={{ textAlign: 'center', color: 'white' }}>
-                <OutputOutlinedIcon />
-                &nbsp; LOGOUT
-              </Typography>
+            <Button onClick={signout} startIcon={<OutputOutlinedIcon />} variant="text" sx={{ color: "white" }}>
+              LOGOUT
             </Button>
           </Box>
         </Toolbar>
