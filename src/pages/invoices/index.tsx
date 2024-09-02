@@ -88,7 +88,7 @@ export const InvoiceTable: React.FC<InvoiceTableProps> = ({ taskId }) => {
     },
     [invoices]
   )
-
+  
   const invoiceData = useMemo(() => {
     if (taskId) return invoices.filter((item) => item.task_id === taskId)
     else return invoices
@@ -239,7 +239,6 @@ export const InvoiceTable: React.FC<InvoiceTableProps> = ({ taskId }) => {
         BeforeTableComponent={InvoiceSummary}
         tableName="invoices"
       />
-
       <ConfirmDialog
         open={open}
         setOpen={setOpen}
@@ -256,7 +255,6 @@ const InvoiceIndex = () => {
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h4">Invoices </Typography>
-
         <Button
           variant="contained"
           startIcon={<AddIcon />}
@@ -267,7 +265,6 @@ const InvoiceIndex = () => {
           Create Invoice
         </Button>
       </Box>
-
       <Alert
         icon={false}
         sx={{
@@ -284,7 +281,6 @@ const InvoiceIndex = () => {
         Here, you can manage your invoices. Create new invoices, view previously
         sent invoices and monitor their status
       </Alert>
-
       <InvoiceTable />
     </Box>
   )
