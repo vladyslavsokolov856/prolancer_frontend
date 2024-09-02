@@ -29,7 +29,7 @@ const zitadel = createZitadelAuth(zitadelConfig)
 const zitadelDatakey = `oidc.user:${zitadelConfig.authority}:${zitadelConfig.client_id}`;
 
 const localStorageUserInfo = localStorage.getItem(zitadelDatakey);
-const localStorageParsedUserInfo = Boolean(localStorageUserInfo) ? JSON.parse(localStorageUserInfo!) : null;
+export const localStorageParsedUserInfo = Boolean(localStorageUserInfo) ? JSON.parse(localStorageUserInfo!) : null;
 
 configAxios(localStorageParsedUserInfo);
 
