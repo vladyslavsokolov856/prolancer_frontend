@@ -1,4 +1,3 @@
-import Sidebar from '@/components/Layout/Sidebar'
 import Appbar from '@/components/Layout/Appbar'
 import Footer from '@/components/Layout/Footer'
 import routesConfig from '@/config/routes'
@@ -27,7 +26,7 @@ const Layout: React.FC = () => {
   ]: any = matches || [{}]
 
   const [layout, setLayout] = useState(layoutConfig.default)
-  const [open, setOpen] = useState<boolean>(false)
+  const [__, setOpen] = useState<boolean>(false)
 
   useEffect(() => {
     if (settings && settings.layout) {
