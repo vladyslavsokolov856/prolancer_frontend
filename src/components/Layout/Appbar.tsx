@@ -23,6 +23,10 @@ interface IAppbarProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
+const appBarConfigItems = navigationConfig.slice(0, 2);
+
+const dropDownConfigItems = navigationConfig.slice(2);
+
 const Appbar: React.FC<IAppbarProps> = () => {
   const { pathname } = useLocation()
 
@@ -49,23 +53,14 @@ const Appbar: React.FC<IAppbarProps> = () => {
     setAnchorElNav(null)
   }
 
-  const dropDownConfigItems = navigationConfig.slice(
-    0,
-    navigationConfig.length - 3
-  )
-
-  const responsiveDropDownConfigItems = navigationConfig.slice(
-    0,
-    navigationConfig.length - 1
-  )
-
-  const appBarConfigItems = navigationConfig.slice(navigationConfig.length - 2)
+  const handleCloseMenu = () => {
+    setAnchorEl(null)
+  }
 
   const appBarItems = appBarConfigItems.map(({ label, to, icon: ItemIcon }) => (
     <Button
       key={label}
-      onClick={handleCloseNavMenu}
-      sx={{ color: 'white' }}
+      sx={{ color: 'white', mx: 1 }}
       component={Link}
       to={to as string}
       startIcon={ItemIcon ? <ItemIcon /> : null}
@@ -74,7 +69,7 @@ const Appbar: React.FC<IAppbarProps> = () => {
     </Button>
   ))
 
-  const resDropDownItems = responsiveDropDownConfigItems.map(
+  const resDropDownItems = navigationConfig.map(
     ({ label, to, icon: ItemIcon }) => (
       <ListItemButton
         key={to}
@@ -82,6 +77,7 @@ const Appbar: React.FC<IAppbarProps> = () => {
         to={to as string}
         sx={{ bgcolor: 'white', padding: '10px 30px' }}
         selected={to === pathname}
+        onClick={handleCloseNavMenu}
       >
         {ItemIcon && (
           <ListItemIcon
@@ -115,6 +111,7 @@ const Appbar: React.FC<IAppbarProps> = () => {
         to={to as string}
         sx={{ bgcolor: 'white', padding: '10px 30px' }}
         selected={to === pathname}
+        onClick={handleCloseMenu}
       >
         {ItemIcon && (
           <ListItemIcon
@@ -147,8 +144,8 @@ const Appbar: React.FC<IAppbarProps> = () => {
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+            component={Link}
+            to="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -194,15 +191,14 @@ const Appbar: React.FC<IAppbarProps> = () => {
           <Typography
             variant="h5"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
+            component={Link}
+            to="/"
             sx={{
-              mr: 2,
               display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
               fontFamily: 'monospace',
               fontWeight: 700,
-              letterSpacing: '.3rem',
+              letterSpacing: '.1rem',
               color: 'inherit',
               textDecoration: 'none',
             }}
@@ -217,7 +213,7 @@ const Appbar: React.FC<IAppbarProps> = () => {
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
               onClick={handleClick}
-              sx={{ color: 'white' }}
+              sx={{ color: 'white', mx: 1 }}
               startIcon={<ShortcutOutlinedIcon />}
             >
               Shortcuts

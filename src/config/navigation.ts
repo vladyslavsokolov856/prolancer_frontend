@@ -21,6 +21,18 @@ interface NavigationItemConfig {
 export const navigationConfig: NavigationItemConfig[] = [
   {
     type: 'item',
+    label: 'Help Centre',
+    icon: HelpOutlinedIcon,
+    to: '/da',
+  },
+  {
+    type: 'item',
+    label: 'Profile',
+    icon: SettingsOutlinedIcon,
+    to: '/settings',
+  },
+  {
+    type: 'item',
     label: 'Dashboard',
     icon: SignalCellularAltOutlinedIcon,
     to: '/',
@@ -67,27 +79,4 @@ export const navigationConfig: NavigationItemConfig[] = [
     icon: AccessTimeOutlinedIcon,
     to: '/time-registration',
   },
-  {
-    type: 'item',
-    label: 'Help Centre',
-    icon: HelpOutlinedIcon,
-    to: '/da',
-  },
-  {
-    type: 'item',
-    label: 'Profile',
-    icon: SettingsOutlinedIcon,
-    to: '/settings',
-  },
-  // {
-  //   type: 'item',
-  //   label: 'Log out',
-  //   icon: OutputOutlinedIcon,
-  // },
-  // {
-  //   type: 'item',
-  //   label: 'Invite a friend',
-  //   icon: ShareOutlinedIcon,
-  //   to: '/referrals',
-  // },
 ]
