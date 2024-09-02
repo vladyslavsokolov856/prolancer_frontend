@@ -23,6 +23,7 @@ import Task from '@/types/tasks'
 import Customer from '@/types/customers'
 import Invoice from '@/types/invoices'
 import { useSnackbar } from 'notistack'
+import { localStorageParsedUserInfo } from '@/context/auth'
 
 const InfoTitle = styled('h6')({
   color: 'gray',
@@ -209,6 +210,8 @@ const Index = () => {
   const { mutate: updateInvoice } = useUpdateInvoice()
   const { enqueueSnackbar } = useSnackbar()
 
+  const userName = localStorageParsedUserInfo?.profile?.name || null; 
+  
   const handleUnsend = (invoiceId: number) => {
     const invoice = invoices.find((item) => item.id === invoiceId)
     const { ...rest } = invoice!
@@ -305,7 +308,7 @@ const Index = () => {
         variant="h3"
         sx={{ fontWeight: 700, marginTop: '10px', marginBottom: '10px' }}
       >
-        Hi Guesmia Abdelmadjid, welcome back to Prolancer
+        Hi {userName}, welcome back to Prolancer
       </Typography>
       <Grid container spacing={1}>
         <Grid item xs={12} md={4}>
