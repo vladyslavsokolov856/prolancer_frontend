@@ -23,7 +23,7 @@ import Task from '@/types/tasks'
 import Customer from '@/types/customers'
 import Invoice from '@/types/invoices'
 import { useSnackbar } from 'notistack'
-import { zitadelConfig } from '@/context/auth'
+import { localStorageParsedUserInfo } from '@/context/auth'
 
 const InfoTitle = styled('h6')({
   color: 'gray',
@@ -209,12 +209,7 @@ const Index = () => {
 
   const { mutate: updateInvoice } = useUpdateInvoice()
   const { enqueueSnackbar } = useSnackbar()
-  
-  const zitadelDatakey = `oidc.user:${zitadelConfig.authority}:${zitadelConfig.client_id}`;
 
-  const localStorageUserInfo = localStorage.getItem(zitadelDatakey);
-  const localStorageParsedUserInfo = localStorageUserInfo ? JSON.parse(localStorageUserInfo) : null;
-  
   const userName = localStorageParsedUserInfo?.profile?.name || null; 
   
   const handleUnsend = (invoiceId: number) => {
