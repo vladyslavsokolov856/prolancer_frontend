@@ -33,7 +33,7 @@ export const navigationConfig: NavigationItemConfig[] = [
     type: 'item',
     label: 'Dashboard',
     icon: SignalCellularAltOutlinedIcon,
-    to: '/',
+    to: '/dashboard',
   },
   {
     type: 'item',
