@@ -27,12 +27,6 @@ export const navigationConfig: NavigationItemConfig[] = [
   },
   {
     type: 'item',
-    label: 'Invoices',
-    icon: DescriptionOutlinedIcon,
-    to: '/invoices',
-  },
-  {
-    type: 'item',
     label: 'Customers',
     icon: ApartmentOutlinedIcon,
     to: '/customers',
@@ -45,9 +39,9 @@ export const navigationConfig: NavigationItemConfig[] = [
   },
   {
     type: 'item',
-    label: 'Time registration',
-    icon: AccessTimeOutlinedIcon,
-    to: '/time-registration',
+    label: 'Invoices',
+    icon: DescriptionOutlinedIcon,
+    to: '/invoices',
   },
   {
     type: 'item',
@@ -57,21 +51,21 @@ export const navigationConfig: NavigationItemConfig[] = [
   },
   {
     type: 'item',
+    label: 'Salary',
+    icon: PointOfSaleOutlinedIcon,
+    to: '/salary-payments',
+  },
+  {
+    type: 'item',
     label: 'Mileages',
     icon: PlaceOutlinedIcon,
     to: '/mileages',
   },
   {
     type: 'item',
-    label: 'Salary payments',
-    icon: PointOfSaleOutlinedIcon,
-    to: '/salary-payments',
-  },
-  {
-    type: 'item',
-    label: 'Invite a friend',
-    icon: ShareOutlinedIcon,
-    to: '/referrals',
+    label: 'Time registration',
+    icon: AccessTimeOutlinedIcon,
+    to: '/time-registration',
   },
   {
     type: 'item',
@@ -85,9 +79,15 @@ export const navigationConfig: NavigationItemConfig[] = [
     icon: SettingsOutlinedIcon,
     to: '/settings',
   },
-  {
-    type: 'item',
-    label: 'Log out',
-    icon: OutputOutlinedIcon,
-  },
+  // {
+  //   type: 'item',
+  //   label: 'Log out',
+  //   icon: OutputOutlinedIcon,
+  // },
+  // {
+  //   type: 'item',
+  //   label: 'Invite a friend',
+  //   icon: ShareOutlinedIcon,
+  //   to: '/referrals',
+  // },
 ]
