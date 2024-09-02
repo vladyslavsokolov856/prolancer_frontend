@@ -42,7 +42,6 @@ const Layout: React.FC = () => {
       {authenticated === true && (
         <Suspense fallback="loading">
           <div>
-            {layout.sidebar && <Sidebar open={open} />}
             <Box
               component="main"
               display="flex"
@@ -50,7 +49,6 @@ const Layout: React.FC = () => {
                 bgcolor: '#fafbfe',
                 height: '100vh',
                 overflow: 'auto',
-                marginLeft: layout.sidebar ? '260px' : '0px',
                 transition: theme.transitions.create(['marginLeft'], {
                   duration: theme.transitions.duration.standard,
                 }),
