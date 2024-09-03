@@ -147,14 +147,14 @@ const userRoutes: RouteConfig[] = [
 
 const routesConfig: RouteConfig[] = [
   {
-    path: '/dashboard',
-    element: <Dashboard />,
-    label: 'Dashboard',
-  },
-  {
     path: '/',
     element: <Index />,
     label: 'Index',
+  },
+  {
+    path: '/dashboard',
+    element: <Dashboard />,
+    label: 'Dashboard',
   },
   ...customerRoutes,
   ...timeRoutes,
