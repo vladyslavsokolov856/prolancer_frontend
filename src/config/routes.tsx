@@ -1,3 +1,4 @@
+import Dashboard from '@/pages/dashboard'
 import Index from '@/pages/index'
 import Settings from '@/pages/settings'
 import Invoices from '@/pages/invoices'
@@ -148,6 +149,11 @@ const routesConfig: RouteConfig[] = [
   {
     path: '/',
     element: <Index />,
+    label: 'Index',
+  },
+  {
+    path: '/dashboard',
+    element: <Dashboard />,
     label: 'Dashboard',
   },
   ...customerRoutes,
