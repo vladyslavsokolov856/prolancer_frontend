@@ -201,13 +201,13 @@ export const InvoiceTable: React.FC<InvoiceTableProps> = ({ taskId }) => {
   const formattedInvoices = invoiceData.map((invoice) => {
     const customer = customers.find(({ id }) => id == invoice.customer_id)
     const date = invoice.invoice_date
-    const amount = orderLines.reduce((acc, next) => {
-      if (next.invoice_id == invoice.id) {
-        const quantity = next.quantity || 0
-        const unitPrice = +next.unit_price || 0
-        acc += quantity * unitPrice
+    const amount = orderLines.reduce((sum, lineItem) => {
+      if (lineItem.invoice_id === invoice.id) {
+        const qty = lineItem.quantity || 0
+        const pricePerUnit = +lineItem.unit_price || 0
+        sum += qty * pricePerUnit
       }
-      return acc
+      return sum
     }, 0)
     const currency = invoice.currency || 'DKK'
     const invoiceDate = dayjs(date).format('M/D/YYYY')
@@ -239,7 +239,6 @@ export const InvoiceTable: React.FC<InvoiceTableProps> = ({ taskId }) => {
         BeforeTableComponent={InvoiceSummary}
         tableName="invoices"
       />
-
       <ConfirmDialog
         open={open}
         setOpen={setOpen}
@@ -256,7 +255,6 @@ const InvoiceIndex = () => {
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h4">Invoices </Typography>
-
         <Button
           variant="contained"
           startIcon={<AddIcon />}
@@ -267,7 +265,6 @@ const InvoiceIndex = () => {
           Create Invoice
         </Button>
       </Box>
-
       <Alert
         icon={false}
         sx={{
@@ -284,7 +281,6 @@ const InvoiceIndex = () => {
         Here, you can manage your invoices. Create new invoices, view previously
         sent invoices and monitor their status
       </Alert>
-
       <InvoiceTable />
     </Box>
   )
