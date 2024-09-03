@@ -1,7 +1,5 @@
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
-import OutputOutlinedIcon from '@mui/icons-material/OutputOutlined'
 import HelpOutlinedIcon from '@mui/icons-material/HelpOutlined'
-import ShareOutlinedIcon from '@mui/icons-material/ShareOutlined'
 import PointOfSaleOutlinedIcon from '@mui/icons-material/PointOfSaleOutlined'
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined'
 import ApartmentOutlinedIcon from '@mui/icons-material/ApartmentOutlined'
@@ -21,15 +19,21 @@ interface NavigationItemConfig {
 export const navigationConfig: NavigationItemConfig[] = [
   {
     type: 'item',
-    label: 'Dashboard',
-    icon: SignalCellularAltOutlinedIcon,
-    to: '/',
+    label: 'Help Centre',
+    icon: HelpOutlinedIcon,
+    to: '/da',
   },
   {
     type: 'item',
-    label: 'Invoices',
-    icon: DescriptionOutlinedIcon,
-    to: '/invoices',
+    label: 'Profile',
+    icon: SettingsOutlinedIcon,
+    to: '/settings',
+  },
+  {
+    type: 'item',
+    label: 'Dashboard',
+    icon: SignalCellularAltOutlinedIcon,
+    to: '/dashboard',
   },
   {
     type: 'item',
@@ -45,9 +49,9 @@ export const navigationConfig: NavigationItemConfig[] = [
   },
   {
     type: 'item',
-    label: 'Time registration',
-    icon: AccessTimeOutlinedIcon,
-    to: '/time-registration',
+    label: 'Invoices',
+    icon: DescriptionOutlinedIcon,
+    to: '/invoices',
   },
   {
     type: 'item',
@@ -57,38 +61,20 @@ export const navigationConfig: NavigationItemConfig[] = [
   },
   {
     type: 'item',
+    label: 'Salary',
+    icon: PointOfSaleOutlinedIcon,
+    to: '/salary-payments',
+  },
+  {
+    type: 'item',
     label: 'Mileages',
     icon: PlaceOutlinedIcon,
     to: '/mileages',
   },
   {
     type: 'item',
-    label: 'Salary payments',
-    icon: PointOfSaleOutlinedIcon,
-    to: '/salary-payments',
-  },
-  {
-    type: 'item',
-    label: 'Invite a friend',
-    icon: ShareOutlinedIcon,
-    to: '/referrals',
-  },
-  {
-    type: 'item',
-    label: 'Help Centre',
-    icon: HelpOutlinedIcon,
-    to: '/da',
-  },
-  {
-    type: 'item',
-    label: 'Profile',
-    icon: SettingsOutlinedIcon,
-    to: '/settings',
-  },
-  {
-    type: 'item',
-    label: 'Log out',
-    icon: OutputOutlinedIcon,
-    to: '/api/auth/logout',
+    label: 'Time registration',
+    icon: AccessTimeOutlinedIcon,
+    to: '/time-registration',
   },
 ]

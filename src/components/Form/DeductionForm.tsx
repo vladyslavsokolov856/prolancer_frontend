@@ -7,6 +7,8 @@ import {
   MenuItem,
   Paper,
   Typography,
+  Card,
+  CardContent
 } from '@mui/material'
 import { SubmitHandler, useForm, Controller } from 'react-hook-form'
 import CurrencyList from 'currency-list'
@@ -15,29 +17,37 @@ import { useTasks } from '@/hooks/useTasks'
 import ProSelect from '../ProSelect'
 import ProInput from '../ProInput'
 import ProFileField from '../ProFileInput'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 export type DeductionInputs = {
-  task_id: string
+  task_id: number
   description: string
   currency: string
-  amount: string
+  amount: number
   include_vat: boolean
   attachment: File
+  image_url?: string
 }
 
 type DeductionFormProps = {
   onSubmit: SubmitHandler<DeductionInputs>
+  type?: 'create' | 'update'
+  initialValues?: Partial<DeductionInputs>
 }
 
 const currencies = CurrencyList.getAll('en_US')
 
-const DeductionForm: React.FC<DeductionFormProps> = ({ onSubmit }) => {
+const DeductionForm: React.FC<DeductionFormProps> = ({
+  onSubmit,
+  type,
+  initialValues,
+}) => {
   const {
     register,
     setValue,
     watch,
     handleSubmit,
+    reset,
     control,
     formState: { errors },
   } = useForm<DeductionInputs>({
@@ -47,6 +57,11 @@ const DeductionForm: React.FC<DeductionFormProps> = ({ onSubmit }) => {
   const { tasks } = useTasks()
 
   const attachment = watch('attachment')
+  const VITE_BACKEND_URL = import.meta.env.VITE_BACKEND_URL || ''
+
+  useEffect(() => {
+    reset(initialValues)
+  }, [initialValues, reset])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -55,7 +70,7 @@ const DeductionForm: React.FC<DeductionFormProps> = ({ onSubmit }) => {
           <Grid item xs={12}>
             <ProSelect
               label="Task"
-              defaultValue=""
+              defaultValue={initialValues?.task_id || ''}
               {...register('task_id', { required: 'Task is required' })}
               required
               error={!!errors.task_id}
@@ -102,7 +117,7 @@ const DeductionForm: React.FC<DeductionFormProps> = ({ onSubmit }) => {
           <Grid item md={6} xs={12}>
             <ProSelect
               label="Currency"
-              defaultValue=""
+              defaultValue={initialValues?.currency || ''}
               required
               {...register('currency', { required: 'Currency is required' })}
               error={!!errors.currency}
@@ -162,10 +177,24 @@ const DeductionForm: React.FC<DeductionFormProps> = ({ onSubmit }) => {
           </Grid>
 
           <Grid item xs={12}>
+            {type !== 'create' && (
+              <Card sx={{ marginTop: '30px' }}>
+                <CardContent>
+                  {initialValues?.image_url && (
+                    <iframe
+                      src={`${VITE_BACKEND_URL}${initialValues?.image_url}`}
+                      style={{ width: '100%', height: '500px' }}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            )}
             <Controller
               control={control}
               name="attachment"
-              rules={{ required: 'Attachment is required' }}
+              rules={{
+                required: type === 'create' ? 'Attachment is required' : false,
+              }}
               render={({ field: { onChange } }) => (
                 <div
                   className={`${
@@ -208,7 +237,7 @@ const DeductionForm: React.FC<DeductionFormProps> = ({ onSubmit }) => {
           color="primary"
           sx={{ marginTop: 2 }}
         >
-          Submit deduction
+          {type === 'create' ? 'Submit deduction' : 'Update deduction'}
         </Button>
       </Paper>
     </form>

@@ -1,4 +1,4 @@
-import axiosInstance from './axios'
+import axios from 'axios'
 import Deduction from '@/types/deductions'
 import { DeductionInputs } from '@/components/Form/DeductionForm'
 
@@ -12,7 +12,7 @@ export const createDeduction = async (deduction: DeductionInputs) => {
     }
   }
 
-  const { data } = await axiosInstance.post('/api/deductions', formData, {
+  const { data } = await axios.post('/api/deductions', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
@@ -22,12 +22,12 @@ export const createDeduction = async (deduction: DeductionInputs) => {
 }
 
 export const fetchDeductions = async () => {
-  const response = await axiosInstance.get<Deduction[]>(`/api/deductions`)
+  const response = await axios.get<Deduction[]>(`/api/deductions`)
   return response.data
 }
 
 export const fetchDeduction = async (deductionId: number | string) => {
-  const response = await axiosInstance.get<Deduction>(
+  const response = await axios.get<Deduction>(
     `/api/deductions/${deductionId}`
   )
 
@@ -37,6 +37,17 @@ export const fetchDeduction = async (deductionId: number | string) => {
 export const deleteDeduction = async (
   deductionId: number | string | undefined
 ) => {
-  const response = await axiosInstance.delete(`/api/deductions/${deductionId}`)
+  const response = await axios.delete(`/api/deductions/${deductionId}`)
+  return response.data
+}
+
+export const updateDeduction = async (
+  data: Partial<DeductionInputs> & { id: number | string }
+) => {
+  const response = await axios.put<Deduction>(
+    `/api/deductions/${data.id}`,
+    data
+  )
+
   return response.data
 }

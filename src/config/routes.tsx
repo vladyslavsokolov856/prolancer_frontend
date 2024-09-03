@@ -1,8 +1,10 @@
+import Dashboard from '@/pages/dashboard'
 import Index from '@/pages/index'
 import Settings from '@/pages/settings'
 import Invoices from '@/pages/invoices'
 
 import CustomersPage from '@/pages/customers'
+import CustomerDetailPage from '@/pages/customers/id'
 import NewCustomerPage from '@/pages/customers/new'
 import EditCustomerPage from '@/pages/customers/edit'
 
@@ -19,8 +21,9 @@ import EditInvoice from '@/pages/invoices/edit'
 
 import NewDeductionPage from '@/pages/deductions/new'
 import DeductionDetailPage from '@/pages/deductions/id'
-
 import DeductionIndexPage from '@/pages/deductions'
+import EditDeductionPage from '@/pages/deductions/edit'
+
 import UserIndexPage from '@/pages/users'
 import EditUserPage from '@/pages/users/edit'
 import NewUserpage from '@/pages/users/new'
@@ -42,6 +45,11 @@ const customerRoutes: RouteConfig[] = [
     path: '/customers/new',
     element: <NewCustomerPage />,
     label: 'New Customer',
+  },
+  {
+    path: '/customers/:customerId',
+    element: <CustomerDetailPage />,
+    label: 'Edit Customer',
   },
   {
     path: '/customers/:customerId/edit',
@@ -116,6 +124,11 @@ const deductionRoutes: RouteConfig[] = [
     element: <DeductionIndexPage />,
     label: 'Deductions',
   },
+  {
+    path: '/deductions/:deductionId/edit',
+    element: <EditDeductionPage />,
+    label: 'Edit Deduction'
+  }
 ]
 
 const userRoutes: RouteConfig[] = [
@@ -136,6 +149,11 @@ const routesConfig: RouteConfig[] = [
   {
     path: '/',
     element: <Index />,
+    label: 'Index',
+  },
+  {
+    path: '/dashboard',
+    element: <Dashboard />,
     label: 'Dashboard',
   },
   ...customerRoutes,

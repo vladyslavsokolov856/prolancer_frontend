@@ -1,21 +1,21 @@
 import { AxiosResponse } from 'axios'
 import User from '@/types/users'
-import axiosInstance from './axios'
+import axios from 'axios'
 
 export const fetchUsers = async (): Promise<User[]> => {
-  const response: AxiosResponse<User[]> = await axiosInstance.get(`/api/users`)
+  const response: AxiosResponse<User[]> = await axios.get(`/api/users`)
   return response.data
 }
 
 export const fetchUser = async (userId: number | undefined): Promise<User> => {
-  const response: AxiosResponse<User> = await axiosInstance.get(
+  const response: AxiosResponse<User> = await axios.get(
     `/api/users/${userId}`
   )
   return response.data
 }
 
 export const createUser = async (userData: User): Promise<User> => {
-  const response: AxiosResponse<User> = await axiosInstance.post(
+  const response: AxiosResponse<User> = await axios.post(
     `/api/users`,
     userData
   )
@@ -23,7 +23,7 @@ export const createUser = async (userData: User): Promise<User> => {
 }
 
 export const editUser = async (id: number, userData: User): Promise<User> => {
-  const response: AxiosResponse<User> = await axiosInstance.put(
+  const response: AxiosResponse<User> = await axios.put(
     `/api/users/${id}`,
     userData
   )
@@ -33,7 +33,7 @@ export const editUser = async (id: number, userData: User): Promise<User> => {
 export const deleteUser = async (
   userId: number | string | undefined
 ): Promise<User> => {
-  const response: AxiosResponse<User> = await axiosInstance.delete(
+  const response: AxiosResponse<User> = await axios.delete(
     `/api/users/${userId}`
   )
   return response.data
