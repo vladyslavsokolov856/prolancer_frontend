@@ -34,6 +34,7 @@ import ConfirmDialog from '@/components/ConfirmDialog'
 import { useState } from 'react'
 import { useJobType } from '@/hooks/useJobTypes'
 import { useOrderLines } from '@/hooks/useOrderLines'
+import InvoiceModal from '@/components/InvoiceModal'
 
 const steps = [
   'Submit invoice',
@@ -66,6 +67,7 @@ const ShowInvoice = () => {
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const handleDeleteDialogClick = () => setDeleteDialogOpen(true)
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const { deleteInvoiceMutation: deleteInvoice } = useDeleteInvoice()
   const navigate = useNavigate()
   const handleDeleteDialog = () => {
@@ -80,6 +82,13 @@ const ShowInvoice = () => {
   const { mutate: updateInvoice, isPending: isEditing } = useUpdateInvoice()
 
   const [step, setStep] = useState(0)
+
+  const handelOpenModel = () => {
+    setIsModalOpen(true)
+  }
+  const handelCloseModal = () => {
+    setIsModalOpen(false)
+  }
   const handleSend = () => {
     updateInvoice(
       { status: 'sent', id: invoiceId },
@@ -89,6 +98,7 @@ const ShowInvoice = () => {
         },
       }
     )
+    handelOpenModel()
   }
   const handleUnsend = () =>
     updateInvoice(
@@ -136,6 +146,12 @@ const ShowInvoice = () => {
   return (
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center">
+        <InvoiceModal
+          open={isModalOpen}
+          steps={steps}
+          activeStep={step}
+          handelClose={handelCloseModal}
+        />
         <Typography variant="h4">Invoice </Typography>
 
         <Box display="flex" alignItems="center" gap={1}>
