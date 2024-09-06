@@ -13,7 +13,6 @@ import {
 } from '@mui/material'
 import { Menu as MenuIcon } from '@mui/icons-material'
 import ShortcutOutlinedIcon from '@mui/icons-material/ShortcutOutlined'
-import OutputOutlinedIcon from '@mui/icons-material/OutputOutlined'
 import { navigationConfig } from '@/config/navigation'
 import { useState, useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'

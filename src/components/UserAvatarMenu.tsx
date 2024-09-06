@@ -9,6 +9,7 @@ import {
   Paper,
   Typography,
 } from '@mui/material'
+import OutputOutlinedIcon from '@mui/icons-material/OutputOutlined'
 import React from 'react'
 
 type UserAvatarMenuProps = {
@@ -73,7 +74,11 @@ const UserAvatarMenu: React.FC<UserAvatarMenuProps> = ({ signout }) => {
           horizontal: 'left',
         }}
       >
-        <MenuItem onClick={signout}>Sign out</MenuItem>
+        <MenuItem onClick={signout}>
+        <Box sx={{pr:1}}><OutputOutlinedIcon  /></Box>
+          
+          Sign out
+        </MenuItem>
       </Menu>
     </Paper>
   )
