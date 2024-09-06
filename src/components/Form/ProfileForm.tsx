@@ -87,6 +87,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = form
 
@@ -168,6 +169,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
               {...register('first_name', {
                 required: 'First name is a required field',
               })}
+              defaultValue={initialValues?.first_name || ''}
               required
               error={!!errors.first_name}
               helperText={
@@ -190,6 +192,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
               {...register('last_name', {
                 required: 'Last name is a required field',
               })}
+              defaultValue={initialValues?.last_name || ''}
               required
               error={!!errors.last_name}
               helperText={
@@ -212,6 +215,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
               {...register('email', {
                 required: 'Email is a required field',
               })}
+              defaultValue={initialValues?.email || ''}
               required
               error={!!errors.email}
               helperText={
@@ -234,6 +238,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
               {...register('phone_number', {
                 required: 'Phone number is a required field',
               })}
+              defaultValue={initialValues?.phone_number || ''}
               required
               error={!!errors.phone_number}
               helperText={
@@ -260,6 +265,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
               {...register('address', {
                 required: 'Address is a required field',
               })}
+              defaultValue={initialValues?.address || ''}
               required
               error={!!errors.address}
               helperText={
@@ -282,6 +288,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
               {...register('city', {
                 required: 'City is a required field',
               })}
+              defaultValue={initialValues?.city || ''}
               required
               error={!!errors.city}
               helperText={
@@ -304,6 +311,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
               {...register('postal_code', {
                 required: 'Postal code is a required field',
               })}
+              defaultValue={initialValues?.postal_code || ''}
               required
               error={!!errors.postal_code}
               helperText={
@@ -349,7 +357,6 @@ const ProfileForm: React.FC<UserFormProps> = ({
               notifications are sent to <b>{email}</b>.
             </p>
             <ProRadioGroup
-              {...register('email_preferences')}
               options={[
                 {
                   value: 'instantly',
@@ -367,6 +374,10 @@ const ProfileForm: React.FC<UserFormProps> = ({
                   description: 'Sends a summary every friday at 5pm',
                 },
               ]}
+              defaultValue={initialValues?.email_preferences || ''}
+              onChange={(e) => {
+                setValue('email_preferences', e.target.value)
+              }}
             />
 
             <p
@@ -393,6 +404,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
               {...register('bank_information.name', {
                 required: 'Bank name is a required field',
               })}
+              defaultValue={initialValues?.bank_information?.name || ''}
               required
               error={!!errors.bank_information?.name}
               helperText={
@@ -417,6 +429,9 @@ const ProfileForm: React.FC<UserFormProps> = ({
               {...register('bank_information.registration_number', {
                 required: 'Bank registration number is a required field',
               })}
+              defaultValue={
+                initialValues?.bank_information?.registration_number || ''
+              }
               required
               error={!!errors.bank_information?.registration_number}
               helperText={
@@ -441,6 +456,9 @@ const ProfileForm: React.FC<UserFormProps> = ({
               {...register('bank_information.account_number', {
                 required: 'Bank account number is a required field',
               })}
+              defaultValue={
+                initialValues?.bank_information?.account_number || ''
+              }
               required
               error={!!errors.bank_information?.account_number}
               helperText={
@@ -468,6 +486,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
               {...register('tax_person_id', {
                 required: 'CPR is a required field',
               })}
+              defaultValue={initialValues?.tax_person_id || ''}
               required
               error={!!errors.tax_person_id}
               helperText={

@@ -38,3 +38,8 @@ export const deleteUser = async (
   )
   return response.data
 }
+
+export const fetchCurrentUser = async ():Promise<User> => {
+  const response: AxiosResponse<User> = await axios.get(`/api/users/me`)
+  return response.data
+}
