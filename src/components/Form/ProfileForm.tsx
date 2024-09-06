@@ -87,6 +87,7 @@ const ProfileForm: React.FC<UserFormProps> = ({
     handleSubmit,
     reset,
     watch,
+    setValue,
     formState: { errors },
   } = form
 
@@ -349,7 +350,6 @@ const ProfileForm: React.FC<UserFormProps> = ({
               notifications are sent to <b>{email}</b>.
             </p>
             <ProRadioGroup
-              {...register('email_preferences')}
               options={[
                 {
                   value: 'instantly',
@@ -367,6 +367,10 @@ const ProfileForm: React.FC<UserFormProps> = ({
                   description: 'Sends a summary every friday at 5pm',
                 },
               ]}
+              defaultValue={initialValues?.email_preferences || ''}
+              onChange={(e) => {
+                setValue('email_preferences', e.target.value)
+              }}
             />
 
             <p
