@@ -10,6 +10,7 @@ import {
   fetchUser,
   createUser,
   editUser,
+  fetchCurrentUser,
 } from '@/services/userService'
 import User from '@/types/users'
 
@@ -103,5 +104,24 @@ export const useDeleteUser = () => {
   return {
     deleteUserMutation,
     isDeleting,
+  }
+}
+
+export const useCurrentUser = () => {
+  const {
+    data: user,
+    isLoading,
+    isError,
+    error,
+  } = useQuery<User, Error>({
+    queryKey: ['currentUser'],
+    queryFn: fetchCurrentUser,
+  })
+
+  return {
+    user: user || null,
+    isLoading,
+    isError,
+    error,
   }
 }
