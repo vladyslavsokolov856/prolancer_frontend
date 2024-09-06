@@ -14,9 +14,8 @@ import {
 import { Menu as MenuIcon } from '@mui/icons-material'
 import ShortcutOutlinedIcon from '@mui/icons-material/ShortcutOutlined'
 import { navigationConfig } from '@/config/navigation'
-import { useState, useContext } from 'react'
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { AuthContext, AuthContextType } from '@/context/auth'
 import UserAvatarMenu from '../UserAvatarMenu'
 
 interface IAppbarProps {
@@ -30,7 +29,6 @@ const dropDownConfigItems = navigationConfig.slice(2)
 const Appbar: React.FC<IAppbarProps> = () => {
   const { pathname } = useLocation()
 
-  const { signout } = useContext(AuthContext) as AuthContextType
 
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
@@ -231,8 +229,7 @@ const Appbar: React.FC<IAppbarProps> = () => {
               {dropdownItems}
             </Menu>
           </Box>
-            <UserAvatarMenu
-              signout={signout}/>
+            <UserAvatarMenu/>
         </Toolbar>
       </Container>
     </AppBar>

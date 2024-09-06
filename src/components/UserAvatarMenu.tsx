@@ -12,16 +12,17 @@ import {
   Typography,
 } from '@mui/material'
 import OutputOutlinedIcon from '@mui/icons-material/OutputOutlined'
-import React from 'react'
+import React, { useContext } from 'react'
+import { AuthContext, AuthContextType } from '@/context/auth'
 
-type UserAvatarMenuProps = {
-  signout: () => void
-}
 
-const UserAvatarMenu: React.FC<UserAvatarMenuProps> = ({ signout }) => {
+
+const UserAvatarMenu: React.FC = () => {
   const [anchorElMenu, setAnchorElMenu] = React.useState<HTMLElement | null>(
     null
   )
+  const { signout } = useContext(AuthContext) as AuthContextType
+
   const openMenu = Boolean(anchorElMenu)
   const { user } = userCurrentUser()
 
