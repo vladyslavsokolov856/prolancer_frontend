@@ -27,7 +27,6 @@ const ProfileSettings = () => {
   }
 
   const onSubmit: SubmitHandler<Inputs> = async (userData) => {
-    console.log('userData', userData)
     axios.put(`/api/users/${user?.id}`, userData).then(() => {
       enqueueSnackbar('Successfully Updated!', { variant: 'success' })
     })
