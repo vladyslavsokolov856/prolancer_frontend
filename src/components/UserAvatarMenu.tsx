@@ -1,4 +1,3 @@
-import { userCurrentUser } from '@/hooks/useCurrentUser'
 import User from '@/types/users'
 import {
   Avatar,
@@ -14,8 +13,7 @@ import {
 import OutputOutlinedIcon from '@mui/icons-material/OutputOutlined'
 import React, { useContext } from 'react'
 import { AuthContext, AuthContextType } from '@/context/auth'
-
-
+import { useCurrentUser } from '@/hooks/useUsers'
 
 const UserAvatarMenu: React.FC = () => {
   const [anchorElMenu, setAnchorElMenu] = React.useState<HTMLElement | null>(
@@ -24,7 +22,7 @@ const UserAvatarMenu: React.FC = () => {
   const { signout } = useContext(AuthContext) as AuthContextType
 
   const openMenu = Boolean(anchorElMenu)
-  const { user } = userCurrentUser()
+  const { user } = useCurrentUser()
 
   const handleClickMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElMenu(event.currentTarget)
