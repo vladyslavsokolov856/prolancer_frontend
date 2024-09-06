@@ -18,14 +18,15 @@ import { navigationConfig } from '@/config/navigation'
 import { useState, useContext } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { AuthContext, AuthContextType } from '@/context/auth'
+import UserAvatarMenu from '../UserAvatarMenu'
 
 interface IAppbarProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-const appBarConfigItems = navigationConfig.slice(0, 2);
+const appBarConfigItems = navigationConfig.slice(0, 2)
 
-const dropDownConfigItems = navigationConfig.slice(2);
+const dropDownConfigItems = navigationConfig.slice(2)
 
 const Appbar: React.FC<IAppbarProps> = () => {
   const { pathname } = useLocation()
@@ -231,11 +232,8 @@ const Appbar: React.FC<IAppbarProps> = () => {
               {dropdownItems}
             </Menu>
           </Box>
-          <Box sx={{ flexGrow: 0 }}>
-            <Button onClick={signout} startIcon={<OutputOutlinedIcon />} variant="text" sx={{ color: "white" }}>
-              LOGOUT
-            </Button>
-          </Box>
+            <UserAvatarMenu
+              signout={signout}/>
         </Toolbar>
       </Container>
     </AppBar>
