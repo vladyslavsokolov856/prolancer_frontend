@@ -4,6 +4,8 @@ import {
   Avatar,
   Box,
   Button,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
   Paper,
@@ -75,9 +77,10 @@ const UserAvatarMenu: React.FC<UserAvatarMenuProps> = ({ signout }) => {
         }}
       >
         <MenuItem onClick={signout}>
-        <Box sx={{pr:1}}><OutputOutlinedIcon  /></Box>
-          
-          Sign out
+          <ListItemIcon>
+            <OutputOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText>Sign out</ListItemText>
         </MenuItem>
       </Menu>
     </Paper>
